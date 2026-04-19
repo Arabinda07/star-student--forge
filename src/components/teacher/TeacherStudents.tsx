@@ -10,10 +10,10 @@ export default function TeacherStudents() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const stds = [
-    { id: 1, name: "Rohan Das", batch: "Class 8 Evening", subs: "12/12", fee: "due" },
-    { id: 2, name: "Aarav Sharma", batch: "Class 8 Evening", subs: "10/12", fee: "paid" },
-    { id: 3, name: "Sneha Roy", batch: "Class 9 Weekend", subs: "8/8", fee: "paid" },
-    { id: 4, name: "Aryan Khan", batch: "Class 10 Intensive", subs: "15/15", fee: "pending_confirm" },
+    { id: 1, name: "Rohan Das", batch: "Class 8 Evening", subs: "12/12", fee: "due", progress: 92 },
+    { id: 2, name: "Aarav Sharma", batch: "Class 8 Evening", subs: "10/12", fee: "paid", progress: 68 },
+    { id: 3, name: "Sneha Roy", batch: "Class 9 Weekend", subs: "8/8", fee: "paid", progress: 100 },
+    { id: 4, name: "Aryan Khan", batch: "Class 10 Intensive", subs: "15/15", fee: "pending_confirm", progress: 85 },
   ];
 
   const filtered = stds.filter(s => s.name.toLowerCase().includes(search.toLowerCase()) || s.batch.toLowerCase().includes(search.toLowerCase()));
@@ -76,20 +76,35 @@ export default function TeacherStudents() {
       
       <div className="flex-1 px-6 pb-6 overflow-y-auto scrollbar-hide flex flex-col gap-3">
         {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center text-center py-16 px-4 animate-fade-in">
-            <div className="w-16 h-16 bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 flex items-center justify-center rounded-full mb-4">
-              <Search size={24} />
+          <div className="flex flex-col items-center justify-center text-center py-16 px-4 animate-fade-in my-auto">
+            <div className="w-16 h-16 bg-stone-100 dark:bg-stone-800 text-stone-400 dark:text-stone-500 flex items-center justify-center rounded-full mb-5">
+              <UserPlus size={28} />
             </div>
-            <div className="text-lg font-bold text-stone-900 dark:text-stone-50 font-sans mb-1">No students found</div>
-            <div className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans">
-              We couldn't find anyone matching "{search}".
+            <h2 className="text-xl font-bold font-display text-stone-900 dark:text-stone-50 tracking-tight mb-2">
+              {search ? "No students found" : "Your roster is empty"}
+            </h2>
+            <p className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans max-w-[260px] leading-relaxed mb-8">
+              {search 
+                ? `There is no student matching "${search}". Try adjusting your search query.` 
+                : "It looks like you haven't added any students yet. Add your first student to get started."}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 w-full max-w-[280px]">
+              <button 
+                onClick={() => setAddSheet(true)} 
+                className="w-full px-5 py-3.5 font-bold text-sm bg-[var(--color-brand-600)] text-white rounded-xl hover:bg-[var(--color-brand-700)] active:scale-[0.98] transition-all shadow-sm flex items-center justify-center gap-2"
+              >
+                <Plus size={18} />
+                Enroll Student
+              </button>
+              {search && (
+                <button 
+                  onClick={() => setSearch("")} 
+                  className="w-full px-5 py-3.5 font-bold text-sm text-stone-600 dark:text-stone-300 bg-stone-100 dark:bg-stone-800 rounded-xl hover:bg-stone-200 dark:hover:bg-stone-700 active:scale-[0.98] transition-colors"
+                >
+                  Clear search
+                </button>
+              )}
             </div>
-            <button 
-              onClick={() => setSearch("")} 
-              className="mt-6 px-4 py-2 font-semibold text-sm text-sky-600 bg-sky-50 rounded-lg hover:bg-sky-100 transition-colors"
-            >
-              Clear search
-            </button>
           </div>
         ) : (
           filtered.map((s, i) => (
@@ -101,9 +116,18 @@ export default function TeacherStudents() {
               <div className="w-12 h-12 rounded-full bg-stone-100 dark:bg-stone-800 flex items-center justify-center text-lg shrink-0">
                 {s.name[0]}
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 pr-2">
                 <h3 className="text-[15px] font-bold text-stone-900 dark:text-stone-50 font-sans truncate mb-0.5">{s.name}</h3>
-                <p className="text-xs font-medium text-stone-500 dark:text-stone-400 font-sans truncate">{s.batch}</p>
+                <p className="text-xs font-medium text-stone-500 dark:text-stone-400 font-sans truncate mb-3">{s.batch}</p>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 h-1.5 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full rounded-full ${s.progress >= 80 ? 'bg-emerald-500' : s.progress >= 60 ? 'bg-amber-500' : 'bg-rose-500'}`} 
+                      style={{ width: `${s.progress}%` }} 
+                    />
+                  </div>
+                  <span className="text-[10px] font-bold font-mono text-stone-500 dark:text-stone-400">{s.progress}%</span>
+                </div>
               </div>
               <div className="flex flex-col items-end gap-2 shrink-0">
                 <Chip 

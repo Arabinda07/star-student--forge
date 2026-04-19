@@ -1,5 +1,6 @@
 import { 
   useState,
+  useRef,
   ReactNode 
 } from "react";
 import { 
@@ -13,7 +14,9 @@ import {
   MonitorSmartphone,
   Key,
   Smartphone,
-  Laptop
+  Laptop,
+  Camera,
+  AlertCircle
 } from "lucide-react";
 import { Role } from "../../types";
 import { Btn } from "./UI";
@@ -136,12 +139,67 @@ export default function ProfileSettings({ role }: { role: Role }) {
 // -----------------------------------------------------------------------------
 
 function PersonalInfoView({ details }: { details: any }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setError(null);
+
+    // Validate type
+    if (!file.type.startsWith('image/')) {
+      setError("Please select a valid image file (JPEG, PNG).");
+      return;
+    }
+
+    // Validate size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      setError("Image size must be less than 2MB.");
+      return;
+    }
+
+    // Create a temporary URL to display the image
+    const objectUrl = URL.createObjectURL(file);
+    setAvatarUrl(objectUrl);
+  };
+
   return (
     <div className="p-6 flex flex-col gap-6 animate-fade-in">
-      <div className="flex justify-center mb-2">
-        <div className={`w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold shadow-sm ${details.avatarColor}`}>
-          {details.initial}
+      <div className="flex flex-col items-center justify-center mb-2">
+        <div className="relative">
+          {avatarUrl ? (
+             <img src={avatarUrl} alt="Avatar" className="w-24 h-24 rounded-full object-cover shadow-sm border-4 border-white dark:border-stone-950 bg-stone-100 dark:bg-stone-800" />
+          ) : (
+            <div className={`w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold shadow-sm border-4 border-white dark:border-stone-950 ${details.avatarColor}`}>
+              {details.initial}
+            </div>
+          )}
+          <button 
+            onClick={() => fileInputRef.current?.click()}
+            className="absolute bottom-0 right-0 w-8 h-8 bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-white text-white dark:text-stone-900 rounded-full flex items-center justify-center shadow-md transition-colors cursor-pointer border-2 border-white dark:border-stone-950 z-10"
+            aria-label="Upload avatar"
+          >
+            <Camera size={14} />
+          </button>
         </div>
+
+        <input 
+          type="file" 
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          accept="image/png, image/jpeg, image/jpg, image/webp"
+          className="hidden" 
+        />
+
+        {error && (
+          <div className="mt-4 flex items-center gap-1.5 text-rose-600 dark:text-rose-400 text-xs font-semibold bg-rose-50 dark:bg-rose-900/10 px-3 py-1.5 rounded-lg border border-rose-200 dark:border-rose-900/50 text-center">
+            <AlertCircle size={14} className="shrink-0" />
+            {error}
+          </div>
+        )}
       </div>
       
       <div className="space-y-4">
@@ -332,6 +390,12 @@ function HelpCenterView() {
     { q: "What happens if I miss a class?", a: "Recorded lectures are usually posted in the 'Notes' or 'Library' section 24 hours after completion." },
     { q: "How do I contact support?", a: "You can email us directly at support@drona.edu or call the admin office during working hours." }
   ];
+
+  const handleResetOnboarding = () => {
+    localStorage.removeItem('drona_onboarding_done');
+    window.location.reload();
+  };
+
   return (
     <div className="p-6 animate-fade-in">
        <div className="bg-sky-50 dark:bg-sky-500/10 border border-sky-100 dark:border-sky-900 p-6 rounded-2xl mb-8 flex flex-col items-center text-center">
@@ -343,6 +407,12 @@ function HelpCenterView() {
          <Btn label="Contact Support" variant="primary" />
        </div>
        
+       <h3 className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans mb-4">Developer Tools</h3>
+       <div className="mb-8 p-4 bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 rounded-2xl shadow-sm flex flex-col gap-3 items-start">
+         <span className="text-sm font-medium text-stone-600 dark:text-stone-400">Clear the local cache state to replay the Drona initialization sequence for testing.</span>
+         <button onClick={handleResetOnboarding} className="px-4 py-2 font-bold text-sm bg-stone-200 dark:bg-stone-800 rounded-lg hover:bg-stone-300 transition-colors">Replay Onboarding</button>
+       </div>
+
        <h3 className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans mb-4">Frequently Asked Questions</h3>
        <div className="space-y-4">
          {faqs.map((faq, i) => (

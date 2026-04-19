@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { SUBJECTS } from "../../constants";
 import { SectionLabel, Btn } from "../shared/UI";
-import { Bell, Play, ChevronRight, Info } from "lucide-react";
+import { Bell, Play, ChevronRight, Info, Calendar as CalendarIcon, Clock } from "lucide-react";
 
 function useClock(init = 847) {
   const [s, setS] = useState(init);
@@ -18,12 +18,40 @@ const fmt = (s: number) =>
 export default function StudentHome() {
   const secs = useClock(574);
   const [overlay, setOverlay] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<number>(11);
 
   const tasks = [
     { id: 1, subject: "Maths", title: "Quadratic Equations — Practice Set B", due: "Today, 11:59 PM", urgent: true, status: "pending" },
     { id: 2, subject: "Physics", title: "Newton's Laws — Questions 1–6", due: "Tomorrow, 6 PM", status: "pending" },
     { id: 3, subject: "Science", title: "Cell Division — Labelled Diagram", due: "Submitted", status: "submitted" },
   ];
+
+  const calendarDays = [
+    { day: "Mon", date: 8 },
+    { day: "Tue", date: 9 },
+    { day: "Wed", date: 10 },
+    { day: "Thu", date: 11, active: true },
+    { day: "Fri", date: 12 },
+    { day: "Sat", date: 13 },
+    { day: "Sun", date: 14 }
+  ];
+
+  type ScheduleItem = { id: number; type: "class" | "task"; time: string; title: string; subject: string; color: string };
+  const scheduleData: Record<number, ScheduleItem[]> = {
+    11: [
+      { id: 1, type: "class", time: "6:00 PM", title: "Physics Class", subject: "Physics", color: "bg-blue-500" },
+      { id: 2, type: "task", time: "11:59 PM", title: "Maths Practice Set", subject: "Maths", color: "bg-emerald-500" }
+    ],
+    12: [
+      { id: 3, type: "class", time: "10:00 AM", title: "Maths Lecture", subject: "Maths", color: "bg-blue-500" },
+      { id: 4, type: "task", time: "6:00 PM", title: "Physics Questions", subject: "Physics", color: "bg-emerald-500" }
+    ],
+    13: [
+      { id: 5, type: "task", time: "5:00 PM", title: "Chemistry Assignment", subject: "Chemistry", color: "bg-emerald-500" }
+    ]
+  };
+
+  const selectedSchedule = scheduleData[selectedDate] || [];
 
   return (
     <div className="h-full flex flex-col overflow-y-auto scrollbar-hide bg-stone-50 dark:bg-stone-950">
@@ -114,6 +142,72 @@ export default function StudentHome() {
                 </div>
               );
             })}
+          </div>
+        </div>
+
+        {/* Calendar / Schedule Widget */}
+        <div className="shrink-0 animate-slide-up [animation-delay:0.15s] bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-[24px] p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-base font-bold text-stone-900 dark:text-stone-50 font-sans flex items-center gap-2 tracking-tight">
+              <CalendarIcon size={18} className="text-emerald-500" />
+              Schedule & planner
+            </h3>
+            <span className="text-xs font-semibold text-stone-500 dark:text-stone-400 bg-stone-100 dark:bg-stone-800 px-2.5 py-1 rounded-full">April 2026</span>
+          </div>
+
+          <div className="flex justify-between items-center mb-6 px-1">
+            {calendarDays.map((cal, i) => {
+              const isSelected = selectedDate === cal.date;
+              const isToday = cal.active;
+              const items = scheduleData[cal.date] || [];
+              const classCount = items.filter(itm => itm.type === 'class').length;
+              const taskCount = items.filter(itm => itm.type === 'task').length;
+
+              return (
+                <button 
+                  key={i} 
+                  onClick={() => setSelectedDate(cal.date)}
+                  className={`flex flex-col items-center p-2 rounded-2xl min-w-[42px] transition-all cursor-pointer ${
+                    isSelected 
+                      ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/20 scale-105" 
+                      : "bg-transparent text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800"
+                  }`}
+                >
+                  <span className={`text-[10px] font-bold tracking-widest uppercase font-sans mb-1.5 ${isSelected ? "text-emerald-50" : ""}`}>{cal.day}</span>
+                  <span className={`text-base font-bold tabular-nums font-sans ${isSelected ? "text-white" : isToday ? "text-emerald-600 dark:text-emerald-400" : "text-stone-900 dark:text-stone-50"}`}>
+                    {cal.date}
+                  </span>
+                  
+                  {/* Indicators */}
+                  <div className="flex gap-0.5 mt-1.5 h-1">
+                    {classCount > 0 && <div className={`w-1 h-1 rounded-full ${isSelected ? "bg-white" : "bg-blue-500"}`} />}
+                    {taskCount > 0 && <div className={`w-1 h-1 rounded-full ${isSelected ? "bg-white" : "bg-amber-500"}`} />}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="space-y-3">
+            {selectedSchedule.length === 0 ? (
+              <div className="text-center py-6 text-sm text-stone-500 dark:text-stone-400 font-medium font-sans">
+                No classes or tasks scheduled for this day! ✨
+              </div>
+            ) : (
+              selectedSchedule.map((item) => (
+                <div key={item.id} className="flex items-start gap-3 p-3 rounded-2xl bg-stone-50 dark:bg-stone-950 border border-stone-100 dark:border-stone-800/50">
+                  <div className={`w-1.5 self-stretch rounded-full ${item.type === 'class' ? 'bg-blue-500' : 'bg-emerald-500'}`} />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs font-bold font-sans text-stone-500 dark:text-stone-400 flex items-center gap-1.5 mb-0.5">
+                      <Clock size={12} /> {item.time} ({item.type})
+                    </div>
+                    <div className="text-sm font-semibold text-stone-900 dark:text-stone-50 font-sans truncate pr-2">
+                      {item.title}
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
 

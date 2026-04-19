@@ -17,6 +17,7 @@ import {
 import StudentHome from "./components/student/StudentHome";
 import StudentMyWork from "./components/student/StudentMyWork";
 import StudentNotes from "./components/student/StudentNotes";
+import StudentCalendar from "./components/student/StudentCalendar";
 
 import TeacherHome from "./components/teacher/TeacherHome";
 import TeacherClasses from "./components/teacher/TeacherClasses";
@@ -27,8 +28,10 @@ import TeacherLibrary from "./components/teacher/TeacherLibrary";
 import ParentHome from "./components/parent/ParentHome";
 import ParentFees from "./components/parent/ParentFees";
 import ParentFeedback from "./components/parent/ParentFeedback";
+import ParentSchedule from "./components/parent/ParentSchedule";
 
 import ProfileSettings from "./components/shared/ProfileSettings";
+import Onboarding from "./components/shared/Onboarding";
 
 // Placeholders for screens not yet implemented
 const PlaceholderScreen = ({ icon, title }: { icon: string, title: string }) => (
@@ -41,44 +44,56 @@ const PlaceholderScreen = ({ icon, title }: { icon: string, title: string }) => 
   </div>
 );
 
-function BottomNav({ role, active, onNav }: { role: Role; active: number; onNav: (i: number) => void }) {
-  interface Tab {
-    icon: ReactNode;
-    label: string;
-    badge?: number;
+interface Tab {
+  icon: ReactNode;
+  label: string;
+  badge?: number;
+}
+
+const getTabs = (role: Role): Tab[] => {
+  if (role === "teacher") {
+    return [
+      { icon: <HomeIcon size={20} />, label: "Home" },
+      { icon: <School size={20} />, label: "Classes" },
+      { icon: <Users size={20} />, label: "Students" },
+      { icon: <CalendarIcon size={20} />, label: "Calendar" },
+      { icon: <Library size={20} />, label: "Library" }
+    ];
   }
-  
-  const studentTabs: Tab[] = [
+  if (role === "parent") {
+    return [
+      { icon: <HomeIcon size={20} />, label: "Home" },
+      { icon: <CalendarIcon size={20} />, label: "Schedule" },
+      { icon: <Coins size={20} />, label: "Fees" },
+      { icon: <MessageSquare size={20} />, label: "Feedback" }
+    ];
+  }
+  return [
     { icon: <HomeIcon size={20} />, label: "Home" },
     { icon: <FileText size={20} />, label: "My Work", badge: 2 },
     { icon: <School size={20} />, label: "Notes" },
     { icon: <CalendarIcon size={20} />, label: "Calendar" },
     { icon: <User size={20} />, label: "Me" }
   ];
-  const teacherTabs: Tab[] = [
-    { icon: <HomeIcon size={20} />, label: "Home" },
-    { icon: <School size={20} />, label: "Classes" },
-    { icon: <Users size={20} />, label: "Students" },
-    { icon: <CalendarIcon size={20} />, label: "Calendar" },
-    { icon: <Library size={20} />, label: "Library" }
-  ];
-  const parentTabs: Tab[] = [
-    { icon: <HomeIcon size={20} />, label: "Home" },
-    { icon: <CalendarIcon size={20} />, label: "Schedule" },
-    { icon: <Coins size={20} />, label: "Fees" },
-    { icon: <MessageSquare size={20} />, label: "Feedback" }
-  ];
+};
 
-  const tabs = role === "teacher" ? teacherTabs : role === "parent" ? parentTabs : studentTabs;
+const getRoleColorClass = (role: Role) => {
+  if (role === 'student') return "text-emerald-600 dark:text-emerald-500";
+  if (role === 'teacher') return "text-amber-600 dark:text-amber-500";
+  return "text-sky-600 dark:text-sky-500";
+};
+
+const getRoleBgClass = (role: Role) => {
+  if (role === 'student') return "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300";
+  if (role === 'teacher') return "bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-300";
+  return "bg-sky-50 dark:bg-sky-500/10 text-sky-700 dark:text-sky-300";
+};
+
+function BottomNav({ role, active, onNav }: { role: Role; active: number; onNav: (i: number) => void }) {
+  const tabs = getTabs(role);
   
-  const getActiveColor = () => {
-    if (role === 'student') return "text-emerald-600";
-    if (role === 'teacher') return "text-amber-600";
-    return "text-sky-600";
-  };
-
   return (
-    <div className="bg-white dark:bg-stone-900 border-t border-stone-100 dark:border-stone-800/50 flex pb-safe pt-2 px-2 shadow-[0_-4px_24px_rgba(0,0,0,0.02)] shrink-0 z-20 relative">
+    <div className="md:hidden bg-white dark:bg-stone-900 border-t border-stone-100 dark:border-stone-800/50 flex pb-safe pt-2 px-2 shadow-[0_-4px_24px_rgba(0,0,0,0.02)] shrink-0 z-20 relative">
       {tabs.map((tab, i) => {
         const isActive = active === i;
         return (
@@ -90,16 +105,16 @@ function BottomNav({ role, active, onNav }: { role: Role; active: number; onNav:
             onClick={() => onNav(i)}
             className="flex-1 border-none bg-transparent cursor-pointer flex flex-col items-center justify-center gap-1 p-2 relative group focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 rounded-xl"
           >
-            <div className={`transition-all duration-200 ${isActive ? getActiveColor() : "text-stone-500 dark:text-stone-400"} ${isActive ? "-translate-y-1" : ""}`}>
+            <div className={`transition-all duration-200 ${isActive ? getRoleColorClass(role) : "text-stone-500 dark:text-stone-400"} ${isActive ? "-translate-y-1" : ""}`}>
               {tab.icon}
             </div>
             {tab.badge !== undefined && !isActive && (
-              <div className="absolute top-1 left-1/2 ml-1 bg-rose-500 text-white rounded-full min-w-[16px] h-4 px-1 text-[11px] font-bold flex items-center justify-center border-2 border-white">
+              <div className="absolute top-1 left-1/2 ml-1 bg-rose-500 text-white rounded-full min-w-[16px] h-4 px-1 text-[11px] font-bold flex items-center justify-center border-2 border-white dark:border-stone-900">
                 {tab.badge}
               </div>
             )}
             <div
-              className={`text-[11px] font-sans transition-all duration-200 ${isActive ? "font-semibold opacity-100" : "font-medium opacity-0 translate-y-1"} ${getActiveColor()}`}
+              className={`text-[11px] font-sans transition-all duration-200 ${isActive ? "font-semibold opacity-100" : "font-medium opacity-0 translate-y-1"} ${getRoleColorClass(role)}`}
               style={{ position: isActive ? 'relative' : 'absolute', bottom: isActive ? 'auto' : '2px' }}
             >
               {tab.label}
@@ -111,12 +126,57 @@ function BottomNav({ role, active, onNav }: { role: Role; active: number; onNav:
   );
 }
 
+function DesktopNav({ role, active, onNav }: { role: Role; active: number; onNav: (i: number) => void }) {
+  const tabs = getTabs(role);
+  
+  return (
+    <nav className="p-4 flex flex-col gap-2">
+      {tabs.map((tab, i) => {
+        const isActive = active === i;
+        return (
+          <button
+            key={i}
+            role="tab"
+            aria-selected={isActive}
+            aria-label={tab.label}
+            onClick={() => onNav(i)}
+            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 cursor-pointer ${
+              isActive 
+                ? getRoleBgClass(role) + " font-bold shadow-sm ring-1 ring-inset ring-black/5 dark:ring-white/5" 
+                : "text-stone-600 dark:text-stone-400 font-medium hover:bg-stone-50 dark:hover:bg-stone-800/50"
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <div className={isActive ? getRoleColorClass(role) : "text-stone-500 dark:text-stone-400"}>
+                {tab.icon}
+              </div>
+              <span className="text-sm tracking-wide">{tab.label}</span>
+            </div>
+            {tab.badge !== undefined && (
+              <div className={`text-white rounded-full min-w-[20px] h-5 px-1.5 text-xs font-bold flex items-center justify-center shadow-sm ${isActive ? "bg-rose-500" : "bg-stone-300 dark:bg-stone-600 text-stone-700 dark:text-stone-200"}`}>
+                {tab.badge}
+              </div>
+            )}
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
 export default function App() {
   const [role, setRole] = useState<Role>("student");
   const [tab, setTab] = useState(0);
   const [isDark, setIsDark] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
+    // Check for onboarding completion
+    const hasSeenOnboarding = localStorage.getItem('drona_onboarding_done');
+    if (!hasSeenOnboarding) {
+      setShowOnboarding(true);
+    }
+
     // Setup initial from local storage or matchMedia
     const stored = localStorage.getItem('theme');
     if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -124,6 +184,11 @@ export default function App() {
       document.documentElement.classList.add('dark');
     }
   }, []);
+
+  const handleCompleteOnboarding = () => {
+    localStorage.setItem('drona_onboarding_done', 'true');
+    setShowOnboarding(false);
+  };
 
   const toggleDark = () => {
     setIsDark(prev => {
@@ -146,11 +211,15 @@ export default function App() {
     }
   };
 
+  if (showOnboarding) {
+    return <Onboarding onComplete={handleCompleteOnboarding} />;
+  }
+
   return (
     <div className="h-screen bg-stone-100 dark:bg-stone-800 font-sans flex flex-col overflow-hidden text-stone-900 dark:text-stone-50">
       {/* App Header & Role Switcher */}
       <header className="bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 shrink-0 z-20 relative">
-        <div className="max-w-md sm:max-w-lg md:max-w-xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="text-xl font-bold text-stone-900 dark:text-stone-50 tracking-tight">Drona</div>
             <div className="text-[11px] bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 px-2 py-0.5 rounded-md font-mono font-medium uppercase tracking-widest hidden sm:block">Platform</div>
@@ -192,28 +261,39 @@ export default function App() {
       </header>
 
       {/* Main Web App Container */}
-      <div className="flex-1 w-full mx-auto max-w-md sm:max-w-lg md:max-w-xl bg-stone-50 dark:bg-stone-950 flex flex-col relative overflow-hidden sm:border-x border-stone-200 dark:border-stone-800 shadow-sm">
-        {/* Dynamic Content Area */}
-        <div className="flex-1 relative overflow-hidden bg-stone-50 dark:bg-stone-950 flex flex-col">
-          {role === 'student' && tab === 0 && <StudentHome />}
-          {role === 'student' && tab === 1 && <StudentMyWork />}
-          {role === 'student' && tab === 2 && <StudentNotes />}
-          {role === 'student' && tab === 3 && <PlaceholderScreen icon="📅" title="Student Calendar" />}
-          {role === 'student' && tab === 4 && <ProfileSettings role={role} />}
-          
-          {role === 'teacher' && tab === 0 && <TeacherHome />}
-          {role === 'teacher' && tab === 1 && <TeacherClasses />}
-          {role === 'teacher' && tab === 2 && <TeacherStudents />}
-          {role === 'teacher' && tab === 3 && <TeacherCalendar />}
-          {role === 'teacher' && tab === 4 && <TeacherLibrary />}
-
-          {role === 'parent' && tab === 0 && <ParentHome />}
-          {role === 'parent' && tab === 1 && <PlaceholderScreen icon="📅" title="Rohan's Schedule" />}
-          {role === 'parent' && tab === 2 && <ParentFees />}
-          {role === 'parent' && tab === 3 && <ParentFeedback />}
+      <div className="flex-1 w-full max-w-7xl mx-auto flex overflow-hidden bg-stone-50 dark:bg-stone-950/50 md:border-x border-stone-200 dark:border-stone-800 shadow-sm">
+        {/* Desktop Sidebar */}
+        <div className="hidden md:flex flex-col w-64 border-r border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 z-10 shrink-0">
+          <DesktopNav role={role} active={tab} onNav={setTab} />
+          <div className="mt-auto p-6 hidden md:block">
+            <div className="text-[10px] text-stone-400 dark:text-stone-500 uppercase tracking-widest font-bold">Drona Platform</div>
+            <div className="text-xs text-stone-500 dark:text-stone-400 mt-1">v2.1.1</div>
+          </div>
         </div>
+        
+        {/* Dynamic Content Area */}
+        <div className="flex-1 flex flex-col relative overflow-hidden bg-stone-50 dark:bg-stone-950">
+          <div className="flex-1 relative overflow-y-auto w-full max-w-3xl xl:max-w-5xl mx-auto flex flex-col bg-stone-50 dark:bg-stone-950 md:border-x border-stone-200 dark:border-stone-800">
+            {role === 'student' && tab === 0 && <StudentHome />}
+            {role === 'student' && tab === 1 && <StudentMyWork />}
+            {role === 'student' && tab === 2 && <StudentNotes />}
+            {role === 'student' && tab === 3 && <StudentCalendar />}
+            {role === 'student' && tab === 4 && <ProfileSettings role={role} />}
+            
+            {role === 'teacher' && tab === 0 && <TeacherHome />}
+            {role === 'teacher' && tab === 1 && <TeacherClasses />}
+            {role === 'teacher' && tab === 2 && <TeacherStudents />}
+            {role === 'teacher' && tab === 3 && <TeacherCalendar />}
+            {role === 'teacher' && tab === 4 && <TeacherLibrary />}
 
-        <BottomNav role={role} active={tab} onNav={setTab} />
+            {role === 'parent' && tab === 0 && <ParentHome />}
+            {role === 'parent' && tab === 1 && <ParentSchedule />}
+            {role === 'parent' && tab === 2 && <ParentFees />}
+            {role === 'parent' && tab === 3 && <ParentFeedback />}
+          </div>
+
+          <BottomNav role={role} active={tab} onNav={setTab} />
+        </div>
       </div>
     </div>
 

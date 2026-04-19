@@ -5,9 +5,9 @@ import { ChevronRight, Plus, Users, Clock } from "lucide-react";
 
 export default function TeacherClasses() {
   const batches = [
-    { id: 1, name: "Class 8 Evening", subs: ["Maths", "Physics", "Science"], count: 24, next: "Today, 6:00 PM" },
-    { id: 2, name: "Class 9 Weekend", subs: ["Physics"], count: 18, next: "Sat, 10:00 AM" },
-    { id: 3, name: "Class 10 Intensive", subs: ["Maths", "Science"], count: 12, next: "Tomorrow, 5:00 PM" },
+    { id: 1, name: "Class 8 Evening", subs: ["Maths", "Physics", "Science"], count: 24, next: "Today, 6:00 PM", avgProgress: 88, onTrack: 21 },
+    { id: 2, name: "Class 9 Weekend", subs: ["Physics"], count: 18, next: "Sat, 10:00 AM", avgProgress: 72, onTrack: 10 },
+    { id: 3, name: "Class 10 Intensive", subs: ["Maths", "Science"], count: 12, next: "Tomorrow, 5:00 PM", avgProgress: 95, onTrack: 12 },
   ];
 
   return (
@@ -41,14 +41,35 @@ export default function TeacherClasses() {
               <ChevronRight size={20} className="text-stone-300" />
             </div>
             
-            <div className="flex items-center gap-6 mt-6 pt-4 border-t border-stone-100 dark:border-stone-800/50">
-              <div className="flex items-center gap-2 text-stone-600 dark:text-stone-300">
-                <Users size={16} />
-                <span className="text-sm font-semibold font-sans">{b.count} <span className="font-medium text-stone-500 dark:text-stone-400">students</span></span>
+            <div className="flex flex-col gap-6 mt-6 pt-4 border-t border-stone-100 dark:border-stone-800/50">
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2 text-stone-600 dark:text-stone-300">
+                  <Users size={16} />
+                  <span className="text-sm font-semibold font-sans">{b.count} <span className="font-medium text-stone-500 dark:text-stone-400">students</span></span>
+                </div>
+                <div className="flex items-center gap-2 text-stone-600 dark:text-stone-300">
+                  <Clock size={16} />
+                  <span className="text-sm font-semibold font-sans truncate">{b.next}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-stone-600 dark:text-stone-300">
-                <Clock size={16} />
-                <span className="text-sm font-semibold font-sans">{b.next}</span>
+
+              {/* Progress Summary Section */}
+              <div className="bg-stone-50 dark:bg-stone-950/50 rounded-xl p-3 border border-stone-100 dark:border-stone-800/50 flex flex-col gap-2">
+                <div className="flex justify-between items-end">
+                  <span className="text-xs font-semibold text-stone-500 dark:text-stone-400 font-sans">Batch Performance</span>
+                  <span className={`text-xs font-bold font-mono ${b.avgProgress >= 80 ? 'text-emerald-600 dark:text-emerald-500' : b.avgProgress >= 60 ? 'text-amber-600 dark:text-amber-500' : 'text-rose-600 dark:text-rose-500'}`}>
+                    {b.avgProgress}% Avg
+                  </span>
+                </div>
+                <div className="h-1.5 bg-stone-200 dark:bg-stone-800 rounded-full overflow-hidden">
+                  <div 
+                    className={`h-full rounded-full ${b.avgProgress >= 80 ? 'bg-emerald-500' : b.avgProgress >= 60 ? 'bg-amber-500' : 'bg-rose-500'}`} 
+                    style={{ width: `${b.avgProgress}%` }} 
+                  />
+                </div>
+                <div className="text-[11px] font-medium font-sans text-stone-500 dark:text-stone-400 mt-1">
+                  <strong className="text-stone-700 dark:text-stone-300">{b.onTrack}</strong> out of {b.count} students are meeting expectations.
+                </div>
               </div>
             </div>
           </div>
