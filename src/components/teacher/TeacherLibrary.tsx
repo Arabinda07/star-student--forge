@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, ChangeEvent } from "react";
+import { flushSync } from "react-dom";
 import { SUBJECTS } from "../../constants";
 import { SectionLabel, Btn, Chip, EmptySlate, Sheet } from "../shared/UI";
 import { ChevronLeft, ChevronRight, Search, FileText, Upload, CheckCircle2, Plus, Trash2, Download } from "lucide-react";
@@ -25,6 +26,24 @@ export default function TeacherLibrary() {
   useEffect(() => {
     fetchNotes();
   }, [subject]); // Refetch if subject changes, but actually fetch all notes first
+
+  const startTransition = (callback: () => void) => {
+    if (!document.startViewTransition) {
+      callback();
+      return;
+    }
+    document.startViewTransition(() => {
+      flushSync(() => {
+        callback();
+      });
+    });
+  };
+
+  const selectSubject = (s: string | null) => {
+    startTransition(() => {
+      setSubject(s);
+    });
+  };
 
   const fetchNotes = async () => {
     setIsLoadingNotes(true);
@@ -145,9 +164,9 @@ export default function TeacherLibrary() {
     const currentSubjectNotes = notes.filter(n => n.subject === subject);
     const sc = SUBJECTS[subject] || SUBJECTS.Physics;
     return (
-      <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 animate-slideInRight">
+      <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 animate-slideInRight" style={{ viewTransitionName: 'library-detail' }}>
         <div className="px-6 py-4 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 shrink-0 sticky top-0 z-10">
-          <button onClick={() => setSubject(null)} className="flex items-center gap-1 bg-transparent border-none cursor-pointer font-sans text-sm font-semibold text-stone-500 dark:text-stone-400 hover:text-stone-900 transition-colors mb-4">
+          <button onClick={() => selectSubject(null)} className="flex items-center gap-1 bg-transparent border-none cursor-pointer font-sans text-sm font-semibold text-stone-500 dark:text-stone-400 hover:text-stone-900 transition-colors mb-4">
             <ChevronLeft size={18} /> Library
           </button>
           <div className="flex items-center gap-4 mb-2">
@@ -160,7 +179,7 @@ export default function TeacherLibrary() {
             </div>
           </div>
         </div>
-        <div className="flex-1 overflow-y-auto px-6 py-6 scrollbar-hide grid gap-3">
+        <div className="flex-1 overflow-y-auto px-6 py-6 scrollbar-hide grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
           {isLoadingNotes ? (
              <div className="flex items-center justify-center py-10">
                <div className="w-6 h-6 animate-spin rounded-full border-2 border-stone-300 border-t-emerald-500" />
@@ -248,7 +267,7 @@ export default function TeacherLibrary() {
         <p className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans">{notes.length} notes · {subjects.length} subjects</p>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-6 pb-6 scrollbar-hide grid gap-4">
+      <div className="flex-1 overflow-y-auto px-6 pb-6 scrollbar-hide grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {subjects.map((subj, i) => {
           const sc = SUBJECTS[subj] || SUBJECTS.Physics;
           const subjNotes = notes.filter(n => n.subject === subj);
@@ -256,9 +275,9 @@ export default function TeacherLibrary() {
           return (
             <div 
               key={subj} 
-              onClick={() => setSubject(subj)} 
+              onClick={() => selectSubject(subj)} 
               className="bg-white dark:bg-stone-900 rounded-[20px] p-5 border border-stone-200 dark:border-stone-800 shadow-sm cursor-pointer hover:border-stone-300 transition-all animate-slide-up flex gap-4 items-center"
-              style={{ animationDelay: `${i * 0.05}s` }}
+              style={{ animationDelay: `${i * 0.05}s`, viewTransitionName: subject === subj ? 'library-detail' : 'none' }}
             >
               <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shrink-0 ${sc.bg}`}>
                 {sc.icon}

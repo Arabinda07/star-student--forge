@@ -23,49 +23,94 @@ export default function TeacherHome() {
 
   return (
     <div className="h-full flex flex-col overflow-y-auto scrollbar-hide bg-stone-50 dark:bg-stone-950 relative">
-      <div className="px-6 py-6 pb-4 shrink-0 animate-slide-up flex justify-between items-start">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-2xl">
+      {/* Header */}
+      <div className="px-6 py-6 pb-4 shrink-0 animate-slide-up flex justify-between items-start w-full max-w-7xl mx-auto">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-amber-100 flex items-center justify-center text-3xl shadow-sm border border-amber-200">
             👨‍🏫
           </div>
           <div>
-            <div className="text-lg font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans">
+            <div className="text-xl font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans leading-tight mb-0.5">
               Welcome back
             </div>
-            <div className="text-sm font-medium text-amber-600 font-sans">
-              No pending reviews
+            <div className="text-sm font-medium text-amber-600 dark:text-amber-500 font-sans">
+              You have no pending reviews today
             </div>
           </div>
         </div>
-        <button aria-label="Notifications" className="w-11 h-11 rounded-full bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex items-center justify-center cursor-pointer shadow-sm relative hover:bg-stone-50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500">
+        <button aria-label="Notifications" className="w-11 h-11 rounded-full bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex items-center justify-center cursor-pointer shadow-sm relative hover:bg-stone-50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500">
           <Bell size={20} className="text-stone-600 dark:text-stone-300" />
         </button>
       </div>
 
-      <div className="flex-1 px-6 pb-24 flex flex-col gap-8 overflow-y-auto scrollbar-hide">
-        <div className="shrink-0 rounded-[24px] p-6 bg-stone-900 text-white relative overflow-hidden animate-slide-up [animation-delay:0.05s] shadow-lg flex items-center justify-center min-h-[160px]">
-           <div className="text-center">
-             <div className="w-12 h-12 bg-stone-800 rounded-full flex items-center justify-center mx-auto mb-3">
-               <span className="text-xl">📅</span>
-             </div>
-             <p className="text-sm font-bold text-white font-sans">No upcoming classes</p>
-             <p className="text-xs text-stone-400 font-sans mt-1">Schedule a session to get started.</p>
-           </div>
-        </div>
+      {/* Main Content Grid */}
+      <div className="flex-1 w-full max-w-7xl mx-auto px-6 pb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_360px] gap-8 items-start">
+          
+          {/* Main Feed */}
+          <div className="flex flex-col gap-10">
+            {/* Hero Card */}
+            <div className="shrink-0 rounded-[32px] p-8 bg-stone-900 text-white relative overflow-hidden animate-slide-up [animation-delay:0.05s] shadow-xl flex items-center justify-center min-h-[220px]">
+               <div className="text-center relative z-10">
+                 <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-white/10">
+                   <span className="text-2xl">📅</span>
+                 </div>
+                 <p className="text-lg font-bold text-white font-sans leading-tight">No upcoming classes</p>
+                 <p className="text-sm text-stone-400 font-sans mt-2 max-w-xs mx-auto">Your teaching schedule is clear for now. Use the time to prepare!</p>
+               </div>
+               
+               {/* Decorative background effects */}
+               <div className="absolute -top-24 -right-24 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+               <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
+            </div>
 
-        <div className="shrink-0 animate-slide-up [animation-delay:0.1s]">
-          <SectionLabel>Action Queue</SectionLabel>
-          <div className="bg-white dark:bg-stone-900 p-6 border border-stone-200 dark:border-stone-800 rounded-2xl text-center shadow-sm">
-             <p className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans mb-1">Inbox Zero</p>
-             <p className="text-xs text-stone-500 font-sans">You have no tasks needing attention.</p>
+            {/* Action Queue */}
+            <div className="shrink-0 animate-slide-up [animation-delay:0.1s]">
+              <div className="flex justify-between items-end mb-6">
+                <SectionLabel>Action Queue</SectionLabel>
+                <button className="text-xs font-bold text-amber-600 dark:text-amber-500 hover:underline">Manage Queue</button>
+              </div>
+              <div className="bg-white dark:bg-stone-900 rounded-[32px] border border-stone-200 dark:border-stone-800 p-12 text-center shadow-sm">
+                 <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-950/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                   <CheckCircle2 size={28} className="text-emerald-500" />
+                 </div>
+                 <p className="text-base font-bold text-stone-900 dark:text-stone-50 font-sans mb-1">Inbox Zero</p>
+                 <p className="text-sm text-stone-500 font-sans">You have no student tasks needing review or attention.</p>
+              </div>
+            </div>
+
+            {/* Recent Submissions */}
+            <div className="shrink-0 animate-slide-up [animation-delay:0.15s]">
+              <SectionLabel>Recent Submissions</SectionLabel>
+              <div className="bg-white dark:bg-stone-900 rounded-[32px] border border-stone-200 dark:border-stone-800 p-10 text-center shadow-sm mt-4">
+                 <p className="text-base font-bold text-stone-900 dark:text-stone-50 font-sans mb-1">No submissions yet</p>
+                 <p className="text-sm text-stone-500 font-sans">Student work will automatically appear here once submitted.</p>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div className="shrink-0 animate-slide-up [animation-delay:0.15s]">
-          <SectionLabel>Recent Submissions</SectionLabel>
-          <div className="bg-white dark:bg-stone-900 p-6 border border-stone-200 dark:border-stone-800 rounded-2xl text-center shadow-sm">
-             <p className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans mb-1">No submissions yet</p>
-             <p className="text-xs text-stone-500 font-sans">Student work will appear here once submitted.</p>
+          {/* Quick Stats / Sidebar */}
+          <div className="flex flex-col gap-8 sticky top-6">
+            <div className="bg-white dark:bg-stone-900 rounded-[32px] border border-stone-200 dark:border-stone-800 p-6 shadow-sm">
+              <h3 className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans mb-6 uppercase tracking-widest text-center">Daily Overview</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 bg-stone-50 dark:bg-stone-950 rounded-2xl text-center border border-stone-100 dark:border-stone-800/50">
+                  <div className="text-2xl font-bold text-stone-900 dark:text-stone-50 font-sans">0</div>
+                  <div className="text-[10px] font-bold text-stone-400 uppercase tracking-wide mt-1">Students</div>
+                </div>
+                <div className="p-4 bg-stone-50 dark:bg-stone-950 rounded-2xl text-center border border-stone-100 dark:border-stone-800/50">
+                  <div className="text-2xl font-bold text-stone-900 dark:text-stone-50 font-sans">0%</div>
+                  <div className="text-[10px] font-bold text-stone-400 uppercase tracking-wide mt-1">Graded</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-amber-500 rounded-[32px] p-6 text-white shadow-lg shadow-amber-500/20">
+              <h3 className="text-base font-bold font-sans mb-2">Teacher Pro Tip</h3>
+              <p className="text-sm text-amber-50 font-sans leading-relaxed opacity-90">
+                Regular feedback helps students stay motivated. Try to grade submissions within 24 hours.
+              </p>
+            </div>
           </div>
         </div>
       </div>

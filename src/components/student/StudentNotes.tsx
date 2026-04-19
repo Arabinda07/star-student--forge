@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { flushSync } from "react-dom";
 import { SUBJECTS } from "../../constants";
 import { ChevronRight, ChevronLeft, Search, FileText, Bookmark, Play, Plus, Trash2, Download } from "lucide-react";
 import { supabase } from "../../supabaseClient";
@@ -18,6 +19,31 @@ export default function StudentNotes() {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [activeUploadSubject, setActiveUploadSubject] = useState<string | null>(null);
+
+  const startTransition = (callback: () => void) => {
+    if (!document.startViewTransition) {
+      callback();
+      return;
+    }
+    document.startViewTransition(() => {
+      flushSync(() => {
+        callback();
+      });
+    });
+  };
+
+  const selectSubject = (s: string | null) => {
+    startTransition(() => {
+      setSubject(s);
+      setSearch("");
+    });
+  };
+
+  const openNoteDetail = (note: any | null) => {
+    startTransition(() => {
+      setOpenNote(note);
+    });
+  };
 
   const fetchNotes = async () => {
     setLoading(true);
@@ -141,11 +167,11 @@ export default function StudentNotes() {
     const sc = SUBJECTS[subject] || SUBJECTS.Physics;
     const isSaved = openNote.is_saved;
     return (
-      <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 animate-slideInRight">
+      <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 animate-slideInRight" style={{ viewTransitionName: 'library-detail' }}>
         <div className="px-6 py-4 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 shrink-0 sticky top-0 z-10">
           <div className="flex justify-between items-start mb-4">
             <button 
-              onClick={() => setOpenNote(null)} 
+              onClick={() => selectSubject(null)} 
               className="flex items-center gap-1 bg-transparent border-none cursor-pointer font-sans text-sm font-semibold text-stone-500 dark:text-stone-400 hover:text-stone-900 transition-colors"
             >
               <ChevronLeft size={18} /> {subject}
@@ -310,7 +336,7 @@ export default function StudentNotes() {
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 py-6 scrollbar-hide">
-          <div className="grid gap-3">
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
             {filteredNotes.length === 0 ? (
               <div className="text-center py-10 text-sm font-sans text-stone-500 dark:text-stone-400">No notes found! Create a new one.</div>
             ) : (
@@ -319,7 +345,7 @@ export default function StudentNotes() {
                 return (
                   <div 
                     key={note.id} 
-                    onClick={() => setOpenNote(note)}
+                    onClick={() => openNoteDetail(note)}
                     className="bg-white dark:bg-stone-900 rounded-2xl p-4 border border-stone-200 dark:border-stone-800 shadow-sm flex gap-4 cursor-pointer hover:border-stone-300 hover:shadow-md transition-all animate-slide-up relative group"
                     style={{ animationDelay: `${i * 0.05}s` }}
                   >
@@ -375,7 +401,7 @@ export default function StudentNotes() {
         </p>
       </div>
       
-      <div className="flex-1 overflow-y-auto px-6 pb-6 scrollbar-hide grid gap-4">
+      <div className="flex-1 overflow-y-auto px-6 pb-6 scrollbar-hide grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {loading ? (
           <div className="flex items-center justify-center py-10">
             <div className="w-6 h-6 animate-spin rounded-full border-2 border-stone-300 border-t-emerald-500" />
@@ -389,9 +415,9 @@ export default function StudentNotes() {
             return (
               <div 
                 key={subj} 
-                onClick={() => setSubject(subj)} 
+                onClick={() => selectSubject(subj as string)} 
                 className="bg-white dark:bg-stone-900 rounded-2xl p-5 border border-stone-200 dark:border-stone-800 shadow-sm cursor-pointer hover:border-stone-300 hover:shadow-md transition-all animate-slide-up flex gap-5 items-center group"
-                style={{ animationDelay: `${i * 0.05}s` }}
+                style={{ animationDelay: `${i * 0.05}s`, viewTransitionName: subject === subj ? 'library-detail' : 'none' }}
               >
                 <div className={`w-14 h-14 rounded-2xl shrink-0 flex items-center justify-center text-3xl ${sc.bg}`}>
                   {sc.icon}

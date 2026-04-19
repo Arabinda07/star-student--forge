@@ -1,5 +1,7 @@
-import { useState, ReactNode, useEffect } from "react";
+import { useState, ReactNode, useEffect, useLayoutEffect } from "react";
+import { motion } from "motion/react";
 import { Role } from "./types";
+import { flushSync } from "react-dom";
 import { 
   Home as HomeIcon, 
   Users, 
@@ -63,7 +65,8 @@ const getTabs = (role: Role): Tab[] => {
       { icon: <School size={20} />, label: "Classes" },
       { icon: <Users size={20} />, label: "Students" },
       { icon: <CalendarIcon size={20} />, label: "Calendar" },
-      { icon: <Library size={20} />, label: "Library" }
+      { icon: <Library size={20} />, label: "Library" },
+      { icon: <User size={20} />, label: "Me" }
     ];
   }
   if (role === "parent") {
@@ -71,7 +74,8 @@ const getTabs = (role: Role): Tab[] => {
       { icon: <HomeIcon size={20} />, label: "Home" },
       { icon: <CalendarIcon size={20} />, label: "Schedule" },
       { icon: <Coins size={20} />, label: "Fees" },
-      { icon: <MessageSquare size={20} />, label: "Feedback" }
+      { icon: <MessageSquare size={20} />, label: "Feedback" },
+      { icon: <User size={20} />, label: "Me" }
     ];
   }
   return [
@@ -103,8 +107,10 @@ function BottomNav({ role, active, onNav }: { role: Role; active: number; onNav:
       {tabs.map((tab, i) => {
         const isActive = active === i;
         return (
-          <button
+          <motion.button
             key={i}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             role="tab"
             aria-selected={isActive}
             aria-label={tab.label}
@@ -125,7 +131,7 @@ function BottomNav({ role, active, onNav }: { role: Role; active: number; onNav:
             >
               {tab.label}
             </div>
-          </button>
+          </motion.button>
         );
       })}
     </div>
@@ -140,8 +146,10 @@ function DesktopNav({ role, active, onNav }: { role: Role; active: number; onNav
       {tabs.map((tab, i) => {
         const isActive = active === i;
         return (
-          <button
+          <motion.button
             key={i}
+            whileHover={{ x: 4, backgroundColor: "rgba(0,0,0,0.02)" }}
+            whileTap={{ scale: 0.98 }}
             role="tab"
             aria-selected={isActive}
             aria-label={tab.label}
@@ -163,7 +171,7 @@ function DesktopNav({ role, active, onNav }: { role: Role; active: number; onNav
                 {tab.badge}
               </div>
             )}
-          </button>
+          </motion.button>
         );
       })}
     </nav>
@@ -297,9 +305,29 @@ export default function App() {
 
   const switchRole = (r: Role) => {
     if (r !== role) {
-      setRole(r);
-      setTab(0);
+      startTransition(() => {
+        setRole(r);
+        setTab(0);
+      });
     }
+  };
+
+  const startTransition = (callback: () => void) => {
+    if (!document.startViewTransition) {
+      callback();
+      return;
+    }
+    document.startViewTransition(() => {
+      flushSync(() => {
+        callback();
+      });
+    });
+  };
+
+  const handleTabChange = (t: number) => {
+    startTransition(() => {
+      setTab(t);
+    });
   };
 
   if (loadingSession) {
@@ -340,7 +368,7 @@ export default function App() {
 
   if (session) {
     return (
-      <div className="h-screen bg-stone-100 dark:bg-stone-800 font-sans flex flex-col overflow-hidden text-stone-900 dark:text-stone-50 relative">
+      <div className="h-screen bg-stone-100 dark:bg-stone-800 font-sans flex flex-col overflow-hidden text-stone-900 dark:text-stone-50 relative premium-texture">
         
         {showWalkthrough && (
           <Walkthrough 
@@ -377,7 +405,7 @@ export default function App() {
       <div className="flex-1 w-full max-w-7xl mx-auto flex overflow-hidden bg-stone-50 dark:bg-stone-950/50 md:border-x border-stone-200 dark:border-stone-800 shadow-sm">
         {/* Desktop Sidebar */}
         <div className="hidden md:flex flex-col w-64 border-r border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 z-10 shrink-0">
-          <DesktopNav role={role} active={tab} onNav={setTab} />
+          <DesktopNav role={role} active={tab} onNav={handleTabChange} />
           <div className="mt-auto p-6 hidden md:block">
             <div className="text-[10px] text-stone-400 dark:text-stone-500 uppercase tracking-widest font-bold">Drona Platform</div>
             <div className="text-xs text-stone-500 dark:text-stone-400 mt-1">v2.1.1</div>
@@ -386,7 +414,7 @@ export default function App() {
         
         {/* Dynamic Content Area */}
         <div className="flex-1 flex flex-col relative overflow-hidden bg-stone-50 dark:bg-stone-950">
-          <div className="flex-1 relative overflow-y-auto w-full max-w-3xl xl:max-w-5xl mx-auto flex flex-col bg-stone-50 dark:bg-stone-950 md:border-x border-stone-200 dark:border-stone-800">
+          <div className="flex-1 relative overflow-y-auto w-full mx-auto flex flex-col bg-stone-50 dark:bg-stone-950">
             {role === 'student' && tab === 0 && <StudentHome />}
             {role === 'student' && tab === 1 && <StudentMyWork />}
             {role === 'student' && tab === 2 && <StudentNotes />}
@@ -398,14 +426,16 @@ export default function App() {
             {role === 'teacher' && tab === 2 && <TeacherStudents />}
             {role === 'teacher' && tab === 3 && <TeacherCalendar />}
             {role === 'teacher' && tab === 4 && <TeacherLibrary />}
+            {role === 'teacher' && tab === 5 && <ProfileSettings role={role} />}
 
             {role === 'parent' && tab === 0 && <ParentHome />}
             {role === 'parent' && tab === 1 && <ParentSchedule />}
             {role === 'parent' && tab === 2 && <ParentFees />}
             {role === 'parent' && tab === 3 && <ParentFeedback />}
+            {role === 'parent' && tab === 4 && <ProfileSettings role={role} />}
           </div>
 
-          <BottomNav role={role} active={tab} onNav={setTab} />
+          <BottomNav role={role} active={tab} onNav={handleTabChange} />
         </div>
       </div>
     </div>

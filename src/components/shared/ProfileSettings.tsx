@@ -27,11 +27,12 @@ type SettingsPage = 'main' | 'personal_info' | 'security' | 'sessions' | 'notifi
 
 export default function ProfileSettings({ role }: { role: Role }) {
   const [activePage, setActivePage] = useState<SettingsPage>('main');
-  const [profile, setProfile] = useState<{name: string, email: string, phone: string, avatarColor: string, initial: string}>({
+  const [profile, setProfile] = useState<{name: string, email: string, phone: string, avatarColor: string, initial: string, avatar_url?: string, meta?: string}>({
     name: "Loading...",
     email: "Loading...",
     phone: "Pending Setup",
     initial: "D",
+    meta: "",
     avatarColor: role === "student" ? "bg-emerald-100 text-emerald-700" : (role === "teacher" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700")
   });
 
@@ -54,7 +55,8 @@ export default function ProfileSettings({ role }: { role: Role }) {
         email: user.email || "",
         phone: data?.phone || "Pending Setup",
         initial: pName.charAt(0).toUpperCase(),
-        avatar_url: finalAvatarUrl,
+        meta: data?.meta || "",
+        avatar_url: finalAvatarUrl || undefined,
         avatarColor: role === "student" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300" : (role === "teacher" ? "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300" : "bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-300")
       });
     }
@@ -86,7 +88,7 @@ export default function ProfileSettings({ role }: { role: Role }) {
 
         {/* Sub-page Content */}
         <div className="flex-1 overflow-y-auto w-full">
-          {activePage === 'personal_info' && <PersonalInfoView details={profile} setDetails={setProfile} />}
+          {activePage === 'personal_info' && <PersonalInfoView details={profile} setDetails={setProfile} role={role} />}
           {activePage === 'security' && <PasswordSecurityView />}
           {activePage === 'sessions' && <ActiveSessionsView />}
           {activePage === 'notifications' && <NotificationsView />}
@@ -177,7 +179,7 @@ export default function ProfileSettings({ role }: { role: Role }) {
 // Sub-views 
 // -----------------------------------------------------------------------------
 
-function PersonalInfoView({ details, setDetails }: { details: any, setDetails: any }) {
+function PersonalInfoView({ details, setDetails, role }: { details: any, setDetails: any, role: Role }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(details.avatar_url);
@@ -185,6 +187,10 @@ function PersonalInfoView({ details, setDetails }: { details: any, setDetails: a
   const [error, setError] = useState<string | null>(null);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [tempName, setTempName] = useState(details.name);
+  const [tempPhone, setTempPhone] = useState(details.phone);
+  const [tempMeta, setTempMeta] = useState(details.meta);
 
   useEffect(() => {
     fetchProfile();
@@ -194,14 +200,54 @@ function PersonalInfoView({ details, setDetails }: { details: any, setDetails: a
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
     
-    const { data } = await supabase.from('user_profiles').select('avatar_url, cover_url').eq('id', user.id).single();
+    const { data } = await supabase.from('user_profiles').select('avatar_url, cover_url, full_name, phone, meta').eq('id', user.id).single();
+    if (data) {
+      if (data.full_name) setTempName(data.full_name);
+      if (data.phone) setTempPhone(data.phone);
+      if (data.meta) setTempMeta(data.meta);
+    }
     if (data?.avatar_url) {
       const { data: signedAvatar } = await supabase.storage.from('app-files').createSignedUrl(data.avatar_url, 3600);
-      if (signedAvatar?.signedUrl) setAvatarUrl(signedAvatar.signedUrl);
+      if (signedAvatar?.signedUrl) {
+        setAvatarUrl(signedAvatar.signedUrl);
+        setDetails((prev: any) => ({ ...prev, avatar_url: signedAvatar.signedUrl }));
+      }
     }
     if (data?.cover_url) {
       const { data: signedCover } = await supabase.storage.from('app-files').createSignedUrl(data.cover_url, 3600);
       if (signedCover?.signedUrl) setCoverUrl(signedCover.signedUrl);
+    }
+  };
+
+  const handleSaveInfo = async () => {
+    setIsSaving(true);
+    setError(null);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const { error: dbError } = await supabase.from('user_profiles').update({
+        full_name: tempName,
+        phone: tempPhone,
+        meta: tempMeta
+      }).eq('id', user.id);
+
+      if (dbError) throw dbError;
+
+      setDetails((prev: any) => ({
+        ...prev,
+        name: tempName,
+        phone: tempPhone,
+        meta: tempMeta,
+        initial: tempName.charAt(0).toUpperCase()
+      }));
+
+      alert("Profile updated successfully!");
+
+    } catch (err: any) {
+      setError(err.message || "Failed to save changes");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -314,7 +360,12 @@ function PersonalInfoView({ details, setDetails }: { details: any, setDetails: a
         <div className="space-y-4">
           <div>
             <label htmlFor="name-input" className="block text-[10px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-1.5 ml-1">Full Name</label>
-            <input id="name-input" defaultValue={details.name} className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 font-sans text-sm bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-sky-500 transition-all shadow-sm" />
+            <input 
+              id="name-input" 
+              value={tempName} 
+              onChange={(e) => setTempName(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 font-sans text-sm bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-sky-500 transition-all shadow-sm" 
+            />
           </div>
           <div>
             <label htmlFor="email-input" className="block text-[10px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-1.5 ml-1">Email Address</label>
@@ -323,11 +374,34 @@ function PersonalInfoView({ details, setDetails }: { details: any, setDetails: a
           </div>
           <div>
             <label htmlFor="phone-input" className="block text-[10px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-1.5 ml-1">Phone Number</label>
-            <input id="phone-input" defaultValue={details.phone} className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 font-sans text-sm bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-sky-500 transition-all shadow-sm" />
+            <input 
+              id="phone-input" 
+              value={tempPhone} 
+              onChange={(e) => setTempPhone(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 font-sans text-sm bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-sky-500 transition-all shadow-sm" 
+            />
+          </div>
+          <div>
+            <label htmlFor="meta-input" className="block text-[10px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-1.5 ml-1">
+              {role === 'student' ? 'Class / Grade' : (role === 'teacher' ? 'Teaching Subject' : 'Reference Info')}
+            </label>
+            <input 
+              id="meta-input" 
+              value={tempMeta} 
+              onChange={(e) => setTempMeta(e.target.value)}
+              placeholder={role === 'student' ? "e.g. Class 10" : "e.g. Mathematics"}
+              className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 font-sans text-sm bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-sky-500 transition-all shadow-sm" 
+            />
           </div>
         </div>
         
-        <Btn label="Save Profile Changes" full variant="primary" />
+        <Btn 
+          label={isSaving ? "Saving..." : "Save Profile Changes"} 
+          full 
+          variant="primary" 
+          onClick={handleSaveInfo}
+          disabled={isSaving}
+        />
       </div>
     </div>
   );
