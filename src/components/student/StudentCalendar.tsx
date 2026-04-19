@@ -10,15 +10,11 @@ export default function StudentCalendar() {
   const [detailSheet, setDetailSheet] = useState<any>(null);
 
   const WEEK_DATA = [
-    { d: 8, events: 2 }, { d: 9, events: 1 }, { d: 10, events: 3 }, { d: 11, events: 4 },
-    { d: 12, events: 1 }, { d: 13, events: 0 }, { d: 14, events: 0 }
+    { d: 8, events: 0 }, { d: 9, events: 0 }, { d: 10, events: 0 }, { d: 11, events: 0 },
+    { d: 12, events: 0 }, { d: 13, events: 0 }, { d: 14, events: 0 }
   ];
 
-  const DAY_EVENTS = [
-    { id: 1, type: "class", time: "6:00 PM", dur: "60m", title: "Physics Class", desc: "Newton's Laws", done: false, bg: "bg-blue-500" },
-    { id: 2, type: "task", time: "11:59 PM", title: "Maths Practice Set", desc: "Quadratic Equations", done: false, bg: "bg-emerald-500" },
-    { id: 3, type: "class", time: "4:00 PM", dur: "45m", title: "Science Lecture", desc: "Cell Division", done: true, bg: "bg-blue-500" },
-  ].sort((a, b) => a.time.localeCompare(b.time));
+  const DAY_EVENTS: any[] = [];
 
   return (
     <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 overflow-hidden relative">

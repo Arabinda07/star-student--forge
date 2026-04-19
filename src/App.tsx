@@ -33,6 +33,12 @@ import ParentSchedule from "./components/parent/ParentSchedule";
 import ProfileSettings from "./components/shared/ProfileSettings";
 import Onboarding from "./components/shared/Onboarding";
 
+import { supabase } from "./supabaseClient";
+import SignIn from "./components/shared/SignIn";
+import SignUp from "./components/shared/SignUp";
+
+import Walkthrough from "./components/shared/Walkthrough";
+
 // Placeholders for screens not yet implemented
 const PlaceholderScreen = ({ icon, title }: { icon: string, title: string }) => (
   <div className="h-full flex flex-col items-center justify-center gap-4 p-8 text-center animate-slide-up">
@@ -168,14 +174,37 @@ export default function App() {
   const [role, setRole] = useState<Role>("student");
   const [tab, setTab] = useState(0);
   const [isDark, setIsDark] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(true); // default true, check later
+  const [session, setSession] = useState<any>(null);
+  const [authMode, setAuthMode] = useState<"signIn" | "signUp">("signIn");
+  const [loadingSession, setLoadingSession] = useState(true);
+  const [showWalkthrough, setShowWalkthrough] = useState(false);
+  const [profileName, setProfileName] = useState("");
 
   useEffect(() => {
     // Check for onboarding completion
     const hasSeenOnboarding = localStorage.getItem('drona_onboarding_done');
-    if (!hasSeenOnboarding) {
-      setShowOnboarding(true);
+    if (hasSeenOnboarding) {
+      setShowOnboarding(false);
     }
+
+    // Check supabase session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoadingSession(false);
+      if (session) {
+        fetchUserProfile(session.user.id);
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) {
+        fetchUserProfile(session.user.id);
+      }
+    });
 
     // Setup initial from local storage or matchMedia
     const stored = localStorage.getItem('theme');
@@ -183,11 +212,77 @@ export default function App() {
       setIsDark(true);
       document.documentElement.classList.add('dark');
     }
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const handleCompleteOnboarding = () => {
+  const fetchUserProfile = async (userId: string) => {
+    // If they just onboarded before having a session, we need to push that stored profile up
+    const pendingProfileStr = sessionStorage.getItem('drona_pending_profile');
+
+    if (pendingProfileStr) {
+      const pendingProfile = JSON.parse(pendingProfileStr);
+      await supabase.from('user_profiles').upsert({
+         id: userId,
+         role: pendingProfile.role,
+         full_name: pendingProfile.name,
+         meta: pendingProfile.meta
+      });
+      sessionStorage.removeItem('drona_pending_profile');
+      localStorage.removeItem('drona_pending_role'); // Clean up old legacy keys if necessary
+      setRole(pendingProfile.role as Role);
+      setProfileName(pendingProfile.name);
+      
+      // Since they just created their account, trigger the post-signup walkthrough immediately
+      if (!localStorage.getItem('drona_walkthrough_done')) {
+         setShowWalkthrough(true);
+      }
+      return;
+    }
+
+    // Legacy fallback just in case
+    const pendingRole = localStorage.getItem('drona_pending_role');
+    if (pendingRole) {
+      await supabase.from('user_profiles').upsert({
+         id: userId,
+         role: pendingRole
+      });
+      localStorage.removeItem('drona_pending_role');
+      setRole(pendingRole as Role);
+      return;
+    }
+
+    const { data } = await supabase
+      .from('user_profiles')
+      .select('role, full_name')
+      .eq('id', userId)
+      .single();
+    
+    if (data) {
+      if (data.role) setRole(data.role as Role);
+      if (data.full_name) setProfileName(data.full_name);
+    }
+  };
+
+  const handleCompleteOnboarding = async (data: any) => {
+    // Stage 1 completed: Store complex data in session storage securely
+    sessionStorage.setItem('drona_pending_profile', JSON.stringify(data));
     localStorage.setItem('drona_onboarding_done', 'true');
+    setRole(data.role);
     setShowOnboarding(false);
+
+    if (session?.user?.id) {
+       // Edge-case: In rare event they had an active session skipped somehow, persist via DB immediately
+       await supabase.from('user_profiles').upsert({
+         id: session.user.id,
+         role: data.role,
+         full_name: data.name,
+       });
+    } else {
+       // Standard flow: Queue up the role metadata for the Signup component to find
+       localStorage.setItem('drona_pending_role', data.role);
+       setAuthMode("signUp");
+    }
   };
 
   const toggleDark = () => {
@@ -215,8 +310,35 @@ export default function App() {
     return <Onboarding onComplete={handleCompleteOnboarding} />;
   }
 
+  if (loadingSession) {
+    return (
+      <div className="h-screen bg-stone-50 dark:bg-stone-950 flex items-center justify-center">
+        <div className="animate-pulse w-8 h-8 rounded-full bg-[var(--color-brand-500)]" />
+      </div>
+    );
+  }
+
+  if (!session) {
+    if (authMode === "signIn") {
+      return <SignIn onSuccess={() => {}} onNavigateToSignUp={() => setAuthMode("signUp")} />;
+    }
+    return <SignUp onSuccess={() => {}} onNavigateToSignIn={() => setAuthMode("signIn")} />;
+  }
+
   return (
-    <div className="h-screen bg-stone-100 dark:bg-stone-800 font-sans flex flex-col overflow-hidden text-stone-900 dark:text-stone-50">
+    <div className="h-screen bg-stone-100 dark:bg-stone-800 font-sans flex flex-col overflow-hidden text-stone-900 dark:text-stone-50 relative">
+      
+      {showWalkthrough && (
+        <Walkthrough 
+          role={role} 
+          name={profileName} 
+          onComplete={() => {
+            setShowWalkthrough(false);
+            localStorage.setItem('drona_walkthrough_done', 'true');
+          }} 
+        />
+      )}
+
       {/* App Header & Role Switcher */}
       <header className="bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 shrink-0 z-20 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -233,29 +355,6 @@ export default function App() {
             >
               {isDark ? <Sun size={18} /> : <Moon size={18} />}
             </button>
-            <div className="flex gap-1 bg-stone-50 dark:bg-stone-950 p-1 rounded-xl border border-stone-100 dark:border-stone-800/50">
-              {[
-                { r: "student", label: "Student" },
-              { r: "teacher", label: "Teacher" },
-              { r: "parent", label: "Parent" },
-            ].map(({ r, label }) => {
-              const isActive = role === r;
-              return (
-                <button
-                  key={r}
-                  aria-pressed={isActive}
-                  onClick={() => switchRole(r as Role)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-400 ${
-                    isActive 
-                      ? "bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 shadow-sm border border-stone-200/50" 
-                      : "bg-transparent text-stone-500 dark:text-stone-400 hover:text-stone-700 hover:bg-stone-200/50 dark:hover:text-stone-200 dark:hover:bg-stone-800/50"
-                  }`}
-                >
-                  {label}
-                </button>
-              );
-            })}
-            </div>
           </div>
         </div>
       </header>

@@ -11,16 +11,11 @@ export default function TeacherCalendar() {
   const [detailSheet, setDetailSheet] = useState<any>(null);
 
   const WEEK_DATA = [
-    { d: 8, events: 2 }, { d: 9, events: 1 }, { d: 10, events: 3 }, { d: 11, events: 4 },
-    { d: 12, events: 1 }, { d: 13, events: 0 }, { d: 14, events: 0 }
+    { d: 8, events: 0 }, { d: 9, events: 0 }, { d: 10, events: 0 }, { d: 11, events: 0 },
+    { d: 12, events: 0 }, { d: 13, events: 0 }, { d: 14, events: 0 }
   ];
 
-  const DAY_EVENTS = [
-    { id: 1, type: "class", time: "6:00 PM", dur: "60m", title: "Physics", batch: "Class 8 Evening", count: 24, done: false },
-    { id: 2, type: "deadline", time: "8:00 PM", title: "Motion Diagrams Due", batch: "Class 9 Weekend", count: 18, done: false },
-    { id: 3, type: "class", time: "4:00 PM", dur: "45m", title: "Maths Doubt Session", batch: "Class 8 Evening", count: 5, done: true },
-    { id: 4, type: "class", time: "7:15 PM", dur: "90m", title: "Chemistry Intro", batch: "Class 10 Intensive", count: 12, done: false },
-  ].sort((a, b) => a.time.localeCompare(b.time));
+  const DAY_EVENTS: any[] = [];
 
   return (
     <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 overflow-hidden relative">

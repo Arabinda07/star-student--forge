@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { SUBJECTS } from "../../constants";
 import { SectionLabel, Btn } from "../shared/UI";
 import { Bell, Play, ChevronRight, Info, Calendar as CalendarIcon, Clock } from "lucide-react";
+import { supabase } from "../../supabaseClient";
 
 function useClock(init = 847) {
   const [s, setS] = useState(init);
@@ -19,12 +20,28 @@ export default function StudentHome() {
   const secs = useClock(574);
   const [overlay, setOverlay] = useState(false);
   const [selectedDate, setSelectedDate] = useState<number>(11);
+  const [tasks, setTasks] = useState<any[]>([]);
 
-  const tasks = [
-    { id: 1, subject: "Maths", title: "Quadratic Equations — Practice Set B", due: "Today, 11:59 PM", urgent: true, status: "pending" },
-    { id: 2, subject: "Physics", title: "Newton's Laws — Questions 1–6", due: "Tomorrow, 6 PM", status: "pending" },
-    { id: 3, subject: "Science", title: "Cell Division — Labelled Diagram", due: "Submitted", status: "submitted" },
-  ];
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  const fetchTasks = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data } = await supabase
+      .from('tasks')
+      .select('*')
+      .eq('user_id', user.id)
+      .neq('status', 'graded')
+      .order('created_at', { ascending: false })
+      .limit(3);
+
+    if (data) {
+      setTasks(data);
+    }
+  };
 
   const calendarDays = [
     { day: "Mon", date: 8 },
@@ -37,19 +54,7 @@ export default function StudentHome() {
   ];
 
   type ScheduleItem = { id: number; type: "class" | "task"; time: string; title: string; subject: string; color: string };
-  const scheduleData: Record<number, ScheduleItem[]> = {
-    11: [
-      { id: 1, type: "class", time: "6:00 PM", title: "Physics Class", subject: "Physics", color: "bg-blue-500" },
-      { id: 2, type: "task", time: "11:59 PM", title: "Maths Practice Set", subject: "Maths", color: "bg-emerald-500" }
-    ],
-    12: [
-      { id: 3, type: "class", time: "10:00 AM", title: "Maths Lecture", subject: "Maths", color: "bg-blue-500" },
-      { id: 4, type: "task", time: "6:00 PM", title: "Physics Questions", subject: "Physics", color: "bg-emerald-500" }
-    ],
-    13: [
-      { id: 5, type: "task", time: "5:00 PM", title: "Chemistry Assignment", subject: "Chemistry", color: "bg-emerald-500" }
-    ]
-  };
+  const scheduleData: Record<number, ScheduleItem[]> = {};
 
   const selectedSchedule = scheduleData[selectedDate] || [];
 
@@ -59,89 +64,74 @@ export default function StudentHome() {
       <div className="px-6 py-6 pb-4 shrink-0 animate-slide-up flex justify-between items-start">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-2xl">
-            🦊
+            🎓
           </div>
           <div>
             <div className="text-lg font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans">
-              Good evening, Rohan
+              Welcome back
             </div>
-            <div className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans">Thursday, 11 April</div>
+            <div className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans">Ready to learn?</div>
           </div>
         </div>
         <button aria-label="Notifications" className="w-11 h-11 rounded-full bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex items-center justify-center cursor-pointer shadow-sm relative hover:bg-stone-50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500">
           <Bell size={20} className="text-stone-600 dark:text-stone-300" />
-          <div className="absolute top-0 right-0 bg-rose-500 text-white w-2.5 h-2.5 rounded-full border-2 border-white" />
         </button>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 px-6 pb-8 flex flex-col gap-8 overflow-y-auto scrollbar-hide">
         {/* Next Class Card - Focus Element */}
-        <div className="shrink-0 rounded-[24px] p-6 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm relative overflow-hidden animate-slide-up [animation-delay:0.05s]">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-emerald-500" />
-          <div className="flex justify-between items-start mb-6">
-            <div>
-              <div className="text-xs font-semibold tracking-wider uppercase text-emerald-600 mb-2 font-sans">
-                Next class
-              </div>
-              <div className="text-2xl font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans mb-1">Physics</div>
-              <div className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans">Arabinda Sir · 6:00 PM</div>
-            </div>
-            <div className="bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 rounded-2xl px-3 py-3 text-center min-w-[80px] shrink-0">
-              <div className="text-2xl font-bold text-stone-900 dark:text-stone-50 font-mono tracking-tight tabular-nums mb-1">
-                {fmt(secs)}
-              </div>
-              <div className="text-[11px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans">
-                left
-              </div>
-            </div>
-          </div>
-          <Btn 
-            label="Join Class" 
-            variant="primary"
-            full 
-            icon={<Play size={16} className="fill-white" />}
-            onClick={() => setOverlay(true)} 
-          />
+        <div className="shrink-0 rounded-[24px] p-6 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm relative overflow-hidden animate-slide-up [animation-delay:0.05s] flex items-center justify-center min-h-[160px]">
+           <div className="text-center">
+             <div className="w-12 h-12 bg-stone-100 dark:bg-stone-800 rounded-full flex items-center justify-center mx-auto mb-3">
+               <CalendarIcon size={20} className="text-stone-400" />
+             </div>
+             <p className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans">No upcoming classes</p>
+             <p className="text-xs text-stone-500 font-sans mt-1">Your schedule is completely clear for now.</p>
+           </div>
         </div>
 
         {/* Tasks Section */}
         <div className="shrink-0 animate-slide-up [animation-delay:0.1s]">
           <div className="flex justify-between items-end mb-4">
             <SectionLabel>Today's Tasks</SectionLabel>
-            <button className="text-sm font-semibold text-emerald-600 bg-transparent border-none cursor-pointer flex items-center gap-1 pb-4 hover:text-emerald-700 transition-colors">
-              See all 5 <ChevronRight size={16} />
-            </button>
           </div>
           <div className="flex flex-col">
-            {tasks.map((task, i) => {
-              const sc = SUBJECTS[task.subject] || SUBJECTS.Physics;
-              const done = task.status === "submitted";
-              return (
-                <div
-                  key={task.id}
-                  className={`flex items-center gap-4 py-4 border-b border-stone-200 dark:border-stone-800 last:border-0 relative transition-transform duration-200 ${
-                    done ? "opacity-60" : "hover:translate-x-1 cursor-pointer"
-                  }`}
-                >
-                  <div className={`w-11 h-11 rounded-xl shrink-0 flex items-center justify-center text-xl ${done ? "bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400" : sc.bg}`}>
-                    {done ? "✓" : sc.icon}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs font-semibold tracking-wider uppercase mb-1 font-sans" style={{ color: done ? '#a8a29e' : sc.fg }}>
-                      {task.subject}
-                    </div>
-                    <div className={`text-sm font-semibold leading-tight font-sans truncate pr-4 ${done ? "text-stone-500 dark:text-stone-400 line-through" : "text-stone-900 dark:text-stone-50"}`}>
-                      {task.title}
-                    </div>
-                    <div className={`text-xs font-medium font-sans mt-1 flex items-center gap-1.5 ${task.urgent && !done ? "text-rose-600" : "text-stone-500 dark:text-stone-400"}`}>
-                      {task.urgent && !done && <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />}{task.due}
-                    </div>
-                  </div>
-                  {!done && <ChevronRight size={20} className="text-stone-300" />}
-                </div>
-              );
-            })}
+            {tasks.length === 0 ? (
+               <div className="bg-white dark:bg-stone-900 p-6 rounded-2xl border border-stone-200 dark:border-stone-800 text-center">
+                  <p className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans mb-1">You're all caught up!</p>
+                  <p className="text-xs text-stone-500 font-sans">No pending assignments to show.</p>
+               </div>
+            ) : (
+               tasks.map((task, i) => {
+                 const sc = SUBJECTS[task.subject] || SUBJECTS.Physics;
+                 const done = task.status === "submitted";
+                 return (
+                   <div
+                     key={task.id}
+                     className={`flex items-center gap-4 py-4 border-b border-stone-200 dark:border-stone-800 last:border-0 relative transition-transform duration-200 ${
+                       done ? "opacity-60" : "hover:translate-x-1 cursor-pointer"
+                     }`}
+                   >
+                     <div className={`w-11 h-11 rounded-xl shrink-0 flex items-center justify-center text-xl ${done ? "bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400" : sc.bg}`}>
+                       {done ? "✓" : sc.icon}
+                     </div>
+                     <div className="flex-1 min-w-0">
+                       <div className="text-xs font-semibold tracking-wider uppercase mb-1 font-sans" style={{ color: done ? '#a8a29e' : sc.fg }}>
+                         {task.subject}
+                       </div>
+                       <div className={`text-sm font-semibold leading-tight font-sans truncate pr-4 ${done ? "text-stone-500 dark:text-stone-400 line-through" : "text-stone-900 dark:text-stone-50"}`}>
+                         {task.title}
+                       </div>
+                       <div className={`text-xs font-medium font-sans mt-1 flex items-center gap-1.5 ${task.urgent && !done ? "text-rose-600" : "text-stone-500 dark:text-stone-400"}`}>
+                         {task.urgent && !done && <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />}{task.due}
+                       </div>
+                     </div>
+                     {!done && <ChevronRight size={20} className="text-stone-300" />}
+                   </div>
+                 );
+               })
+            )}
           </div>
         </div>
 

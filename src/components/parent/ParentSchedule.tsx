@@ -9,15 +9,11 @@ export default function ParentSchedule() {
   const [detailSheet, setDetailSheet] = useState<any>(null);
 
   const WEEK_DATA = [
-    { d: 8, events: 2 }, { d: 9, events: 1 }, { d: 10, events: 3 }, { d: 11, events: 4 },
-    { d: 12, events: 1 }, { d: 13, events: 0 }, { d: 14, events: 0 }
+    { d: 8, events: 0 }, { d: 9, events: 0 }, { d: 10, events: 0 }, { d: 11, events: 0 },
+    { d: 12, events: 0 }, { d: 13, events: 0 }, { d: 14, events: 0 }
   ];
 
-  const DAY_EVENTS = [
-    { id: 1, type: "class", time: "6:00 PM", dur: "60m", title: "Physics Class", desc: "Newton's Laws", done: false },
-    { id: 2, type: "task", time: "11:59 PM", title: "Maths Practice Set", desc: "Quadratic Equations", done: false },
-    { id: 3, type: "class", time: "4:00 PM", dur: "45m", title: "Science Lecture", desc: "Cell Division", done: true },
-  ].sort((a, b) => a.time.localeCompare(b.time));
+  const DAY_EVENTS: any[] = [];
 
   return (
     <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 overflow-hidden relative">
@@ -109,11 +105,7 @@ export default function ParentSchedule() {
               );
             })}
             
-            <div className="absolute left-[10px] top-[140px] right-0 flex items-center pr-2 pointer-events-none">
-               <div className="w-2.5 h-2.5 rounded-full bg-rose-500 z-10" />
-               <div className="flex-1 h-px bg-rose-400" />
-               <div className="text-[10px] font-bold font-mono text-rose-500 ml-2 bg-stone-50 dark:bg-stone-950 py-1 pl-1">NOW</div>
-            </div>
+             {/* Remove Time Pointer from empty state */}
           </div>
         )}
       </div>

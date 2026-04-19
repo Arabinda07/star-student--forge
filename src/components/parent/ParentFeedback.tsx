@@ -3,11 +3,7 @@ import { SectionLabel, Btn, EmptySlate } from "../shared/UI";
 import { ChevronLeft, CheckCircle2, MessageSquare } from "lucide-react";
 import { Feedback } from "../../types";
 
-const FEEDBACK_DATA: Feedback[] = [
-  { id: 1, subject: "Physics", title: "Motion Diagrams — Chapter 2", gradedAt: "8 Apr, 2:15 PM", reaction: "great", icon: "★", label: "Great", rc: "#059669", rbg: "#d1fae5", comment: "Excellent work, Rohan! Your diagrams are very clean and well-labelled. The velocity-time graph for non-uniform motion is exactly right. Just double-check the units on the Y-axis of diagram 2.", replied: false },
-  { id: 2, subject: "Maths", title: "Number Systems — Test", gradedAt: "6 Apr, 4:00 PM", reaction: "good", icon: "✓", label: "Good", rc: "#d97706", rbg: "#fef3c7", comment: "Good effort overall. Questions 1–8 are solid. Practice the HCF method more — Q.12 had a small error there. Keep it up!", replied: true },
-  { id: 3, subject: "Science", title: "Food Chain Poster", gradedAt: "3 Apr, 5:30 PM", reaction: "work", icon: "⚡", label: "Needs Work", rc: "#e11d48", rbg: "#ffe4e6", comment: "The concept is right but the diagram needs more detail. Please redo with at least 5 organisms and proper labels. Resubmit by Friday.", replied: false },
-];
+const FEEDBACK_DATA: Feedback[] = [];
 
 export default function ParentFeedback() {
   const [openFb, setOpenFb] = useState<Feedback | null>(null);

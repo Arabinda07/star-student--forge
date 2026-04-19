@@ -3,13 +3,7 @@ import { COLORS } from "../../constants";
 import { SectionLabel, Btn, Chip, Sheet } from "../shared/UI";
 import { Copy, MessageSquare, ReceiptText } from "lucide-react";
 
-const PARENT_FEES = [
-  { month: "May 2025", amount: 2500, status: "due", dueDate: "15 May 2025" },
-  { month: "April 2025", amount: 2500, status: "paid", paidDate: "3 Apr 2025" },
-  { month: "March 2025", amount: 2500, status: "paid", paidDate: "1 Mar 2025" },
-  { month: "February 2025", amount: 2500, status: "paid", paidDate: "2 Feb 2025" },
-  { month: "January 2025", amount: 2500, status: "paid", paidDate: "4 Jan 2025" },
-];
+const PARENT_FEES: any[] = [];
 
 export default function ParentFees() {
   const [notifySheet, setNotifySheet] = useState(false);
@@ -77,26 +71,12 @@ export default function ParentFees() {
 
         <div>
           <SectionLabel>Payment History</SectionLabel>
-          <div className="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-[24px] shadow-sm flex flex-col">
-            {fees.map((f, i) => {
-              return (
-                <div key={i} className="p-5 border-b border-stone-100 dark:border-stone-800/50 last:border-0 flex items-center gap-4 animate-slide-up" style={{ animationDelay: `${i * 0.05}s` }}>
-                  <div className={`w-11 h-11 rounded-xl shrink-0 flex items-center justify-center text-xl font-bold ${f.status === "due" ? "bg-amber-50 text-amber-600" : "bg-emerald-50 text-emerald-600"}`}>
-                    {f.status === "due" ? "!" : "✓"}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans mb-1">{f.month}</div>
-                    <div className="text-xs font-medium text-stone-500 dark:text-stone-400 font-sans"> {f.status === "due" ? `Due: ${f.dueDate}` : `Paid: ${f.paidDate}`} </div>
-                  </div>
-                  <div className="flex flex-col items-end gap-1 shrink-0">
-                    <div className="text-base font-bold font-mono text-stone-900 dark:text-stone-50">₹{f.amount.toLocaleString("en-IN")}</div>
-                    <div className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md ${f.status === "due" ? "bg-amber-50 text-amber-600" : "bg-emerald-50 text-emerald-600"}`}>
-                       {f.status === "due" ? "Due" : "Paid"}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+          <div className="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-[24px] shadow-sm flex flex-col p-8 text-center items-center justify-center min-h-[200px]">
+             <div className="w-16 h-16 bg-stone-100 dark:bg-stone-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl opacity-60">🧾</span>
+             </div>
+             <p className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans mb-1">No payment history</p>
+             <p className="text-xs text-stone-500 font-sans">Future payment records will appear here.</p>
           </div>
         </div>
 

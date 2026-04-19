@@ -37,53 +37,31 @@ export default function ParentHome() {
             👨‍👩‍👦
           </div>
           <div>
-            <div className="text-lg font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans">Rohan's Dashboard</div>
-            <div className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans">Class 8 · Arabinda Sir</div>
+            <div className="text-lg font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans">Welcome back</div>
+            <div className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans">Everything is up to date</div>
           </div>
         </div>
         <button aria-label="Notifications" className="w-11 h-11 rounded-full bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex items-center justify-center cursor-pointer shadow-sm relative hover:bg-stone-50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500">
           <Bell size={20} className="text-stone-600 dark:text-stone-300" />
-          <div className="absolute top-0 right-0 bg-rose-500 text-white w-2.5 h-2.5 rounded-full border-2 border-white" />
         </button>
       </div>
 
       <div className="flex-1 px-6 pb-8 flex flex-col gap-6 overflow-y-auto scrollbar-hide">
-        <div className="shrink-0 rounded-[24px] p-6 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm relative overflow-hidden animate-slide-up [animation-delay:0.05s]">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-sky-500" />
-          <div className="text-xs font-semibold tracking-wider uppercase text-sky-600 mb-4 font-sans">
-            Today's Class
-          </div>
-          <div className="flex justify-between items-start mb-2">
-            <div>
-              <div className="text-2xl font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans mb-1">Physics</div>
-              <div className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans">6:00 PM · 60 min</div>
-            </div>
-            <div className="bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 rounded-2xl px-3 py-3 text-center min-w-[80px] shrink-0">
-              <div className="text-2xl font-bold font-mono tracking-tight tabular-nums mb-1 text-stone-900 dark:text-stone-50">{fmt(secs)}</div>
-              <div className="text-[11px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans">left</div>
-            </div>
-          </div>
+        <div className="shrink-0 rounded-[24px] p-6 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm relative overflow-hidden animate-slide-up [animation-delay:0.05s] flex items-center justify-center min-h-[160px]">
+          <div className="text-center">
+             <div className="w-12 h-12 bg-stone-100 dark:bg-stone-800 rounded-full flex items-center justify-center mx-auto mb-3">
+               <span className="text-xl">📅</span>
+             </div>
+             <p className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans">No upcoming classes</p>
+             <p className="text-xs text-stone-500 font-sans mt-1">Check back later for updates.</p>
+           </div>
         </div>
 
         <div className="shrink-0 animate-slide-up [animation-delay:0.1s]">
           <SectionLabel>This Week's Work</SectionLabel>
-          <div className="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-[20px] shadow-sm flex flex-col">
-            {[
-              { subject: "Maths", title: "Quadratic Equations — Practice Set B", due: "Today, 11:59 PM", chip: "overdue" },
-              { subject: "Physics", title: "Newton's Laws — Questions 1–6", due: "Tomorrow, 6 PM", chip: "pending" }
-            ].map((w, i) => {
-              const sc = SUBJECTS[w.subject] || SUBJECTS.Physics;
-              return (
-                <div key={i} className="flex items-center gap-4 p-4 border-b border-stone-100 dark:border-stone-800/50 last:border-0">
-                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0 ${sc.bg}`}>{sc.icon}</div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans truncate mb-1">{w.title}</div>
-                    <div className="text-xs font-medium text-stone-500 dark:text-stone-400 font-sans">{w.subject} · {w.due}</div>
-                  </div>
-                  <Chip label={w.chip === "overdue" ? "Overdue" : "Due"} variant={w.chip === "overdue" ? "overdue" : "default"} small />
-                </div>
-              );
-            })}
+          <div className="bg-white dark:bg-stone-900 p-6 border border-stone-200 dark:border-stone-800 rounded-[20px] text-center shadow-sm">
+             <p className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans mb-1">All caught up</p>
+             <p className="text-xs text-stone-500 font-sans">No recent homework to display.</p>
           </div>
         </div>
 

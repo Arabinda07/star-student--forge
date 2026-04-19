@@ -1,6 +1,7 @@
 import { 
   useState,
   useRef,
+  useEffect,
   ReactNode 
 } from "react";
 import { 
@@ -20,17 +21,38 @@ import {
 } from "lucide-react";
 import { Role } from "../../types";
 import { Btn } from "./UI";
+import { supabase } from "../../supabaseClient";
 
 type SettingsPage = 'main' | 'personal_info' | 'security' | 'sessions' | 'notifications' | 'privacy' | 'help' | 'terms';
 
 export default function ProfileSettings({ role }: { role: Role }) {
   const [activePage, setActivePage] = useState<SettingsPage>('main');
+  const [profile, setProfile] = useState<{name: string, email: string, phone: string, avatarColor: string, initial: string}>({
+    name: "Loading...",
+    email: "Loading...",
+    phone: "Pending Setup",
+    initial: "D",
+    avatarColor: role === "student" ? "bg-emerald-100 text-emerald-700" : (role === "teacher" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700")
+  });
 
-  const userDetails = {
-    student: { name: "Rohan Sharma", email: "rohan.s@example.com", phone: "+91 98765 43210", initial: "R", avatarColor: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300" },
-    teacher: { name: "Arabinda Sir", email: "arabinda@drona.edu", phone: "+91 98765 12345", initial: "A", avatarColor: "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300" },
-    parent: { name: "Priya Sharma", email: "priya.sharma@example.com", phone: "+91 98765 67890", initial: "P", avatarColor: "bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-300" }
-  }[role];
+  useEffect(() => {
+    async function load() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase.from('user_profiles').select('*').eq('id', user.id).single();
+      
+      const pName = data?.full_name || "Drona User";
+      
+      setProfile({
+        name: pName,
+        email: user.email || "",
+        phone: data?.phone || "Pending Setup",
+        initial: pName.charAt(0).toUpperCase(),
+        avatarColor: role === "student" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300" : (role === "teacher" ? "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300" : "bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-300")
+      });
+    }
+    load();
+  }, [role]);
 
   // Render Sub-pages
   if (activePage !== 'main') {
@@ -57,7 +79,7 @@ export default function ProfileSettings({ role }: { role: Role }) {
 
         {/* Sub-page Content */}
         <div className="flex-1 overflow-y-auto w-full">
-          {activePage === 'personal_info' && <PersonalInfoView details={userDetails} />}
+          {activePage === 'personal_info' && <PersonalInfoView details={profile} />}
           {activePage === 'security' && <PasswordSecurityView />}
           {activePage === 'sessions' && <ActiveSessionsView />}
           {activePage === 'notifications' && <NotificationsView />}
@@ -82,12 +104,12 @@ export default function ProfileSettings({ role }: { role: Role }) {
         {/* Profile Card */}
         <div className="bg-white dark:bg-stone-900 rounded-2xl p-4 flex items-center gap-4 border border-stone-200 dark:border-stone-800 shadow-sm cursor-pointer hover:border-stone-300 dark:hover:border-stone-700 transition-colors"
              onClick={() => setActivePage('personal_info')}>
-          <div className={`w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold shrink-0 ${userDetails.avatarColor}`}>
-            {userDetails.initial}
+          <div className={`w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold shrink-0 ${profile.avatarColor}`}>
+            {profile.initial}
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="text-lg font-bold text-stone-900 dark:text-stone-50 font-sans truncate">{userDetails.name}</h2>
-            <p className="text-sm text-stone-500 dark:text-stone-400 font-sans truncate">{userDetails.email}</p>
+            <h2 className="text-lg font-bold text-stone-900 dark:text-stone-50 font-sans truncate">{profile.name}</h2>
+            <p className="text-sm text-stone-500 dark:text-stone-400 font-sans truncate">{profile.email}</p>
           </div>
           <button className="w-11 h-11 flex items-center justify-center bg-stone-50 dark:bg-stone-950 rounded-full text-stone-600 dark:text-stone-300 pointer-events-none">
             <ChevronRight size={20} />
@@ -124,7 +146,13 @@ export default function ProfileSettings({ role }: { role: Role }) {
         </div>
 
         {/* Logout Button */}
-        <button className="w-full bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 flex items-center justify-center gap-2 text-rose-600 dark:text-rose-500 font-bold font-sans shadow-sm hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors active:scale-[0.98] cursor-pointer">
+        <button 
+          onClick={async () => {
+             await supabase.auth.signOut();
+             window.location.reload();
+          }}
+          className="w-full bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 flex items-center justify-center gap-2 text-rose-600 dark:text-rose-500 font-bold font-sans shadow-sm hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors active:scale-[0.98] cursor-pointer"
+        >
           <LogOut size={18} />
           Sign Out
         </button>
@@ -143,7 +171,26 @@ function PersonalInfoView({ details }: { details: any }) {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const fetchProfile = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    
+    // You could set standard profile states here if needed.
+    // Let's just grab the avatar url and generate a signed link
+    const { data } = await supabase.from('user_profiles').select('avatar_url').eq('id', user.id).single();
+    if (data?.avatar_url) {
+      const { data: signedData, error } = await supabase.storage.from('app-files').createSignedUrl(data.avatar_url, 3600);
+      if (signedData?.signedUrl) {
+        setAvatarUrl(signedData.signedUrl);
+      }
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -161,9 +208,47 @@ function PersonalInfoView({ details }: { details: any }) {
       return;
     }
 
-    // Create a temporary URL to display the image
-    const objectUrl = URL.createObjectURL(file);
-    setAvatarUrl(objectUrl);
+    // Upload to Supabase Storage
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      // Fetch the old avatar path if we want to delete it from storage first
+      const { data: oldProfile } = await supabase.from('user_profiles').select('avatar_url').eq('id', user.id).single();
+
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${user.id}/avatars/${crypto.randomUUID()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('app-files')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Delete the old avatar from storage if it exists to prevent orphaned files
+      if (oldProfile?.avatar_url) {
+         await supabase.storage.from('app-files').remove([oldProfile.avatar_url]);
+      }
+
+      // Update the user_profiles table with the path
+      const { error: dbError } = await supabase
+        .from('user_profiles')
+        .update({ avatar_url: filePath })
+        .eq('id', user.id);
+        
+      if (dbError) throw dbError;
+
+      // Show it immediately
+      const { data: urlData, error: urlError } = await supabase.storage
+        .from('app-files')
+        .createSignedUrl(filePath, 3600);
+
+      if (urlError) throw urlError;
+
+      setAvatarUrl(urlData.signedUrl);
+    } catch(err: any) {
+      setError(err.message || "Failed to upload avatar");
+    }
   };
 
   return (

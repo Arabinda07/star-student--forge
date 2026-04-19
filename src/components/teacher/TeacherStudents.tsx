@@ -9,14 +9,8 @@ export default function TeacherStudents() {
   const [form, setForm] = useState({ name: "", parentName: "", phone: "", batch: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const stds = [
-    { id: 1, name: "Rohan Das", batch: "Class 8 Evening", subs: "12/12", fee: "due", progress: 92 },
-    { id: 2, name: "Aarav Sharma", batch: "Class 8 Evening", subs: "10/12", fee: "paid", progress: 68 },
-    { id: 3, name: "Sneha Roy", batch: "Class 9 Weekend", subs: "8/8", fee: "paid", progress: 100 },
-    { id: 4, name: "Aryan Khan", batch: "Class 10 Intensive", subs: "15/15", fee: "pending_confirm", progress: 85 },
-  ];
-
-  const filtered = stds.filter(s => s.name.toLowerCase().includes(search.toLowerCase()) || s.batch.toLowerCase().includes(search.toLowerCase()));
+  const stds: any[] = [];
+  const filtered = stds;
 
   const batches = ["Class 8 Evening", "Class 9 Weekend", "Class 10 Intensive"];
 

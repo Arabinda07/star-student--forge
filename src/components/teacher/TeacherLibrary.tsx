@@ -1,61 +1,128 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { SUBJECTS } from "../../constants";
 import { SectionLabel, Btn, Chip, EmptySlate, Sheet } from "../shared/UI";
-import { ChevronLeft, ChevronRight, Search, FileText, Upload, CheckCircle2, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search, FileText, Upload, CheckCircle2, Plus, Trash2 } from "lucide-react";
 import { Note as NoteType } from "../../types";
+import { supabase } from "../../supabaseClient";
 
-const INITIAL_NOTES: Record<string, NoteType[]> = {
-  Maths: [
-    { id: 1, title: "Quadratic Equations — Full Derivation", uploaded: "Today, 3:15 PM", pages: 4, isNew: true },
-    { id: 2, title: "Number Systems — NCERT Summary", uploaded: "Yesterday", pages: 3, isNew: false },
-  ],
-  Physics: [
-    { id: 5, title: "Newton's Laws — Complete Notes", uploaded: "Today, 4:00 PM", pages: 6, isNew: true },
-  ],
-  Science: [
-    { id: 8, title: "Cell Structure — Labelled Diagrams", uploaded: "Yesterday", pages: 4, isNew: true },
-  ],
-};
+const INITIAL_NOTES: Record<string, NoteType[]> = {};
 
 export default function TeacherLibrary() {
   const [subject, setSubject] = useState<string | null>(null);
   const [uploadSheet, setUploadSheet] = useState(false);
   const [step, setStep] = useState<"form" | "preview" | "done">("form");
-  const [form, setForm] = useState({ title: "", subject: "Maths", batch: "Class 8 Evening" });
-  const [localNotes, setLocalNotes] = useState<Record<string, NoteType[]>>({});
+  const [form, setForm] = useState({ title: "", subject: "Maths", batch: "Class 8 Evening", file: null as File | null });
+  const [isUploading, setIsUploading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const subjects = Object.keys(INITIAL_NOTES);
-  const allNotes = Object.fromEntries(
-    subjects.map(s => [s, [...(INITIAL_NOTES[s] || []), ...(localNotes[s] || [])]])
-  );
+  // Use the fetched notes state from parent OR implement fetch inside this component since it's Teacher
+  // Actually, this component currently doesn't query the DB, it queries INITIAL_NOTES.
+  // We need to make TeacherLibrary also query 'notes' table and show the files.
+  const [notes, setNotes] = useState<any[]>([]);
+  const [isLoadingNotes, setIsLoadingNotes] = useState(true);
+
+  useEffect(() => {
+    fetchNotes();
+  }, [subject]); // Refetch if subject changes, but actually fetch all notes first
+
+  const fetchNotes = async () => {
+    setIsLoadingNotes(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    let query = supabase.from('notes').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+    
+    const { data } = await query;
+    if (data) {
+      setNotes(data);
+    }
+    setIsLoadingNotes(false);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+       setForm({ ...form, file: e.target.files[0] });
+    }
+  };
 
   const handleUpload = () => {
-    if (!form.title || !form.subject) return;
+    if (!form.title || !form.subject || !form.file) {
+      setErrorMsg("Please fill all fields and attach a file");
+      return;
+    }
+    setErrorMsg(null);
     setStep("preview");
   };
 
-  const handleConfirm = () => {
-    setStep("done");
-    const newNote: NoteType = {
-      id: Date.now(),
-      title: form.title,
-      uploaded: "Just now",
-      pages: Math.ceil(Math.random() * 4 + 1),
-      isNew: true
-    };
-    setLocalNotes(prev => ({
-      ...prev,
-      [form.subject]: [newNote, ...(prev[form.subject] || [])]
-    }));
-    setTimeout(() => {
-      setUploadSheet(false);
-      setStep("form");
-      setForm({ title: "", subject: "Maths", batch: "Class 8 Evening" });
-    }, 1400);
+  const handleConfirm = async () => {
+    setIsUploading(true);
+    setErrorMsg(null);
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("User not found");
+
+      const file = form.file!;
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${user.id}/teacher-notes/${crypto.randomUUID()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('app-files')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const newNote = {
+        user_id: user.id,
+        title: form.title,
+        subject: form.subject,
+        uploaded: "Just now",
+        pages: 1, // dynamically inferring PDF pages requires extra libraries, defaulting to 1
+        is_new: true,
+        // Save the file path in DB
+        file_path: filePath
+      };
+
+      const { data: noteData, error: dbError } = await supabase.from('notes').insert([newNote]).select();
+      if (dbError) throw dbError;
+
+      // Update local state
+      if (noteData) {
+        setNotes([noteData[0], ...notes]);
+      }
+
+      setStep("done");
+      setTimeout(() => {
+        setUploadSheet(false);
+        setStep("form");
+        setForm({ title: "", subject: "Maths", batch: "Class 8 Evening", file: null });
+      }, 1400);
+
+    } catch (err: any) {
+      setErrorMsg(err.message || "Failed to upload note");
+      setStep("form"); // go back to show error
+    } finally {
+      setIsUploading(false);
+    }
   };
 
+  const handleDelete = async (noteId: string, filePath?: string) => {
+    try {
+      if (filePath) {
+        await supabase.storage.from('app-files').remove([filePath]);
+      }
+      await supabase.from('notes').delete().eq('id', noteId);
+      setNotes(notes.filter(n => n.id !== noteId));
+    } catch(err) {
+      console.error(err);
+    }
+  };
+
+  const subjects = Object.keys(SUBJECTS);
+
   if (subject) {
-    const notes = allNotes[subject] || [];
+    const currentSubjectNotes = notes.filter(n => n.subject === subject);
     const sc = SUBJECTS[subject] || SUBJECTS.Physics;
     return (
       <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 animate-slideInRight">
@@ -69,35 +136,60 @@ export default function TeacherLibrary() {
             </div>
             <div>
               <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans leading-tight">{subject}</h2>
-              <div className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans">{notes.length} notes uploaded</div>
+              <div className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans">{currentSubjectNotes.length} notes uploaded</div>
             </div>
           </div>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-6 scrollbar-hide grid gap-3">
-          {notes.length === 0 ? (
+          {isLoadingNotes ? (
+             <div className="flex items-center justify-center py-10">
+               <div className="w-6 h-6 animate-spin rounded-full border-2 border-stone-300 border-t-emerald-500" />
+             </div>
+          ) : currentSubjectNotes.length === 0 ? (
             <EmptySlate icon="📚" title="No notes yet" sub="Upload your first note for this subject." />
           ) : (
-            notes.map((note, i) => (
+            currentSubjectNotes.map((note, i) => (
               <div 
                 key={note.id} 
-                className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm cursor-pointer flex gap-4 p-4 animate-slide-up hover:border-stone-300 transition-all hover:shadow-md"
+                className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm flex gap-4 p-4 animate-slide-up hover:border-stone-300 transition-all hover:shadow-md relative group"
                 style={{ animationDelay: `${i * 0.05}s` }}
               >
                 <div className={`w-12 h-14 rounded-xl shrink-0 flex flex-col items-center justify-center gap-1 ${sc.bg}`}>
                   <FileText size={20} className={sc.fg} />
                 </div>
-                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                <div className="flex-1 min-w-0 flex flex-col justify-center pr-8">
                   <div className="flex items-center gap-1.5 mb-1.5">
-                    {note.isNew && (
+                    {note.is_new && (
                       <span className="text-[9px] font-bold tracking-wider uppercase bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded">
                         New
                       </span>
                     )}
                     <span className="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider">{note.uploaded}</span>
                   </div>
-                  <div className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans leading-tight mb-1 truncate">{note.title}</div>
+                  <div className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans leading-tight mb-1 truncate">
+                    {note.file_path ? (
+                      <a 
+                         className="hover:underline"
+                         onClick={async (e) => {
+                           e.preventDefault();
+                           const { data } = await supabase.storage.from('app-files').createSignedUrl(note.file_path, 3600);
+                           if (data?.signedUrl) window.open(data.signedUrl, '_blank');
+                         }}
+                      >
+                         {note.title}
+                      </a>
+                    ) : (
+                      note.title
+                    )}
+                  </div>
                   <div className="text-xs font-medium text-stone-500 dark:text-stone-400 font-sans">{note.pages} pages</div>
                 </div>
+                <button 
+                  onClick={() => handleDelete(note.id, note.file_path)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                >
+                  <Trash2 size={18} />
+                </button>
               </div>
             ))
           )}
@@ -121,14 +213,14 @@ export default function TeacherLibrary() {
             <Plus size={20} />
           </button>
         </div>
-        <p className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans">{Object.values(allNotes).flat().length} notes · {subjects.length} subjects</p>
+        <p className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans">{notes.length} notes · {subjects.length} subjects</p>
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 pb-6 scrollbar-hide grid gap-4">
         {subjects.map((subj, i) => {
           const sc = SUBJECTS[subj] || SUBJECTS.Physics;
-          const notes = allNotes[subj] || [];
-          const newCount = notes.filter(n => n.isNew).length;
+          const subjNotes = notes.filter(n => n.subject === subj);
+          const newCount = subjNotes.filter(n => n.is_new).length;
           return (
             <div 
               key={subj} 
@@ -141,7 +233,7 @@ export default function TeacherLibrary() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-lg font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans mb-1">{subj}</div>
-                <div className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans">{notes.length} notes uploaded</div>
+                <div className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans">{subjNotes.length} notes uploaded</div>
               </div>
               <ChevronRight size={20} className="text-stone-300" />
             </div>
@@ -152,10 +244,28 @@ export default function TeacherLibrary() {
       <Sheet open={uploadSheet} onClose={() => { setUploadSheet(false); setStep("form"); }} title={step === "done" ? undefined : "Upload Note"}>
         {step === "form" && (
           <div className="flex flex-col gap-5">
-            <div className="border-2 border-dashed border-stone-300 dark:border-stone-700 rounded-[20px] p-8 text-center bg-stone-50 dark:bg-stone-950 cursor-pointer transition-colors hover:border-amber-400 group">
+            <div 
+              className="border-2 border-dashed border-stone-300 dark:border-stone-700 rounded-[20px] p-8 text-center bg-stone-50 dark:bg-stone-950 hover:bg-stone-100 dark:hover:bg-stone-900 cursor-pointer transition-colors hover:border-amber-400 group relative"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <input 
+                 type="file"
+                 ref={fileInputRef}
+                 className="hidden"
+                 onChange={handleFileChange}
+              />
               <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">📄</div>
-              <div className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans mb-1">Click to browse or drag PDF here</div>
-              <div className="text-xs font-medium text-stone-500 dark:text-stone-400 font-sans">Max file size 10MB</div>
+              {form.file ? (
+                <>
+                  <div className="text-sm font-bold text-emerald-600 dark:text-emerald-400 font-sans mb-1">{form.file.name}</div>
+                  <div className="text-xs font-medium text-stone-500 dark:text-stone-400 font-sans">Ready to upload</div>
+                </>
+              ) : (
+                <>
+                  <div className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans mb-1">Click to browse or drag PDF here</div>
+                  <div className="text-xs font-medium text-stone-500 dark:text-stone-400 font-sans">Max file size 10MB</div>
+                </>
+              )}
             </div>
             
             <div className="space-y-4">
@@ -191,6 +301,8 @@ export default function TeacherLibrary() {
                   })}
                 </div>
               </div>
+              
+              {errorMsg && <div className="text-rose-500 text-xs font-bold text-center mt-2">{errorMsg}</div>}
             </div>
 
             <Btn 
@@ -209,12 +321,15 @@ export default function TeacherLibrary() {
               <div className="text-lg font-bold text-stone-900 dark:text-stone-50 font-sans mb-2">{form.title}</div>
               <div className="flex gap-2 justify-center">
                 <span className="text-xs font-semibold text-stone-600 dark:text-stone-300 bg-stone-200 dark:bg-stone-700 rounded-md px-2.5 py-1 font-sans">{form.subject}</span>
-                <span className="text-xs font-semibold text-stone-600 dark:text-stone-300 bg-stone-200 dark:bg-stone-700 rounded-md px-2.5 py-1 font-sans">{form.batch}</span>
+                <span className="text-xs font-semibold text-stone-600 dark:text-stone-300 bg-stone-200 dark:bg-stone-700 rounded-md px-2.5 py-1 font-sans">{form.file?.name}</span>
               </div>
             </div>
+            
+            {errorMsg && <div className="text-rose-500 text-xs font-bold text-center mb-[-10px]">{errorMsg}</div>}
+
             <div className="flex gap-3">
               <Btn label="Edit" variant="outline" full onClick={() => setStep("form")} />
-              <Btn label="Confirm Upload" variant="primary" full onClick={handleConfirm} />
+              <Btn label={isUploading ? "Uploading..." : "Confirm Upload"} variant="primary" full onClick={handleConfirm} disabled={isUploading} />
             </div>
           </div>
         )}
