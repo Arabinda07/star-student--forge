@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef, ChangeEvent, MouseEvent } from "react";
+import { useState, useEffect, useRef, ChangeEvent, MouseEvent, ReactNode } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { SUBJECTS } from "../../constants";
-import { ChevronRight, Plus, Trash2, Upload, FileText, CheckCircle2 } from "lucide-react";
+import { ChevronRight, Plus, Trash2, Upload, FileText, CheckCircle2, Search, Filter, Sparkles, Clock, AlertCircle, CheckCircle, Pin } from "lucide-react";
 import { supabase } from "../../supabaseClient";
-import { Sheet, Btn } from "../shared/UI";
+import { Sheet, Btn, SectionLabel, Chip, EmptySlate } from "../shared/UI";
 
 export default function StudentMyWork() {
   const [tab, setTab] = useState("upcoming");
@@ -12,11 +13,11 @@ export default function StudentMyWork() {
   const [isUploading, setIsUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const tabConfig: Record<string, string> = {
-    upcoming: "Upcoming",
-    overdue: "Overdue",
-    submitted: "Submitted",
-    graded: "Graded"
+  const tabConfig: Record<string, { label: string; icon: ReactNode; color: string }> = {
+    upcoming: { label: "Active", icon: <Clock size={14} />, color: "#3b82f6" },
+    overdue: { label: "Overdue", icon: <AlertCircle size={14} />, color: "#ef4444" },
+    submitted: { label: "Pending", icon: <CheckCircle size={14} />, color: "#10b981" },
+    graded: { label: "Archived", icon: <Sparkles size={14} />, color: "#8b5cf6" }
   };
 
   useEffect(() => {
@@ -59,10 +60,6 @@ export default function StudentMyWork() {
 
       if (uploadError) throw uploadError;
 
-      const { data: publicUrlData } = await supabase.storage
-        .from('app-files')
-        .getPublicUrl(filePath);
-
       const { error: updateError } = await supabase
         .from('tasks')
         .update({ 
@@ -74,7 +71,7 @@ export default function StudentMyWork() {
 
       if (updateError) throw updateError;
 
-      setItems(items.map(t => t.id === selTask.id ? { ...t, status: 'submitted', submission_url: filePath } : t));
+      setItems(items.map(t => t.id === selTask.id ? { ...t, status: 'submitted', submission_url: filePath, submitted_at: new Date().toISOString() } : t));
       setSelTask(null);
     } catch (err) {
       console.error(err);
@@ -118,7 +115,6 @@ export default function StudentMyWork() {
 
     if (!error) {
       setItems(items.filter(t => t.id !== id));
-      // Cleanup storage if needed
       if (taskToDelete?.submission_url) {
         await supabase.storage.from('app-files').remove([taskToDelete.submission_url]);
       }
@@ -141,176 +137,244 @@ export default function StudentMyWork() {
   const isDone = tab === "submitted" || tab === "graded";
 
   return (
-    <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950">
-      <div className="px-6 py-6 pb-0 shrink-0 animate-slide-up">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans">My Work</h1>
-          <button 
-            onClick={createTask}
-            className="w-10 h-10 rounded-full bg-stone-200 dark:bg-stone-800 flex items-center justify-center hover:bg-stone-300 dark:hover:bg-stone-700 transition-colors"
-          >
-            <Plus size={20} className="text-stone-700 dark:text-stone-300" />
-          </button>
-        </div>
-        
-        <div className="flex overflow-x-auto scrollbar-hide border-b border-stone-200 dark:border-stone-800">
-          {Object.entries(tabConfig).map(([key, label]) => {
-            const isActive = tab === key;
-            const count = items.filter(t => t.status === key).length;
-            return (
-              <button
-                key={key}
-                onClick={() => setTab(key)}
-                className={`flex-none px-4 pb-3 border-b-2 font-sans text-sm transition-colors duration-200 flex items-center gap-2 whitespace-nowrap ${
-                  isActive 
-                    ? "border-emerald-600 text-emerald-700 font-semibold" 
-                    : "border-transparent text-stone-500 dark:text-stone-400 font-medium hover:text-stone-700"
-                }`}
-              >
-                {label}
-                <span 
-                  className={`text-[10px] font-bold rounded-full px-2 py-0.5 ${
-                    isActive ? "bg-emerald-100 text-emerald-700" : "bg-stone-200 dark:bg-stone-700 text-stone-600 dark:text-stone-300"
+    <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 scrollbar-hide overflow-y-auto">
+      {/* Dynamic Header Section */}
+      <div className="px-6 py-8 pb-4 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md z-20">
+        <div className="max-w-7xl mx-auto w-full">
+          <div className="flex justify-between items-end mb-8">
+            <div>
+              <h1 className="text-4xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-sans mb-1">Canvas Index</h1>
+              <p className="text-sm font-bold text-stone-500 dark:text-stone-400 uppercase tracking-widest leading-none">
+                 Curating <span className="text-amber-600 dark:text-amber-500">{items.length}</span> Assignments & Personal Goals
+              </p>
+            </div>
+            <motion.button 
+              whileHover={{ scale: 1.05, rotate: 90 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={createTask}
+              className="w-14 h-14 rounded-[22px] bg-stone-900 dark:bg-stone-100 flex items-center justify-center shadow-xl shadow-stone-900/10 dark:shadow-none"
+            >
+              <Plus size={28} className="text-white dark:text-stone-900" />
+            </motion.button>
+          </div>
+          
+          <div className="flex gap-2 p-1.5 bg-white dark:bg-stone-900 rounded-[28px] border border-stone-100 dark:border-stone-800 shadow-sm overflow-x-auto scrollbar-hide">
+            {Object.entries(tabConfig).map(([key, config]) => {
+              const isActive = tab === key;
+              const count = items.filter(item => item.status === key).length;
+              return (
+                <button
+                  key={key}
+                  onClick={() => setTab(key)}
+                  className={`flex-1 min-w-[100px] py-3.5 rounded-[22px] font-black text-[10px] uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2.5 relative overflow-hidden group ${
+                    isActive 
+                      ? "text-stone-900 dark:text-stone-50" 
+                      : "text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
                   }`}
                 >
-                  {count}
-                </span>
-              </button>
-            );
-          })}
+                  {isActive && (
+                    <motion.div 
+                      layoutId="active-task-tab"
+                      className="absolute inset-0 bg-stone-50 dark:bg-stone-800/50 shadow-inner z-0"
+                    />
+                  )}
+                  <span className="relative z-10 flex items-center gap-2">
+                    <span className={`transition-transform duration-500 ${isActive ? 'scale-110' : 'group-hover:scale-110 shadow-none'}`} style={{ color: isActive ? config.color : undefined }}>
+                      {config.icon}
+                    </span>
+                    {config.label}
+                    <span className={`ml-1 px-1.5 py-0.5 rounded-md text-[9px] ${isActive ? 'bg-white dark:bg-stone-700 shadow-sm' : 'bg-stone-50 dark:bg-stone-800'}`}>
+                      {count}
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-6 py-6 scrollbar-hide">
+      <div className="flex-1 max-w-7xl mx-auto w-full px-6 py-10 pb-24">
         {loading ? (
-          <div className="flex items-center justify-center py-10">
-            <div className="w-6 h-6 animate-spin rounded-full border-2 border-stone-300 border-t-emerald-500" />
+          <div className="flex flex-col items-center justify-center py-24">
+            <div className="w-12 h-12 animate-spin rounded-full border-4 border-stone-200 border-t-amber-500" />
+            <p className="mt-4 text-[10px] font-black uppercase tracking-widest text-stone-400">Syncing database state...</p>
           </div>
         ) : (
-          <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm overflow-hidden">
-            {displayItems.length === 0 && (
-               <div className="text-center py-12 px-4 shadow-sm relative overflow-hidden bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl m-4">
-                  <div className="w-16 h-16 bg-stone-100 dark:bg-stone-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl opacity-60">✨</span>
-                  </div>
-                  <h3 className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans mb-1">
-                    No {tabConfig[tab].toLowerCase()} tasks
-                  </h3>
-                  <p className="text-xs text-stone-500 font-sans">
-                    {tab === 'upcoming' && "You've completely cleared your schedule. Great job!"}
-                    {tab === 'overdue' && "You don't have any late assignments."}
-                    {tab === 'submitted' && "Your submitted work will appear here."}
-                    {tab === 'graded' && "Grades from your teachers will show up here."}
-                  </p>
-               </div>
-            )}
-            {displayItems.map((item, i) => {
-              const sc = SUBJECTS[item.subject] || SUBJECTS.Physics;
-              return (
-                <div
-                  key={item.id}
-                  onClick={() => setSelTask(item)}
-                  className="flex items-start gap-4 p-5 border-b border-stone-100 dark:border-stone-800/50 last:border-0 transition-colors hover:bg-stone-50 dark:hover:bg-stone-800/50 cursor-pointer animate-slide-up relative group"
-                  style={{ animationDelay: `${i * 0.05}s` }}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <AnimatePresence mode="popLayout">
+              {displayItems.length === 0 ? (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="col-span-full border-2 border-dashed border-stone-100 dark:border-stone-800 rounded-[48px] p-24 text-center bg-white/50 dark:bg-stone-900/30 backdrop-blur-sm"
                 >
-                  <div 
-                    className={`w-11 h-11 rounded-xl shrink-0 flex items-center justify-center text-xl ${
-                      isDone ? "bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 grayscale" : sc.bg
-                    }`}
-                  >
-                    {isDone ? "✓" : sc.icon}
-                  </div>
-                  <div className="flex-1 min-w-0 pr-8">
-                    <div className="flex items-center gap-2 mb-1.5">
-                      <span 
-                        className="text-[10px] font-bold tracking-wider uppercase font-sans"
-                        style={{ color: isDone ? '#a8a29e' : sc.fg }}
-                      >
-                        {item.subject}
-                      </span>
-                      <span className="text-[10px] font-semibold text-stone-500 dark:text-stone-400 bg-stone-100 dark:bg-stone-800 rounded-md px-1.5 py-0.5 font-sans">
-                        {item.type}
-                      </span>
-                    </div>
-                    <div 
-                      className={`text-[15px] font-semibold leading-snug font-sans mb-1 ${
-                        isDone ? "text-stone-500 dark:text-stone-400 line-through" : "text-stone-900 dark:text-stone-50"
-                      }`}
+                   <EmptySlate 
+                      icon="🌟" 
+                      title={`${tabConfig[tab].label} Queue Empty`} 
+                      sub={
+                        tab === 'upcoming' ? "Total focus achieved. You've completely cleared your active mission log." :
+                        tab === 'overdue' ? "System in harmony. No delinquent submissions detected on any frequency." :
+                        tab === 'submitted' ? "Nothing in the pending buffer. All submitted artifacts have been processed." :
+                        "The archive vault is ready to store your next high-grade result."
+                      }
+                   />
+                </motion.div>
+              ) : (
+                displayItems.map((item, i) => {
+                  const sc = SUBJECTS[item.subject] || SUBJECTS.Physics;
+                  return (
+                    <motion.div
+                      layout
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      key={item.id}
+                      onClick={() => setSelTask(item)}
+                      className="group bg-white dark:bg-stone-900 p-8 rounded-[40px] border border-stone-100 dark:border-stone-800 shadow-sm hover:shadow-2xl hover:border-amber-200 dark:hover:border-amber-900/40 transition-all cursor-pointer flex flex-col relative overflow-hidden h-full"
+                      transition={{ delay: i * 0.03 }}
                     >
-                      {item.title}
-                    </div>
-                    <div 
-                      className={`text-xs font-medium font-sans ${
-                        tab === "overdue" ? "text-rose-600" : "text-stone-500 dark:text-stone-400"
-                      }`}
-                    >
-                      {tab === "overdue" && "⚠ "}{item.due || "TBD"}
-                    </div>
-                  </div>
-                  {tab === "graded" && item.fb && (
-                    <div className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-1 rounded-md mt-1">
-                      {item.fb}
-                    </div>
-                  )}
-                  {!isDone && <ChevronRight size={20} className="text-stone-300 mt-1 shrink-0 absolute right-4 top-5 opacity-100 group-hover:opacity-0 transition-opacity" />}
-                  
-                  <button 
-                    onClick={(e) => deleteTask(item.id, e)}
-                    className="absolute right-4 top-5 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-rose-50 dark:bg-rose-950/50 rounded-md"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              );
-            })}
+                       <div className="flex justify-between items-start mb-8">
+                        <div className={`w-14 h-16 rounded-2xl shrink-0 flex items-center justify-center text-2xl shadow-inner ${
+                          isDone ? "bg-stone-50 dark:bg-stone-950 text-stone-300 grayscale" : sc.bg
+                        }`}>
+                          {isDone ? <CheckCircle2 size={24} /> : sc.icon}
+                        </div>
+                        <div className="flex gap-2">
+                           <button 
+                            onClick={(e) => deleteTask(item.id, e)}
+                            className="bg-white dark:bg-stone-800 w-10 h-10 rounded-full flex items-center justify-center text-stone-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all shadow-sm border border-stone-50 dark:border-stone-700"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Chip label={item.type} bg="#f5f5f4" color="#78716c" border="#e7e5e4" />
+                          {tab === 'overdue' && (
+                             <Chip label="CRITICAL TIME" bg="#fee2e2" color="#dc2626" border="#fecaca" />
+                          )}
+                           <span className="text-[10px] font-black text-stone-300 uppercase tracking-widest pl-2 border-l border-stone-100 dark:border-stone-800">{item.due || "No deadline"}</span>
+                        </div>
+                        <h3 className={`text-2xl font-black font-sans leading-none tracking-tight mb-4 group-hover:text-amber-600 transition-colors ${isDone ? "text-stone-300 line-through" : "text-stone-900 dark:text-stone-50"}`}>
+                          {item.title}
+                        </h3>
+                      </div>
+
+                      <div className="mt-8 pt-6 border-t border-stone-50 dark:border-stone-800/50 flex justify-between items-center shrink-0">
+                         <div className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: isDone ? '#d6d3d1' : sc.fg }}>
+                           {item.subject}
+                         </div>
+                         {tab === "graded" && item.fb && (
+                            <div className="flex items-center gap-1 text-emerald-500">
+                               <Sparkles size={14} />
+                               <span className="text-sm font-black italic">A+</span>
+                            </div>
+                         )}
+                         {!isDone && <ChevronRight size={16} className="text-stone-200 group-hover:text-amber-500 group-hover:translate-x-1 transition-all" />}
+                      </div>
+
+                      {/* Accent highlight */}
+                      {!isDone && (
+                        <div className="absolute top-0 bottom-0 left-0 w-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ backgroundColor: sc.fg }} />
+                      )}
+                    </motion.div>
+                  );
+                })
+              )}
+            </AnimatePresence>
           </div>
         )}
       </div>
 
-      <Sheet open={!!selTask} onClose={() => setSelTask(null)} title="Task Details">
+      <Sheet open={!!selTask} onClose={() => setSelTask(null)} title="Assignment Analysis">
          {selTask && (
-           <div className="space-y-6">
-              <div>
-                <span className="text-[10px] font-bold tracking-wider uppercase text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md mb-2 inline-block">
-                  {selTask.type}
-                </span>
-                <h3 className="text-xl font-bold text-stone-900 dark:text-stone-50 mb-1">{selTask.title}</h3>
-                <p className="text-sm text-stone-500 dark:text-stone-400 font-medium">Due {selTask.due || "Soon"}</p>
+           <div className="space-y-12 py-6">
+              <div className="flex items-start gap-8">
+                <div className={`w-24 h-28 rounded-[32px] flex items-center justify-center text-5xl shadow-inner ${SUBJECTS[selTask.subject]?.bg || 'bg-stone-50'}`}>
+                   {isDone ? <div className="text-emerald-500 scale-125"><CheckCircle2 size={48} /></div> : (SUBJECTS[selTask.subject]?.icon || '📚')}
+                </div>
+                <div className="flex-1 pt-2">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-[10px] font-black tracking-widest uppercase px-4 py-1.5 rounded-xl border border-stone-100 dark:border-stone-800 text-stone-500 bg-stone-50/50">
+                      {selTask.type}
+                    </span>
+                    <span className="text-xs font-black text-stone-900 dark:text-stone-100 uppercase tracking-widest">
+                       {selTask.subject}
+                    </span>
+                  </div>
+                  <h2 className="text-4xl font-black text-stone-900 dark:text-stone-50 tracking-tighter leading-none mb-3">{selTask.title}</h2>
+                  <div className="flex items-center gap-2 text-xs font-bold text-stone-400 uppercase tracking-widest">
+                     <Clock size={12} /> Deadline: <span className="text-stone-600 dark:text-stone-300 ml-1">{selTask.due || "Infinite Context"}</span>
+                  </div>
+                </div>
               </div>
 
-              {selTask.status === 'upcoming' || selTask.status === 'overdue' ? (
-                <div className="space-y-4">
-                  <div className="p-8 border-2 border-dashed border-stone-200 dark:border-stone-800 rounded-3xl flex flex-col items-center justify-center text-center bg-stone-50/50 dark:bg-stone-900/50 cursor-pointer hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors group"
-                       onClick={() => fileRef.current?.click()}>
-                    <div className="w-12 h-12 bg-white dark:bg-stone-800 rounded-2xl flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
-                      {isUploading ? (
-                        <div className="w-6 h-6 border-2 border-stone-200 border-t-emerald-500 animate-spin rounded-full" />
-                      ) : (
-                        <Upload size={24} className="text-stone-500 dark:text-stone-400" />
-                      )}
+              <div className="h-px bg-stone-100 dark:bg-stone-800/50" />
+
+              <div className="space-y-8">
+                <SectionLabel>Submission Protocol</SectionLabel>
+                {selTask.status === 'upcoming' || selTask.status === 'overdue' ? (
+                  <div className="grid gap-6">
+                    <motion.div 
+                      whileHover={{ scale: 1.01, borderColor: '#fbbf24' }}
+                      whileTap={{ scale: 0.98 }}
+                      className="p-16 border-2 border-dashed border-stone-200 dark:border-stone-800 rounded-[48px] flex flex-col items-center justify-center text-center bg-white dark:bg-stone-900/50 cursor-pointer transition-all shadow-sm hover:shadow-2xl group"
+                      onClick={() => fileRef.current?.click()}
+                    >
+                      <div className="w-24 h-24 bg-stone-50 dark:bg-stone-800 rounded-[32px] flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 group-hover:rotate-6 transition-all">
+                        {isUploading ? (
+                          <div className="w-12 h-12 border-4 border-stone-100 border-t-amber-500 animate-spin rounded-full" />
+                        ) : (
+                          <Upload size={48} className="text-stone-300 group-hover:text-amber-500 transition-colors" />
+                        )}
+                      </div>
+                      <div className="text-xl font-black text-stone-900 dark:text-stone-50 mb-2">Upload Submission File</div>
+                      <p className="text-sm font-medium text-stone-400 max-w-[240px] leading-relaxed italic">Drag or tap to select academic artifacts for transmission.</p>
+                      <input type="file" className="hidden" ref={fileRef} onChange={handleUpload} />
+                    </motion.div>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <Btn label="Request Insight" variant="outline" full />
+                      <Btn label="Transcribe Ready" variant="primary" full icon={<CheckCircle2 size={16} />} onClick={() => updateTaskStatus(selTask.id, 'submitted')} />
                     </div>
-                    <div className="text-sm font-bold text-stone-900 dark:text-stone-50 mb-1">Upload Work</div>
-                    <p className="text-[10px] text-stone-500 dark:text-stone-400 font-medium">Drag and drop or tap to browse</p>
-                    <input type="file" className="hidden" ref={fileRef} onChange={handleUpload} />
                   </div>
-                  <Btn label="Mark as Done without File" variant="outline" full onClick={() => updateTaskStatus(selTask.id, 'submitted')} />
-                </div>
-              ) : (
-                <div className="p-6 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50 rounded-2xl flex items-center gap-4">
-                  <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/50 rounded-full flex items-center justify-center text-emerald-600">
-                    <CheckCircle2 size={24} />
+                ) : (
+                  <div className="p-12 bg-emerald-50/30 dark:bg-emerald-500/5 border-2 border-emerald-100/50 dark:border-emerald-500/10 rounded-[48px] flex flex-col items-center gap-6 text-center">
+                    <div className="w-24 h-24 bg-emerald-500 text-white rounded-[32px] flex items-center justify-center shadow-2xl shadow-emerald-500/30 rotate-3">
+                      <CheckCircle2 size={48} strokeWidth={3} />
+                    </div>
+                    <div>
+                      <h4 className="text-2xl font-black text-emerald-900 dark:text-emerald-400 tracking-tight">Assignment Finalized</h4>
+                      <p className="text-sm text-emerald-600 dark:text-emerald-500 font-bold uppercase tracking-widest mt-2">{selTask.submitted_at ? `LOGGED: ${new Date(selTask.submitted_at).toLocaleDateString()}` : 'LOGGED IN REAL-TIME'}</p>
+                    </div>
+                    <div className="mt-4 flex gap-4 w-full">
+                       <button className="flex-1 py-4 px-6 bg-white dark:bg-stone-900 border border-emerald-100 dark:border-emerald-900/40 rounded-3xl text-[10px] font-black uppercase tracking-widest text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 transition-all shadow-sm">
+                          Preview Artifact
+                       </button>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-sm font-bold text-emerald-900 dark:text-emerald-300">Work Submitted</div>
-                    <p className="text-xs text-emerald-700 dark:text-emerald-500 font-medium">Waiting for teacher review</p>
-                  </div>
-                </div>
-              )}
+                )}
+              </div>
 
               {selTask.fb && (
-                <div className="p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-900/50 rounded-2xl">
-                  <div className="text-[10px] font-bold text-amber-600 uppercase tracking-widest mb-1">Teacher Feedback</div>
-                  <p className="text-sm text-stone-800 dark:text-stone-200 font-medium italic">"{selTask.fb}"</p>
+                <div className="space-y-6">
+                  <SectionLabel>Academic Feedback</SectionLabel>
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-10 bg-amber-50 dark:bg-amber-950/20 border-l-8 border-amber-400 rounded-[40px] relative overflow-hidden"
+                  >
+                    <div className="absolute top-0 right-0 p-8 opacity-5 blur-none pointer-events-none grayscale">
+                       <Sparkles size={120} className="text-amber-500" />
+                    </div>
+                    <div className="text-[10px] font-black text-amber-600 dark:text-amber-500 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                       <Pin size={12} className="rotate-45" /> Curated Observations
+                    </div>
+                    <p className="text-xl text-stone-900 dark:text-stone-100 font-black leading-relaxed italic tracking-tight">"{selTask.fb}"</p>
+                  </motion.div>
                 </div>
               )}
            </div>

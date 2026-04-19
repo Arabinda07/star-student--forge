@@ -7,13 +7,15 @@ export function Btn({
   icon, 
   variant = 'primary', // 'primary' | 'secondary' | 'danger'
   disabled,
+  className = "",
 }: { 
   label: string; 
   onClick?: () => void; 
   full?: boolean; 
   icon?: ReactNode; 
-  variant?: 'primary' | 'secondary' | 'danger' | 'outline';
+  variant?: 'primary' | 'secondary' | 'danger' | 'outline' | 'ghost';
   disabled?: boolean;
+  className?: string;
 }) {
   const baseClass = "font-sans font-semibold flex items-center justify-center gap-2 transition-all duration-200 rounded-xl px-4 py-3 text-sm active:scale-95";
   const wClass = full ? "w-full" : "w-auto";
@@ -33,16 +35,37 @@ export function Btn({
     case 'outline':
       vClass = "bg-white dark:bg-stone-900 text-stone-700 dark:text-stone-200 border border-stone-300 dark:border-stone-700 hover:bg-stone-50";
       break;
+    case 'ghost':
+      vClass = "bg-transparent text-stone-600 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800";
+      break;
   }
   return (
-    <button onClick={onClick} disabled={disabled} className={`${baseClass} ${wClass} ${vClass} ${dClass}`}>
-      {icon && <span className="text-base">{icon}</span>}
+    <button onClick={onClick} disabled={disabled} className={`${baseClass} ${wClass} ${vClass} ${dClass} ${className}`}>
+      {icon && <span className="flex items-center justify-center shrink-0">{icon}</span>}
       {label}
     </button>
   );
 }
 
-export function Chip({ label, variant, small }: { label: string; variant: string; small?: boolean }) {
+export function Chip({ 
+  label, 
+  variant = "default", 
+  small, 
+  style = {},
+  bg,
+  color,
+  border,
+  active,
+}: { 
+  label: any; 
+  variant?: string; 
+  small?: boolean; 
+  style?: any;
+  bg?: string;
+  color?: string;
+  border?: string;
+  active?: boolean;
+}) {
   const variants: Record<string, string> = {
     paid: "bg-emerald-50 text-emerald-700 border-emerald-200",
     due: "bg-amber-50 text-amber-700 border-amber-200",
@@ -53,13 +76,25 @@ export function Chip({ label, variant, small }: { label: string; variant: string
     new: "bg-blue-50 text-blue-700 border-blue-200",
     positive: "bg-emerald-50 text-emerald-700 border-emerald-200",
     mixed: "bg-amber-50 text-amber-700 border-amber-200",
+    active: "bg-emerald-500 text-white border-emerald-600",
     default: "bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 border-stone-200 dark:border-stone-800"
   };
-  const vClass = variants[variant] || variants.default;
+  
+  const vClass = active ? variants["active"] : (variants[variant] || variants.default);
   const sizeClass = small ? "text-[10px] px-2 py-0.5" : "text-xs px-3 py-1";
   
+  const customStyles = {
+    backgroundColor: bg,
+    color: color,
+    borderColor: border,
+    ...style
+  };
+  
   return (
-    <span className={`inline-flex items-center rounded-md font-medium font-sans whitespace-nowrap border ${sizeClass} ${vClass}`}>
+    <span 
+      style={customStyles}
+      className={`inline-flex items-center rounded-md font-bold font-sans whitespace-nowrap border ${sizeClass} ${vClass}`}
+    >
       {label}
     </span>
   );
