@@ -42,12 +42,19 @@ export default function ProfileSettings({ role }: { role: Role }) {
       const { data } = await supabase.from('user_profiles').select('*').eq('id', user.id).single();
       
       const pName = data?.full_name || "Drona User";
+      let finalAvatarUrl = null;
+
+      if (data?.avatar_url) {
+        const { data: signed } = await supabase.storage.from('app-files').createSignedUrl(data.avatar_url, 3600);
+        finalAvatarUrl = signed?.signedUrl;
+      }
       
       setProfile({
         name: pName,
         email: user.email || "",
         phone: data?.phone || "Pending Setup",
         initial: pName.charAt(0).toUpperCase(),
+        avatar_url: finalAvatarUrl,
         avatarColor: role === "student" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300" : (role === "teacher" ? "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300" : "bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-300")
       });
     }
@@ -79,7 +86,7 @@ export default function ProfileSettings({ role }: { role: Role }) {
 
         {/* Sub-page Content */}
         <div className="flex-1 overflow-y-auto w-full">
-          {activePage === 'personal_info' && <PersonalInfoView details={profile} />}
+          {activePage === 'personal_info' && <PersonalInfoView details={profile} setDetails={setProfile} />}
           {activePage === 'security' && <PasswordSecurityView />}
           {activePage === 'sessions' && <ActiveSessionsView />}
           {activePage === 'notifications' && <NotificationsView />}
@@ -104,9 +111,13 @@ export default function ProfileSettings({ role }: { role: Role }) {
         {/* Profile Card */}
         <div className="bg-white dark:bg-stone-900 rounded-2xl p-4 flex items-center gap-4 border border-stone-200 dark:border-stone-800 shadow-sm cursor-pointer hover:border-stone-300 dark:hover:border-stone-700 transition-colors"
              onClick={() => setActivePage('personal_info')}>
-          <div className={`w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold shrink-0 ${profile.avatarColor}`}>
-            {profile.initial}
-          </div>
+          {profile.avatar_url ? (
+             <img src={profile.avatar_url} alt="Profile" className="w-14 h-14 rounded-full object-cover shrink-0 border border-stone-200 dark:border-stone-800" referrerPolicy="no-referrer" />
+          ) : (
+            <div className={`w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold shrink-0 ${profile.avatarColor}`}>
+              {profile.initial}
+            </div>
+          )}
           <div className="flex-1 min-w-0">
             <h2 className="text-lg font-bold text-stone-900 dark:text-stone-50 font-sans truncate">{profile.name}</h2>
             <p className="text-sm text-stone-500 dark:text-stone-400 font-sans truncate">{profile.email}</p>
@@ -166,10 +177,14 @@ export default function ProfileSettings({ role }: { role: Role }) {
 // Sub-views 
 // -----------------------------------------------------------------------------
 
-function PersonalInfoView({ details }: { details: any }) {
+function PersonalInfoView({ details, setDetails }: { details: any, setDetails: any }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(details.avatar_url);
+  const [coverUrl, setCoverUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
 
   useEffect(() => {
     fetchProfile();
@@ -179,132 +194,140 @@ function PersonalInfoView({ details }: { details: any }) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
     
-    // You could set standard profile states here if needed.
-    // Let's just grab the avatar url and generate a signed link
-    const { data } = await supabase.from('user_profiles').select('avatar_url').eq('id', user.id).single();
+    const { data } = await supabase.from('user_profiles').select('avatar_url, cover_url').eq('id', user.id).single();
     if (data?.avatar_url) {
-      const { data: signedData, error } = await supabase.storage.from('app-files').createSignedUrl(data.avatar_url, 3600);
-      if (signedData?.signedUrl) {
-        setAvatarUrl(signedData.signedUrl);
-      }
+      const { data: signedAvatar } = await supabase.storage.from('app-files').createSignedUrl(data.avatar_url, 3600);
+      if (signedAvatar?.signedUrl) setAvatarUrl(signedAvatar.signedUrl);
+    }
+    if (data?.cover_url) {
+      const { data: signedCover } = await supabase.storage.from('app-files').createSignedUrl(data.cover_url, 3600);
+      if (signedCover?.signedUrl) setCoverUrl(signedCover.signedUrl);
     }
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleUpload = async (file: File, type: 'avatar' | 'cover') => {
     if (!file) return;
-
     setError(null);
-
-    // Validate type
     if (!file.type.startsWith('image/')) {
-      setError("Please select a valid image file (JPEG, PNG).");
+      setError("Please select a valid image file.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image size must be less than 5MB.");
       return;
     }
 
-    // Validate size (max 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      setError("Image size must be less than 2MB.");
-      return;
-    }
+    type === 'avatar' ? setIsUploadingAvatar(true) : setIsUploadingCover(true);
 
-    // Upload to Supabase Storage
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      // Fetch the old avatar path if we want to delete it from storage first
-      const { data: oldProfile } = await supabase.from('user_profiles').select('avatar_url').eq('id', user.id).single();
-
+      const { data: oldProfile } = await supabase.from('user_profiles').select('avatar_url, cover_url').eq('id', user.id).single();
+      
       const fileExt = file.name.split('.').pop();
-      const filePath = `${user.id}/avatars/${crypto.randomUUID()}.${fileExt}`;
+      const folder = type === 'avatar' ? 'avatars' : 'covers';
+      const filePath = `${user.id}/${folder}/${crypto.randomUUID()}.${fileExt}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from('app-files')
-        .upload(filePath, file);
-
+      const { error: uploadError } = await supabase.storage.from('app-files').upload(filePath, file);
       if (uploadError) throw uploadError;
 
-      // Delete the old avatar from storage if it exists to prevent orphaned files
-      if (oldProfile?.avatar_url) {
-         await supabase.storage.from('app-files').remove([oldProfile.avatar_url]);
-      }
+      const oldPath = type === 'avatar' ? oldProfile?.avatar_url : oldProfile?.cover_url;
+      if (oldPath) await supabase.storage.from('app-files').remove([oldPath]);
 
-      // Update the user_profiles table with the path
-      const { error: dbError } = await supabase
-        .from('user_profiles')
-        .update({ avatar_url: filePath })
-        .eq('id', user.id);
-        
+      const { error: dbError } = await supabase.from('user_profiles').update({ [type === 'avatar' ? 'avatar_url' : 'cover_url']: filePath }).eq('id', user.id);
       if (dbError) throw dbError;
 
-      // Show it immediately
-      const { data: urlData, error: urlError } = await supabase.storage
-        .from('app-files')
-        .createSignedUrl(filePath, 3600);
-
-      if (urlError) throw urlError;
-
-      setAvatarUrl(urlData.signedUrl);
+      const { data: urlData } = await supabase.storage.from('app-files').createSignedUrl(filePath, 3600);
+      if (urlData?.signedUrl) {
+        if (type === 'avatar') {
+          setAvatarUrl(urlData.signedUrl);
+          setDetails({ ...details, avatar_url: urlData.signedUrl });
+        } else {
+          setCoverUrl(urlData.signedUrl);
+        }
+      }
     } catch(err: any) {
-      setError(err.message || "Failed to upload avatar");
+      setError(err.message || "Failed to upload");
+    } finally {
+      type === 'avatar' ? setIsUploadingAvatar(false) : setIsUploadingCover(false);
     }
   };
 
   return (
-    <div className="p-6 flex flex-col gap-6 animate-fade-in">
-      <div className="flex flex-col items-center justify-center mb-2">
-        <div className="relative">
+    <div className="flex flex-col gap-6 animate-fade-in relative">
+      {/* Cover Backdrop */}
+      <div className="h-44 bg-stone-200 dark:bg-stone-800 relative group overflow-hidden">
+        {coverUrl ? (
+          <img src={coverUrl} alt="Cover" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center opacity-20">
+             <Camera size={48} />
+          </div>
+        )}
+        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <button 
+              onClick={() => coverInputRef.current?.click()}
+              className="bg-white/90 dark:bg-stone-900/90 text-stone-900 dark:text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg active:scale-95 transition-all cursor-pointer"
+            >
+              {isUploadingCover ? "Saving..." : "Change Cover"}
+            </button>
+        </div>
+        <input type="file" ref={coverInputRef} className="hidden" accept="image/*" onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], 'cover')} />
+      </div>
+
+      <div className="px-6 -mt-16 flex flex-col items-start relative z-10 gap-6">
+        <div className="relative group">
           {avatarUrl ? (
-             <img src={avatarUrl} alt="Avatar" className="w-24 h-24 rounded-full object-cover shadow-sm border-4 border-white dark:border-stone-950 bg-stone-100 dark:bg-stone-800" />
+             <img src={avatarUrl} alt="Avatar" className="w-28 h-28 rounded-full object-cover shadow-xl border-4 border-white dark:border-stone-950 bg-stone-100 dark:bg-stone-800" referrerPolicy="no-referrer" />
           ) : (
-            <div className={`w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold shadow-sm border-4 border-white dark:border-stone-950 ${details.avatarColor}`}>
+            <div className={`w-28 h-28 rounded-full flex items-center justify-center text-4xl font-bold shadow-xl border-4 border-white dark:border-stone-950 ${details.avatarColor}`}>
               {details.initial}
             </div>
           )}
           <button 
             onClick={() => fileInputRef.current?.click()}
-            className="absolute bottom-0 right-0 w-8 h-8 bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-white text-white dark:text-stone-900 rounded-full flex items-center justify-center shadow-md transition-colors cursor-pointer border-2 border-white dark:border-stone-950 z-10"
+            className="absolute bottom-1 right-1 w-9 h-9 bg-sky-500 text-white rounded-full flex items-center justify-center shadow-md hover:bg-sky-600 transition-colors cursor-pointer border-2 border-white dark:border-stone-950 z-20"
             aria-label="Upload avatar"
           >
-            <Camera size={14} />
+            {isUploadingAvatar ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Camera size={16} />}
           </button>
         </div>
 
         <input 
           type="file" 
           ref={fileInputRef}
-          onChange={handleFileChange}
-          accept="image/png, image/jpeg, image/jpg, image/webp"
+          onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], 'avatar')}
+          accept="image/*"
           className="hidden" 
         />
 
         {error && (
-          <div className="mt-4 flex items-center gap-1.5 text-rose-600 dark:text-rose-400 text-xs font-semibold bg-rose-50 dark:bg-rose-900/10 px-3 py-1.5 rounded-lg border border-rose-200 dark:border-rose-900/50 text-center">
-            <AlertCircle size={14} className="shrink-0" />
+          <div className="w-full flex items-center gap-2 text-rose-600 dark:text-rose-400 text-xs font-semibold bg-rose-50 dark:bg-rose-900/10 px-4 py-3 rounded-2xl border border-rose-200 dark:border-rose-900/50">
+            <AlertCircle size={16} className="shrink-0" />
             {error}
           </div>
         )}
       </div>
       
-      <div className="space-y-4">
-        <div>
-          <label htmlFor="name-input" className="block text-[10px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-1">Full Name</label>
-          <input id="name-input" defaultValue={details.name} className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 font-sans text-sm bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-sky-500 transition-all shadow-sm" />
+      <div className="px-6 pb-12 space-y-6">
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="name-input" className="block text-[10px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-1.5 ml-1">Full Name</label>
+            <input id="name-input" defaultValue={details.name} className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 font-sans text-sm bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-sky-500 transition-all shadow-sm" />
+          </div>
+          <div>
+            <label htmlFor="email-input" className="block text-[10px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-1.5 ml-1">Email Address</label>
+            <input id="email-input" defaultValue={details.email} className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 font-sans text-sm bg-stone-100 dark:bg-stone-950 text-stone-500 dark:text-stone-400 outline-none shadow-sm cursor-not-allowed" disabled />
+            <p className="text-[11px] text-stone-500 dark:text-stone-400 mt-1.5 ml-1">Email verification is required for changes.</p>
+          </div>
+          <div>
+            <label htmlFor="phone-input" className="block text-[10px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-1.5 ml-1">Phone Number</label>
+            <input id="phone-input" defaultValue={details.phone} className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 font-sans text-sm bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-sky-500 transition-all shadow-sm" />
+          </div>
         </div>
-        <div>
-          <label htmlFor="email-input" className="block text-[10px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-1">Email Address</label>
-          <input id="email-input" defaultValue={details.email} className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 font-sans text-sm bg-stone-100 dark:bg-stone-950 text-stone-500 dark:text-stone-400 outline-none shadow-sm cursor-not-allowed" disabled />
-          <p className="text-[11px] text-stone-500 dark:text-stone-400 mt-1">Email changes require admin verification.</p>
-        </div>
-        <div>
-          <label htmlFor="phone-input" className="block text-[10px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-1">Phone Number</label>
-          <input id="phone-input" defaultValue={details.phone} className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 font-sans text-sm bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-sky-500 transition-all shadow-sm" />
-        </div>
-      </div>
-      
-      <div className="mt-4">
-         <Btn label="Save Changes" full variant="primary" />
+        
+        <Btn label="Save Profile Changes" full variant="primary" />
       </div>
     </div>
   );
@@ -543,7 +566,7 @@ function TermsView() {
 // -----------------------------------------------------------------------------
 
 function SettingsItem({ icon, label, value, noBorder, onClick }: { 
-  icon?: React.ReactNode; 
+  icon?: ReactNode; 
   label: string; 
   value?: string;
   noBorder?: boolean; 

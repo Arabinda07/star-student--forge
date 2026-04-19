@@ -1,26 +1,72 @@
-import { useState } from "react";
-import { Sheet } from "../shared/UI";
-import { Clock, Video, Users, BookOpen } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Sheet, Btn } from "../shared/UI";
+import { Clock, Video, Users, BookOpen, Calendar as CalIcon } from "lucide-react";
+import { supabase } from "../../supabaseClient";
 
 const getDayName = (dayIdx: number) => ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][dayIdx];
 
 export default function ParentSchedule() {
   const [selDay, setSelDay] = useState(3); // Thursday
   const [detailSheet, setDetailSheet] = useState<any>(null);
+  const [events, setEvents] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [childName, setChildName] = useState("Your Child");
+
+  useEffect(() => {
+    fetchEverything();
+  }, []);
+
+  const fetchEverything = async () => {
+    setIsLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    // 1. Get parent profile to find child name
+    const { data: parentProfile } = await supabase.from('user_profiles').select('meta').eq('id', user.id).single();
+    const cName = parentProfile?.meta || "Rohan Sharma";
+    setChildName(cName);
+
+    // 2. Find child's profile to get their batch
+    const { data: studentDoc } = await supabase.from('user_profiles').select('*').eq('full_name', cName).eq('role', 'student').single();
+    const batchId = studentDoc?.meta || "Class 8 Evening";
+
+    // 3. Fetch classes for this batch
+    const { data: classes } = await supabase.from('classes').select('*').eq('batch_id', batchId);
+    
+    // 4. Fetch tasks for the student
+    let combined = [...(classes || []).map(c => ({...c, type: 'class'}))];
+    if (studentDoc) {
+       const { data: tasks } = await supabase.from('tasks').select('*').eq('user_id', studentDoc.id);
+       if (tasks) {
+         combined = [...combined, ...tasks.map(t => ({...t, type: 'task', start_time: t.due_date || t.created_at}))];
+       }
+    }
+
+    setEvents(combined);
+    setIsLoading(false);
+  };
 
   const WEEK_DATA = [
-    { d: 8, events: 0 }, { d: 9, events: 0 }, { d: 10, events: 0 }, { d: 11, events: 0 },
-    { d: 12, events: 0 }, { d: 13, events: 0 }, { d: 14, events: 0 }
+     { d: 19, events: events.filter(e => new Date(e.start_time).getDate() === 19).length }, 
+     { d: 20, events: events.filter(e => new Date(e.start_time).getDate() === 20).length }, 
+     { d: 21, events: events.filter(e => new Date(e.start_time).getDate() === 21).length }, 
+     { d: 22, events: events.filter(e => new Date(e.start_time).getDate() === 22).length },
+     { d: 23, events: events.filter(e => new Date(e.start_time).getDate() === 23).length }, 
+     { d: 24, events: events.filter(e => new Date(e.start_time).getDate() === 24).length }, 
+     { d: 25, events: events.filter(e => new Date(e.start_time).getDate() === 25).length }
   ];
 
-  const DAY_EVENTS: any[] = [];
+  const currentDayEvents = events.filter(ev => {
+    const d = new Date(ev.start_time);
+    return d.getDate() === WEEK_DATA[selDay].d;
+  }).sort((a,b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
 
   return (
     <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 overflow-hidden relative">
       <div className="px-6 py-6 pb-2 shrink-0 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 sticky top-0 z-10 animate-fade-in">
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans mb-1">Rohan's Schedule</h1>
+            <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans mb-1">{childName}'s Schedule</h1>
             <p className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans">April 2026</p>
           </div>
         </div>
@@ -58,29 +104,32 @@ export default function ParentSchedule() {
       <div className="flex-1 overflow-y-auto px-6 py-6 scrollbar-hide relative">
         <div className="absolute left-10 top-0 bottom-0 w-px bg-stone-200 dark:bg-stone-700" />
         
-        {DAY_EVENTS.length === 0 ? (
+        {isLoading ? (
+           <div className="flex items-center justify-center py-20">
+              <div className="w-8 h-8 rounded-full border-4 border-stone-200 border-t-sky-500 animate-spin" />
+           </div>
+        ) : currentDayEvents.length === 0 ? (
           <div className="text-center py-10">
             <div className="text-4xl opacity-20 mb-3">🌴</div>
             <div className="text-sm font-semibold text-stone-500 dark:text-stone-400">No events for this day</div>
           </div>
         ) : (
           <div className="flex flex-col gap-6 relative">
-            {DAY_EVENTS.map((ev, i) => {
+            {currentDayEvents.map((ev, i) => {
               const isClass = ev.type === "class";
-              
+              const time = new Date(ev.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
               return (
                 <div key={ev.id} className="flex gap-4 relative animate-slide-up" style={{ animationDelay: `${i * 0.05}s` }}>
                   <div className="w-9 items-start pt-1 font-mono text-[11px] font-bold text-stone-500 dark:text-stone-400 text-right shrink-0">
-                    {ev.time.replace(" PM", "").replace(" AM", "")}
+                    {time.replace(" PM", "").replace(" AM", "")}
                   </div>
                   
                   <div className="absolute left-[13px] top-2.5 w-2 h-2 rounded-full border-2 border-white" style={{ backgroundColor: isClass ? '#3b82f6' : '#10b981' }} />
                   
                   <div 
                     onClick={() => setDetailSheet(ev)}
-                    className={`flex-1 rounded-[20px] p-4 border shadow-sm cursor-pointer hover:shadow-md transition-all ${
-                      ev.done ? "bg-stone-50 dark:bg-stone-950 border-stone-200 dark:border-stone-800 opacity-60" : "bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-800"
-                    }`}
+                    className="flex-1 rounded-[20px] p-4 border shadow-sm cursor-pointer hover:shadow-md transition-all bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-800"
                   >
                     <div className="flex justify-between items-start mb-2">
                        <div>
@@ -91,12 +140,12 @@ export default function ParentSchedule() {
                            {ev.title}
                          </div>
                          <div className="text-xs font-medium text-stone-500 dark:text-stone-400 font-sans">
-                           {ev.desc}
+                           {ev.subject}
                          </div>
                        </div>
                        {isClass && (
                          <div className="text-[10px] font-bold font-mono bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 px-2 py-1 rounded-md mb-auto shrink-0">
-                           {ev.dur}
+                           {ev.duration}m
                          </div>
                        )}
                     </div>
@@ -104,8 +153,6 @@ export default function ParentSchedule() {
                 </div>
               );
             })}
-            
-             {/* Remove Time Pointer from empty state */}
           </div>
         )}
       </div>
@@ -121,13 +168,13 @@ export default function ParentSchedule() {
                 </span>
               </div>
               <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans mb-1">{detailSheet.title}</h2>
-              <p className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans">{detailSheet.desc}</p>
+              <p className="text-sm font-medium text-stone-500 dark:text-stone-400 font-sans">{detailSheet.subject}</p>
             </div>
             
             <div className="bg-stone-50 dark:bg-stone-950 rounded-2xl p-4 border border-stone-200/60 dark:border-stone-800/60 flex flex-col gap-3">
               <div className="flex items-center gap-3 text-sm font-medium text-stone-700 dark:text-stone-200">
                 <Clock size={18} className="text-stone-500 dark:text-stone-400" />
-                {getDayName(selDay)}, {WEEK_DATA[selDay].d} Apr · {detailSheet.time} {detailSheet.dur ? `(${detailSheet.dur})` : ''}
+                {new Date(detailSheet.start_time).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })} · {new Date(detailSheet.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} {detailSheet.duration ? `(${detailSheet.duration}m)` : ''}
               </div>
             </div>
           </div>

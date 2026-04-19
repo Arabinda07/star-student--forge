@@ -6,15 +6,18 @@ export function Btn({
   full, 
   icon, 
   variant = 'primary', // 'primary' | 'secondary' | 'danger'
+  disabled,
 }: { 
   label: string; 
   onClick?: () => void; 
   full?: boolean; 
   icon?: ReactNode; 
   variant?: 'primary' | 'secondary' | 'danger' | 'outline';
+  disabled?: boolean;
 }) {
   const baseClass = "font-sans font-semibold flex items-center justify-center gap-2 transition-all duration-200 rounded-xl px-4 py-3 text-sm active:scale-95";
   const wClass = full ? "w-full" : "w-auto";
+  const dClass = disabled ? "opacity-50 cursor-not-allowed pointer-events-none grayscale" : "";
   
   let vClass = "";
   switch (variant) {
@@ -31,9 +34,8 @@ export function Btn({
       vClass = "bg-white dark:bg-stone-900 text-stone-700 dark:text-stone-200 border border-stone-300 dark:border-stone-700 hover:bg-stone-50";
       break;
   }
-
   return (
-    <button onClick={onClick} className={`${baseClass} ${wClass} ${vClass}`}>
+    <button onClick={onClick} disabled={disabled} className={`${baseClass} ${wClass} ${vClass} ${dClass}`}>
       {icon && <span className="text-base">{icon}</span>}
       {label}
     </button>

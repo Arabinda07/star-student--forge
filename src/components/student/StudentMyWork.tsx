@@ -1,12 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, ChangeEvent, MouseEvent } from "react";
 import { SUBJECTS } from "../../constants";
-import { ChevronRight, Plus, Trash2 } from "lucide-react";
+import { ChevronRight, Plus, Trash2, Upload, FileText, CheckCircle2 } from "lucide-react";
 import { supabase } from "../../supabaseClient";
+import { Sheet, Btn } from "../shared/UI";
 
 export default function StudentMyWork() {
   const [tab, setTab] = useState("upcoming");
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selTask, setSelTask] = useState<any>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const tabConfig: Record<string, string> = {
     upcoming: "Upcoming",
@@ -36,6 +40,50 @@ export default function StudentMyWork() {
     setLoading(false);
   };
 
+  const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !selTask) return;
+
+    setIsUploading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `${user.id}/submissions/${selTask.id}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('app-files')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: publicUrlData } = await supabase.storage
+        .from('app-files')
+        .getPublicUrl(filePath);
+
+      const { error: updateError } = await supabase
+        .from('tasks')
+        .update({ 
+          status: 'submitted',
+          submission_url: filePath,
+          submitted_at: new Date().toISOString()
+        })
+        .eq('id', selTask.id);
+
+      if (updateError) throw updateError;
+
+      setItems(items.map(t => t.id === selTask.id ? { ...t, status: 'submitted', submission_url: filePath } : t));
+      setSelTask(null);
+    } catch (err) {
+      console.error(err);
+      alert("Submission failed. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const createTask = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
@@ -43,11 +91,10 @@ export default function StudentMyWork() {
     const newTask = {
       user_id: user.id,
       subject: "Maths",
-      title: "New Custom Homework",
+      title: "Self Assigned Prep",
       due: "In 2 days",
-      type: "Homework",
-      status: "upcoming",
-      fb: ""
+      type: "Practice",
+      status: "upcoming"
     };
 
     const { data, error } = await supabase
@@ -60,6 +107,24 @@ export default function StudentMyWork() {
     }
   };
 
+  const deleteTask = async (id: string, e: MouseEvent) => {
+    e.stopPropagation();
+    const taskToDelete = items.find(t => t.id === id);
+    
+    const { error } = await supabase
+      .from('tasks')
+      .delete()
+      .eq('id', id);
+
+    if (!error) {
+      setItems(items.filter(t => t.id !== id));
+      // Cleanup storage if needed
+      if (taskToDelete?.submission_url) {
+        await supabase.storage.from('app-files').remove([taskToDelete.submission_url]);
+      }
+    }
+  };
+
   const updateTaskStatus = async (id: string, newStatus: string) => {
     const { error } = await supabase
       .from('tasks')
@@ -68,18 +133,7 @@ export default function StudentMyWork() {
 
     if (!error) {
       setItems(items.map(t => t.id === id ? { ...t, status: newStatus } : t));
-    }
-  };
-
-  const deleteTask = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    const { error } = await supabase
-      .from('tasks')
-      .delete()
-      .eq('id', id);
-
-    if (!error) {
-      setItems(items.filter(t => t.id !== id));
+      setSelTask(null);
     }
   };
 
@@ -155,7 +209,7 @@ export default function StudentMyWork() {
               return (
                 <div
                   key={item.id}
-                  onClick={() => !isDone && updateTaskStatus(item.id, "submitted")}
+                  onClick={() => setSelTask(item)}
                   className="flex items-start gap-4 p-5 border-b border-stone-100 dark:border-stone-800/50 last:border-0 transition-colors hover:bg-stone-50 dark:hover:bg-stone-800/50 cursor-pointer animate-slide-up relative group"
                   style={{ animationDelay: `${i * 0.05}s` }}
                 >
@@ -190,7 +244,7 @@ export default function StudentMyWork() {
                         tab === "overdue" ? "text-rose-600" : "text-stone-500 dark:text-stone-400"
                       }`}
                     >
-                      {tab === "overdue" && "⚠ "}{item.due}
+                      {tab === "overdue" && "⚠ "}{item.due || "TBD"}
                     </div>
                   </div>
                   {tab === "graded" && item.fb && (
@@ -212,6 +266,57 @@ export default function StudentMyWork() {
           </div>
         )}
       </div>
+
+      <Sheet open={!!selTask} onClose={() => setSelTask(null)} title="Task Details">
+         {selTask && (
+           <div className="space-y-6">
+              <div>
+                <span className="text-[10px] font-bold tracking-wider uppercase text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md mb-2 inline-block">
+                  {selTask.type}
+                </span>
+                <h3 className="text-xl font-bold text-stone-900 dark:text-stone-50 mb-1">{selTask.title}</h3>
+                <p className="text-sm text-stone-500 dark:text-stone-400 font-medium">Due {selTask.due || "Soon"}</p>
+              </div>
+
+              {selTask.status === 'upcoming' || selTask.status === 'overdue' ? (
+                <div className="space-y-4">
+                  <div className="p-8 border-2 border-dashed border-stone-200 dark:border-stone-800 rounded-3xl flex flex-col items-center justify-center text-center bg-stone-50/50 dark:bg-stone-900/50 cursor-pointer hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors group"
+                       onClick={() => fileRef.current?.click()}>
+                    <div className="w-12 h-12 bg-white dark:bg-stone-800 rounded-2xl flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
+                      {isUploading ? (
+                        <div className="w-6 h-6 border-2 border-stone-200 border-t-emerald-500 animate-spin rounded-full" />
+                      ) : (
+                        <Upload size={24} className="text-stone-500 dark:text-stone-400" />
+                      )}
+                    </div>
+                    <div className="text-sm font-bold text-stone-900 dark:text-stone-50 mb-1">Upload Work</div>
+                    <p className="text-[10px] text-stone-500 dark:text-stone-400 font-medium">Drag and drop or tap to browse</p>
+                    <input type="file" className="hidden" ref={fileRef} onChange={handleUpload} />
+                  </div>
+                  <Btn label="Mark as Done without File" variant="outline" full onClick={() => updateTaskStatus(selTask.id, 'submitted')} />
+                </div>
+              ) : (
+                <div className="p-6 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50 rounded-2xl flex items-center gap-4">
+                  <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/50 rounded-full flex items-center justify-center text-emerald-600">
+                    <CheckCircle2 size={24} />
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold text-emerald-900 dark:text-emerald-300">Work Submitted</div>
+                    <p className="text-xs text-emerald-700 dark:text-emerald-500 font-medium">Waiting for teacher review</p>
+                  </div>
+                </div>
+              )}
+
+              {selTask.fb && (
+                <div className="p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-900/50 rounded-2xl">
+                  <div className="text-[10px] font-bold text-amber-600 uppercase tracking-widest mb-1">Teacher Feedback</div>
+                  <p className="text-sm text-stone-800 dark:text-stone-200 font-medium italic">"{selTask.fb}"</p>
+                </div>
+              )}
+           </div>
+         )}
+      </Sheet>
     </div>
   );
 }
+

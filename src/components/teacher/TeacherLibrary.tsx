@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, ChangeEvent } from "react";
 import { SUBJECTS } from "../../constants";
 import { SectionLabel, Btn, Chip, EmptySlate, Sheet } from "../shared/UI";
 import { ChevronLeft, ChevronRight, Search, FileText, Upload, CheckCircle2, Plus, Trash2 } from "lucide-react";
@@ -40,7 +40,7 @@ export default function TeacherLibrary() {
     setIsLoadingNotes(false);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
        setForm({ ...form, file: e.target.files[0] });
     }

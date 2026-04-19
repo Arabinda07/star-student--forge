@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { CheckCircle2, ChevronRight, GraduationCap, Users, CalendarCheck, BookOpen, ShieldCheck } from "lucide-react";
-import { Role } from "../../../types";
+import { Role } from "../../types";
 
 interface WalkthroughProps {
   role: Role;

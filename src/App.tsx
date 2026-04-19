@@ -174,7 +174,9 @@ export default function App() {
   const [role, setRole] = useState<Role>("student");
   const [tab, setTab] = useState(0);
   const [isDark, setIsDark] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState(true); // default true, check later
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    return !localStorage.getItem('drona_onboarding_done');
+  });
   const [session, setSession] = useState<any>(null);
   const [authMode, setAuthMode] = useState<"signIn" | "signUp">("signIn");
   const [loadingSession, setLoadingSession] = useState(true);
@@ -182,10 +184,11 @@ export default function App() {
   const [profileName, setProfileName] = useState("");
 
   useEffect(() => {
-    // Check for onboarding completion
-    const hasSeenOnboarding = localStorage.getItem('drona_onboarding_done');
-    if (hasSeenOnboarding) {
-      setShowOnboarding(false);
+    // Sync theme
+    const stored = localStorage.getItem('theme');
+    if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      setIsDark(true);
+      document.documentElement.classList.add('dark');
     }
 
     // Check supabase session
@@ -205,13 +208,6 @@ export default function App() {
         fetchUserProfile(session.user.id);
       }
     });
-
-    // Setup initial from local storage or matchMedia
-    const stored = localStorage.getItem('theme');
-    if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      setIsDark(true);
-      document.documentElement.classList.add('dark');
-    }
 
     return () => subscription.unsubscribe();
   }, []);
@@ -306,10 +302,6 @@ export default function App() {
     }
   };
 
-  if (showOnboarding) {
-    return <Onboarding onComplete={handleCompleteOnboarding} />;
-  }
-
   if (loadingSession) {
     return (
       <div className="h-screen bg-stone-50 dark:bg-stone-950 flex items-center justify-center">
@@ -319,25 +311,47 @@ export default function App() {
   }
 
   if (!session) {
-    if (authMode === "signIn") {
-      return <SignIn onSuccess={() => {}} onNavigateToSignUp={() => setAuthMode("signUp")} />;
+    if (showOnboarding) {
+      return <Onboarding onComplete={handleCompleteOnboarding} />;
     }
-    return <SignUp onSuccess={() => {}} onNavigateToSignIn={() => setAuthMode("signIn")} />;
+    if (authMode === "signIn") {
+      return (
+        <SignIn 
+          onSuccess={() => {}} 
+          onBackToOnboarding={() => {
+            localStorage.removeItem('drona_onboarding_done');
+            setShowOnboarding(true);
+          }}
+          onNavigateToSignUp={() => setAuthMode("signUp")} 
+        />
+      );
+    }
+    return (
+      <SignUp 
+        onSuccess={() => {}} 
+        onBackToOnboarding={() => {
+          localStorage.removeItem('drona_onboarding_done');
+          setShowOnboarding(true);
+        }}
+        onNavigateToSignIn={() => setAuthMode("signIn")} 
+      />
+    );
   }
 
-  return (
-    <div className="h-screen bg-stone-100 dark:bg-stone-800 font-sans flex flex-col overflow-hidden text-stone-900 dark:text-stone-50 relative">
-      
-      {showWalkthrough && (
-        <Walkthrough 
-          role={role} 
-          name={profileName} 
-          onComplete={() => {
-            setShowWalkthrough(false);
-            localStorage.setItem('drona_walkthrough_done', 'true');
-          }} 
-        />
-      )}
+  if (session) {
+    return (
+      <div className="h-screen bg-stone-100 dark:bg-stone-800 font-sans flex flex-col overflow-hidden text-stone-900 dark:text-stone-50 relative">
+        
+        {showWalkthrough && (
+          <Walkthrough 
+            role={role} 
+            name={profileName} 
+            onComplete={() => {
+              setShowWalkthrough(false);
+              localStorage.setItem('drona_walkthrough_done', 'true');
+            }} 
+          />
+        )}
 
       {/* App Header & Role Switcher */}
       <header className="bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 shrink-0 z-20 relative">
@@ -395,6 +409,6 @@ export default function App() {
         </div>
       </div>
     </div>
-
   );
+}
 }

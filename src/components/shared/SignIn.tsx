@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { supabase } from "../../supabaseClient";
 import { School, ArrowRight, AlertCircle, CheckCircle2 } from "lucide-react";
 
 interface SignInProps {
   onSuccess: () => void;
   onNavigateToSignUp: () => void;
+  onBackToOnboarding: () => void;
 }
 
-export default function SignIn({ onSuccess, onNavigateToSignUp }: SignInProps) {
+export default function SignIn({ onSuccess, onNavigateToSignUp, onBackToOnboarding }: SignInProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ export default function SignIn({ onSuccess, onNavigateToSignUp }: SignInProps) {
     }
   }, []);
 
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleSignIn = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -75,6 +76,11 @@ export default function SignIn({ onSuccess, onNavigateToSignUp }: SignInProps) {
             create a new account
           </button>
         </p>
+        <div className="mt-4 text-center">
+           <button onClick={onBackToOnboarding} className="text-xs font-semibold text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors uppercase tracking-widest bg-transparent border-none cursor-pointer">
+             ← Back to role selection
+           </button>
+        </div>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">

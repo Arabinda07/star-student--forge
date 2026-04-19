@@ -351,7 +351,7 @@ export default function StudentNotes() {
           </div>
         ) : (
           subjectsToDisplay.map((subj, i) => {
-            const sc = SUBJECTS[subj] || SUBJECTS.Physics;
+            const sc = SUBJECTS[subj as string] || SUBJECTS.Physics;
             const subjectNotes = notes.filter(n => n.subject === subj);
             const newCount = subjectNotes.filter(n => n.is_new).length;
             
