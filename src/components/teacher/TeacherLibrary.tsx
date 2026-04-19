@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, ChangeEvent } from "react";
 import { SUBJECTS } from "../../constants";
 import { SectionLabel, Btn, Chip, EmptySlate, Sheet } from "../shared/UI";
-import { ChevronLeft, ChevronRight, Search, FileText, Upload, CheckCircle2, Plus, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search, FileText, Upload, CheckCircle2, Plus, Trash2, Download } from "lucide-react";
 import { Note as NoteType } from "../../types";
 import { supabase } from "../../supabaseClient";
 
@@ -119,6 +119,26 @@ export default function TeacherLibrary() {
     }
   };
 
+  const handleDownload = async (path: string, fileName: string) => {
+    try {
+      const { data, error } = await supabase.storage.from("app-files").createSignedUrl(path, 3600, {
+        download: fileName,
+      });
+      if (error) throw error;
+      if (data?.signedUrl) {
+        const link = document.createElement("a");
+        link.href = data.signedUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Failed to download file");
+    }
+  };
+
   const subjects = Object.keys(SUBJECTS);
 
   if (subject) {
@@ -184,12 +204,24 @@ export default function TeacherLibrary() {
                   </div>
                   <div className="text-xs font-medium text-stone-500 dark:text-stone-400 font-sans">{note.pages} pages</div>
                 </div>
-                <button 
-                  onClick={() => handleDelete(note.id, note.file_path)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                >
-                  <Trash2 size={18} />
-                </button>
+                <div className="flex items-center gap-2">
+                  {note.file_path && (
+                    <button
+                      onClick={() => handleDownload(note.file_path, note.title)}
+                      className="p-2 text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors cursor-pointer"
+                      title="Download"
+                    >
+                      <Download size={18} />
+                    </button>
+                  )}
+                  <button 
+                    onClick={() => handleDelete(note.id, note.file_path)}
+                    className="p-2 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                    title="Delete"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               </div>
             ))
           )}

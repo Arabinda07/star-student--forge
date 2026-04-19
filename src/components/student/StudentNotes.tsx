@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { SUBJECTS } from "../../constants";
-import { ChevronRight, ChevronLeft, Search, FileText, Bookmark, Play, Plus, Trash2 } from "lucide-react";
+import { ChevronRight, ChevronLeft, Search, FileText, Bookmark, Play, Plus, Trash2, Download } from "lucide-react";
 import { supabase } from "../../supabaseClient";
+import { Sheet, Btn } from "../shared/UI";
 
 export default function StudentNotes() {
   const [subject, setSubject] = useState<string | null>(null);
@@ -116,6 +117,26 @@ export default function StudentNotes() {
   const currentSubjectNotes = notes.filter(n => n.subject === subject);
   const filteredNotes = currentSubjectNotes.filter(n => n.title.toLowerCase().includes(search.toLowerCase()));
 
+  const handleDownload = async (path: string, fileName: string) => {
+    try {
+      const { data, error } = await supabase.storage.from("app-files").createSignedUrl(path, 3600, {
+        download: fileName,
+      });
+      if (error) throw error;
+      if (data?.signedUrl) {
+        const link = document.createElement("a");
+        link.href = data.signedUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Failed to download file");
+    }
+  };
+
   if (openNote && subject) {
     const sc = SUBJECTS[subject] || SUBJECTS.Physics;
     const isSaved = openNote.is_saved;
@@ -148,12 +169,22 @@ export default function StudentNotes() {
             <h2 className="text-xl font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans leading-tight mb-2">
               {openNote.title}
             </h2>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold tracking-wider uppercase" style={{ color: sc.fg }}>{subject}</span>
-              <span className="text-stone-300">•</span>
-              <span className="text-xs text-stone-500 dark:text-stone-400 font-sans">{openNote.uploaded}</span>
-              <span className="text-stone-300">•</span>
-              <span className="text-xs text-stone-500 dark:text-stone-400 font-sans">{openNote.pages} pages</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold tracking-wider uppercase" style={{ color: sc.fg }}>{subject}</span>
+                <span className="text-stone-300">•</span>
+                <span className="text-xs text-stone-500 dark:text-stone-400 font-sans">{openNote.uploaded}</span>
+                <span className="text-stone-300">•</span>
+                <span className="text-xs text-stone-500 dark:text-stone-400 font-sans">{openNote.pages} pages</span>
+              </div>
+              {openNote.file_path && (
+                <button
+                  onClick={() => handleDownload(openNote.file_path, openNote.title)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors text-xs font-bold font-sans cursor-pointer active:scale-95"
+                >
+                  <Download size={14} /> Download
+                </button>
+              )}
             </div>
           </div>
         </div>
