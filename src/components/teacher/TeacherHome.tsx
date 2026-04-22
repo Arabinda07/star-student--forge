@@ -120,7 +120,7 @@ export default function TeacherHome() {
               animate={{ opacity: 1, x: 0 }}
               className="bg-white dark:bg-stone-900 rounded-[40px] border border-stone-200/60 dark:border-stone-800/60 p-10 shadow-sm"
             >
-              <h3 className="text-[10px] font-black text-stone-400 dark:text-stone-500 font-sans mb-8 uppercase tracking-[0.25em] text-center w-full">Efficiency Matrix</h3>
+              <h3 className="text-[10px] font-bold text-stone-400 dark:text-stone-500 font-sans mb-8 uppercase tracking-[0.2em] text-center w-full">This week</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-8 bg-stone-50 dark:bg-stone-950/50 rounded-[32px] text-center border border-stone-100 dark:border-stone-800/50 group hover:border-amber-200 dark:hover:border-amber-900/40 transition-colors shadow-inner flex flex-col justify-center min-h-[140px]">
                   <div className="text-5xl font-black text-stone-900 dark:text-stone-50 font-sans tracking-tighter group-hover:scale-110 transition-transform mb-2">0</div>
@@ -141,7 +141,7 @@ export default function TeacherHome() {
             >
               <div className="relative z-10">
                 <h3 className="text-lg font-black font-sans tracking-tight mb-4 text-amber-950 flex items-center gap-2">
-                  <span className="bg-amber-950 text-amber-400 px-2.5 py-1 rounded-md text-[10px] uppercase tracking-widest">Tip</span> Teacher Pro Mode
+                  <span className="bg-amber-950 text-amber-400 px-2.5 py-1 rounded-md text-[10px] uppercase tracking-widest">Tip</span> Quick tip
                 </h3>
                 <p className="text-sm text-amber-950 font-bold leading-relaxed opacity-90 max-w-[240px]">
                   Regular feedback helps students stay motivated. We recommend grading submissions within 24 hours of receipt.

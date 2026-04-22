@@ -8,6 +8,7 @@ export function Btn({
   variant = 'primary',
   disabled,
   className = "",
+  id,
 }: { 
   label: string; 
   onClick?: () => void; 
@@ -16,6 +17,7 @@ export function Btn({
   variant?: 'primary' | 'secondary' | 'danger' | 'outline' | 'ghost';
   disabled?: boolean;
   className?: string;
+  id?: string;
 }) {
   const baseClass = "font-sans font-black flex items-center justify-center gap-3 transition-all duration-300 rounded-[20px] px-8 py-4 text-[10px] uppercase tracking-[0.3em] active:scale-[0.97] active:brightness-90 italic";
   const wClass = full ? "w-full" : "w-auto";
@@ -40,7 +42,7 @@ export function Btn({
       break;
   }
   return (
-    <button onClick={onClick} disabled={disabled} className={`${baseClass} ${wClass} ${vClass} ${dClass} ${className}`}>
+    <button id={id} onClick={onClick} disabled={disabled} className={`${baseClass} ${wClass} ${vClass} ${dClass} ${className}`}>
       {icon && <span className="shrink-0 group-hover:scale-110 transition-transform">{icon}</span>}
       <span className="relative top-[0.5px]">{label}</span>
     </button>
@@ -157,3 +159,69 @@ export function Sheet({
     </div>
   );
 }
+
+// ─── Skeleton loader ──────────────────────────────────────────────────────────
+// Use these instead of spinners to show loading states that match layout shape.
+export function Skeleton({
+  variant = "line",
+  width,
+  height,
+  className = "",
+}: {
+  variant?: "line" | "card" | "avatar" | "text";
+  width?: string;
+  height?: string;
+  className?: string;
+}) {
+  const base = "animate-pulse bg-stone-100 dark:bg-stone-800 rounded-xl";
+
+  if (variant === "avatar") {
+    return (
+      <div
+        className={`${base} rounded-[20px] shrink-0 ${className}`}
+        style={{ width: width || "4rem", height: height || "4rem" }}
+        aria-hidden="true"
+      />
+    );
+  }
+
+  if (variant === "card") {
+    return (
+      <div
+        className={`${base} rounded-[32px] ${className}`}
+        style={{ width: width || "100%", height: height || "12rem" }}
+        aria-hidden="true"
+      />
+    );
+  }
+
+  if (variant === "text") {
+    return (
+      <div className={`space-y-2 ${className}`} aria-hidden="true">
+        <div className={`${base} h-4`} style={{ width: "75%" }} />
+        <div className={`${base} h-4`} style={{ width: "90%" }} />
+        <div className={`${base} h-4`} style={{ width: "55%" }} />
+      </div>
+    );
+  }
+
+  // default: single line
+  return (
+    <div
+      className={`${base} h-4 ${className}`}
+      style={{ width: width || "100%" }}
+      aria-hidden="true"
+    />
+  );
+}
+
+export function SkeletonList({ count = 3, variant = "card" }: { count?: number; variant?: "card" | "line" | "text" }) {
+  return (
+    <div className="space-y-4" aria-busy="true" aria-label="Loading content">
+      {Array.from({ length: count }).map((_, i) => (
+        <Skeleton key={i} variant={variant} />
+      ))}
+    </div>
+  );
+}
+

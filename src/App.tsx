@@ -133,7 +133,7 @@ function BottomNav({ role, active, onNav }: { role: Role; active: number; onNav:
                 </div>
               )}
               <div
-                className={`text-[8px] font-black font-sans uppercase tracking-[0.2em] italic transition-all duration-500 ${isActive ? "opacity-100 scale-100" : "opacity-0 scale-75 translate-y-2"} ${getRoleColorClass(role)}`}
+                className={`text-[9px] font-bold font-sans uppercase tracking-[0.18em] transition-all duration-500 ${isActive ? "opacity-100 scale-100" : "opacity-0 scale-75 translate-y-2"} ${getRoleColorClass(role)}`}
               >
                 {tab.label}
               </div>
@@ -175,7 +175,7 @@ function DesktopNav({ role, active, onNav }: { role: Role; active: number; onNav
                 <div className={`transition-all duration-700 ${isActive ? getRoleColorClass(role) + " scale-125 rotate-6" : "text-stone-300 dark:text-stone-700 group-hover:scale-110 group-hover:text-stone-900"}`}>
                   {tab.icon}
                 </div>
-                <span className={`text-[10px] font-black uppercase tracking-[0.3em] transition-all italic font-display ${isActive ? "opacity-100 translate-x-1" : "opacity-60 translate-x-0"}`}>{tab.label}</span>
+                <span className={`text-[11px] font-semibold tracking-[0.2em] transition-all font-sans ${isActive ? "opacity-100 translate-x-1" : "opacity-50 translate-x-0"}`}>{tab.label}</span>
               </div>
               {tab.badge !== undefined && (
                 <div className={`rounded-full min-w-[24px] h-6 px-2 text-[9px] font-black flex items-center justify-center shadow-lg transform transition-transform group-hover:scale-110 ${isActive ? "bg-rose-500 text-white" : "bg-stone-100 dark:bg-stone-800 text-stone-400"}`}>
@@ -392,7 +392,7 @@ export default function App() {
 
   if (session) {
     return (
-      <div className="h-[100dvh] bg-stone-100 dark:bg-stone-800 font-sans flex flex-col overflow-hidden text-stone-900 dark:text-stone-50 relative premium-texture">
+      <div className="h-[100dvh] bg-stone-50 dark:bg-stone-950 font-sans flex flex-col overflow-hidden text-stone-900 dark:text-stone-50 relative premium-texture">
         
         {showWalkthrough && (
           <Walkthrough 
@@ -433,9 +433,9 @@ export default function App() {
         {/* Desktop Sidebar */}
         <div className="hidden md:flex flex-col w-72 border-r border-stone-100 dark:border-stone-800 bg-white dark:bg-stone-900 z-10 shrink-0">
           <DesktopNav role={role} active={tab} onNav={handleTabChange} />
-          <div className="mt-auto p-10 hidden md:block">
-            <div className="text-[10px] text-stone-300 dark:text-stone-600 uppercase tracking-[0.4em] font-black italic">Drona Protocol</div>
-            <div className="text-[10px] font-black text-stone-200 dark:text-stone-700 mt-2 italic tracking-widest">BUILD v2.1.1</div>
+          <div className="mt-auto p-8 hidden md:block border-t border-stone-100 dark:border-stone-800/50">
+            <div className="text-xs font-bold text-stone-400 dark:text-stone-600">Drona</div>
+            <div className="text-[10px] text-stone-300 dark:text-stone-700 mt-1 font-medium">v2.1.1</div>
           </div>
         </div>
         

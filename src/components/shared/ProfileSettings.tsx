@@ -245,7 +245,13 @@ function PersonalInfoView({ details, setDetails, role }: { details: any, setDeta
         initial: tempName.charAt(0).toUpperCase()
       }));
 
-      alert("Profile updated successfully!");
+      // Show success feedback without blocking alert
+      const btn = document.getElementById('save-profile-btn');
+      if (btn) {
+        const orig = btn.textContent;
+        btn.textContent = 'Saved ✓';
+        setTimeout(() => { if (btn) btn.textContent = orig; }, 2000);
+      }
 
     } catch (err: any) {
       setError(err.message || "Failed to save changes");
@@ -400,6 +406,7 @@ function PersonalInfoView({ details, setDetails, role }: { details: any, setDeta
         </div>
         
         <Btn 
+          id="save-profile-btn"
           label={isSaving ? "Saving..." : "Save Profile Changes"} 
           full 
           variant="primary" 
@@ -598,7 +605,7 @@ function HelpCenterView() {
        
        <h3 className="text-[10px] font-black tracking-[0.25em] uppercase text-stone-400 dark:text-stone-500 font-sans mb-4 ml-2">Troubleshooting</h3>
        <div className="mb-12 p-6 bg-stone-100 dark:bg-stone-900/50 border border-stone-200/60 dark:border-stone-800/60 rounded-[24px] shadow-inner flex flex-col gap-4 items-start">
-         <span className="text-sm font-bold text-stone-600 dark:text-stone-400">Clear the local cache state to replay the Drona initialization sequence for testing.</span>
+         <span className="text-sm font-bold text-stone-600 dark:text-stone-400">Reset the onboarding flow — useful if you want to see the intro screens again or are testing the app.</span>
          <button onClick={handleResetOnboarding} className="px-5 py-3 font-black tracking-widest text-[10px] uppercase bg-stone-200 dark:bg-stone-800 rounded-[16px] hover:bg-stone-300 dark:hover:bg-stone-700 transition-colors shadow-sm active:scale-95 border border-stone-300 dark:border-stone-700/50 text-stone-700 dark:text-stone-300">Replay Onboarding</button>
        </div>
 

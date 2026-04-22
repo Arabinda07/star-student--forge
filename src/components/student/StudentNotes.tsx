@@ -212,15 +212,15 @@ export default function StudentNotes() {
 
             <div>
               <div className="flex items-center gap-4 mb-6">
-                 <span className="text-[10px] font-black uppercase tracking-[0.3em] px-4 py-2 rounded-xl border shadow-sm italic" style={{ backgroundColor: `${sc.fg}11`, color: sc.fg, borderColor: `${sc.fg}44` }}>{subject} Archive</span>
-                 <span className="text-[10px] font-black text-stone-400 uppercase tracking-[0.3em] px-4 border-l-2 border-stone-100 dark:border-stone-800 ml-1 italic">Ingested: {openNote.uploaded}</span>
+                 <span className="text-[10px] font-bold uppercase tracking-wide px-4 py-2 rounded-xl border shadow-sm" style={{ backgroundColor: `${sc.fg}11`, color: sc.fg, borderColor: `${sc.fg}44` }}>{subject}</span>
+                 <span className="text-[10px] font-semibold text-stone-400 uppercase tracking-wide px-4 border-l-2 border-stone-100 dark:border-stone-800 ml-1">Added {openNote.uploaded}</span>
               </div>
               <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
                  <div>
                     <h2 className="text-5xl lg:text-7xl font-black text-stone-900 dark:text-stone-50 leading-[0.85] font-display tracking-tighter mb-4 uppercase italic">
                       {openNote.title}
                     </h2>
-                    <div className="text-[11px] font-black text-stone-300 dark:text-stone-600 uppercase tracking-[0.4em] italic font-sans">Sequence of {openNote.pages} digital artifacts</div>
+                    <div className="text-[11px] font-semibold text-stone-400 dark:text-stone-600 uppercase tracking-wide">{openNote.pages} page{openNote.pages !== 1 ? 's' : ''}</div>
                  </div>
                  {openNote.file_path && (
                    <Btn
@@ -249,11 +249,11 @@ export default function StudentNotes() {
                   <Play size={32} weight="fill" className="text-white ml-1" />
                 </div>
                 <div>
-                  <div className="text-2xl font-black text-white font-display mb-1 uppercase italic tracking-tight">Audio Protocol Active</div>
-                  <div className="text-sm font-medium text-stone-400 font-sans italic opacity-80">"Expert commentary synchronized for this conceptual sequence"</div>
+                  <div className="text-2xl font-black text-white font-display mb-1 uppercase italic tracking-tight">Audio recording</div>
+                  <div className="text-sm font-medium text-stone-400 font-sans opacity-80">Play the recording attached to this note.</div>
                 </div>
-                <div className="ml-auto flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.3em] text-brand-400 italic">
-                  <PushPin size={16} weight="duotone" className="rotate-45" /> Playback Session
+                <div className="ml-auto flex items-center gap-3 text-[11px] font-bold uppercase tracking-wide text-brand-400">
+                  Play
                 </div>
               </div>
             </motion.div>
@@ -261,7 +261,7 @@ export default function StudentNotes() {
 
           {openNote.file_path ? (
             <div className="space-y-6">
-              <SectionLabel>Digital Artifact</SectionLabel>
+              <SectionLabel>File</SectionLabel>
               <motion.button
                 whileHover={{ y: -4 }}
                 onClick={async () => {
@@ -297,7 +297,7 @@ export default function StudentNotes() {
             </div>
           ) : (
             <div className="space-y-6">
-              <SectionLabel>Canvas Gallery</SectionLabel>
+              <SectionLabel>Pages</SectionLabel>
               <div className="grid gap-8 grid-cols-1">
                 {Array.from({ length: openNote.pages || 1 }).map((_, i) => (
                   <motion.div 
@@ -342,7 +342,7 @@ export default function StudentNotes() {
                 <div className="w-10 h-10 rounded-full border border-stone-100 dark:border-stone-800 flex items-center justify-center bg-white dark:bg-stone-900 shadow-sm group-hover:scale-105 transition-all">
                   <CaretLeft size={18} weight="bold" className="group-hover:-translate-x-0.5 transition-transform" />
                 </div>
-                Registry Overview
+                All notes
               </button>
               <div className="flex items-center gap-4">
                  <button 
@@ -398,7 +398,7 @@ export default function StudentNotes() {
         <div className="flex-1 max-w-7xl mx-auto w-full px-6 py-12 pb-24">
           <AnimatePresence mode="popLayout">
             {filteredNotes.length === 0 ? (
-              <EmptySlate icon="🔍" title="Knowledge mismatch" sub={`No personal or shared notes matching "${search}" in ${subject}.`} />
+              <EmptySlate icon="🔍" title="No results" sub={`Nothing matches "${search}" in ${subject}.`} />
             ) : (
               <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 {filteredNotes.map((note, i) => {
@@ -437,8 +437,8 @@ export default function StudentNotes() {
                       </div>
 
                       <div className="flex items-center gap-3 mb-4 relative z-10">
-                        {note.is_new && <Chip label="Latest Arrival" color="#3b82f6" border="#dbeafe" bg="#eff6ff" />}
-                        <span className="text-[10px] font-black text-stone-300 dark:text-stone-600 uppercase tracking-[0.3em] italic">{note.uploaded}</span>
+                        {note.is_new && <Chip label="New" color="#3b82f6" border="#dbeafe" bg="#eff6ff" />}
+                        <span className="text-[10px] font-semibold text-stone-400 dark:text-stone-600 uppercase tracking-wide">{note.uploaded}</span>
                       </div>
 
                       <h3 className="text-3xl font-black text-stone-900 dark:text-stone-50 font-display leading-[0.95] mb-6 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors line-clamp-3 relative z-10 uppercase italic tracking-tighter">
@@ -471,9 +471,9 @@ export default function StudentNotes() {
         <div className="max-w-7xl mx-auto w-full">
           <div className="flex justify-between items-end mb-10">
             <div>
-              <h1 className="text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display mb-2 uppercase italic leading-none">Knowledge Hub</h1>
-              <p className="text-[11px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-[0.4em] italic">
-                <span className="text-brand-600 dark:text-brand-400 font-black mr-2 italic">{notes.length}</span> Conceptual objects curated in <span className="text-brand-600 dark:text-brand-400 font-black mx-2 italic">{subjectsToDisplay.length}</span> Departments
+              <h1 className="text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display mb-2 uppercase italic leading-none">Notes</h1>
+              <p className="text-[11px] font-semibold text-stone-400 dark:text-stone-500 tracking-wide">
+                <span className="text-brand-600 dark:text-brand-400 font-black mr-1">{notes.length}</span> notes across <span className="text-brand-600 dark:text-brand-400 font-black mx-1">{subjectsToDisplay.length}</span> subjects
               </p>
             </div>
             <div className="hidden md:block">
@@ -485,9 +485,16 @@ export default function StudentNotes() {
       
       <div className="flex-1 max-w-7xl mx-auto w-full px-6 py-10 pb-24">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-24">
-            <div className="w-12 h-12 animate-spin rounded-full border-4 border-stone-200 border-t-amber-500" />
-            <p className="mt-4 text-[10px] font-black uppercase tracking-widest text-stone-400">Archiving libraries...</p>
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 py-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="rounded-[44px] p-10 border border-stone-100 dark:border-stone-800 bg-white dark:bg-stone-900 space-y-6 animate-pulse">
+                <div className="w-20 h-24 rounded-[28px] bg-stone-100 dark:bg-stone-800" />
+                <div className="space-y-3 mt-auto">
+                  <div className="h-3 bg-stone-100 dark:bg-stone-800 rounded-lg w-1/3" />
+                  <div className="h-6 bg-stone-100 dark:bg-stone-800 rounded-lg w-3/4" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
