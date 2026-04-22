@@ -66,28 +66,31 @@ export default function ProfileSettings({ role }: { role: Role }) {
   // Render Sub-pages
   if (activePage !== 'main') {
     return (
-      <div className="flex-1 flex flex-col w-full bg-stone-50 dark:bg-stone-950 animate-slide-in-right overflow-hidden">
+      <div className="flex-1 flex flex-col w-full bg-stone-50 md:bg-white dark:bg-stone-950 md:dark:bg-stone-900 animate-slide-in-right overflow-hidden premium-texture relative">
+        <div className="absolute left-10 top-0 bottom-0 w-px bg-stone-200 dark:bg-stone-800" />
         {/* Sub-page Header */}
-        <div className="h-16 px-4 flex items-center border-b border-stone-200 dark:border-stone-800 shrink-0 bg-white dark:bg-stone-900 shadow-sm relative z-10 w-full">
-          <button 
-            onClick={() => setActivePage('main')}
-            className="w-11 h-11 flex items-center justify-center -ml-2 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors cursor-pointer text-stone-600 dark:text-stone-300"
-          >
-            <ChevronLeft size={24} />
-          </button>
-          <div className="font-sans font-bold text-lg text-stone-900 dark:text-stone-50 ml-2">
-            {activePage === 'personal_info' && 'Personal Information'}
-            {activePage === 'security' && 'Password & Security'}
-            {activePage === 'sessions' && 'Active Sessions'}
-            {activePage === 'notifications' && 'Notifications'}
-            {activePage === 'privacy' && 'Privacy'}
-            {activePage === 'help' && 'Help Center'}
-            {activePage === 'terms' && 'Terms of Service'}
-          </div>
+        <div className="px-6 py-8 pb-6 shrink-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md sticky top-0 z-20 border-b border-stone-200 dark:border-stone-800">
+           <div className="max-w-4xl mx-auto w-full">
+             <button onClick={() => setActivePage('main')} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-stone-400 dark:text-stone-500 hover:text-stone-900 dark:hover:text-stone-50 transition-colors mb-6 group cursor-pointer z-10 relative bg-transparent border-none">
+               <div className="w-8 h-8 rounded-full border border-stone-200 dark:border-stone-800 flex items-center justify-center bg-white dark:bg-stone-900 shadow-sm group-hover:scale-105 transition-all">
+                  <ChevronLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" /> 
+               </div>
+               Back to Settings
+             </button>
+             <h1 className="text-4xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-sans relative z-10">
+              {activePage === 'personal_info' && 'Personal Information'}
+              {activePage === 'security' && 'Password & Security'}
+              {activePage === 'sessions' && 'Active Sessions'}
+              {activePage === 'notifications' && 'Notifications'}
+              {activePage === 'privacy' && 'Privacy'}
+              {activePage === 'help' && 'Help Center'}
+              {activePage === 'terms' && 'Terms of Service'}
+             </h1>
+           </div>
         </div>
 
         {/* Sub-page Content */}
-        <div className="flex-1 overflow-y-auto w-full">
+        <div className="flex-1 overflow-y-auto w-full relative z-10">
           {activePage === 'personal_info' && <PersonalInfoView details={profile} setDetails={setProfile} role={role} />}
           {activePage === 'security' && <PasswordSecurityView />}
           {activePage === 'sessions' && <ActiveSessionsView />}
@@ -102,37 +105,37 @@ export default function ProfileSettings({ role }: { role: Role }) {
 
   // Render Main Settings Page
   return (
-    <div className="flex-1 overflow-y-auto scrollbar-hide flex flex-col w-full animate-fade-in">
+    <div className="flex-1 overflow-y-auto scrollbar-hide flex flex-col w-full animate-fade-in premium-texture">
       {/* Header */}
-      <div className="px-6 py-6 shrink-0">
-        <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans">Profile & Settings</h1>
+      <div className="px-6 py-8 pb-4 shrink-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md sticky top-0 z-20 border-b border-stone-200 dark:border-stone-800">
+        <h1 className="text-4xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-sans">Profile & Settings</h1>
       </div>
 
-      <div className="px-6 pb-8 flex flex-col gap-6 overflow-y-auto scrollbar-hide">
+      <div className="px-6 py-6 pb-24 flex flex-col gap-8 overflow-y-auto scrollbar-hide max-w-4xl mx-auto w-full">
         
         {/* Profile Card */}
-        <div className="bg-white dark:bg-stone-900 rounded-2xl p-4 flex items-center gap-4 border border-stone-200 dark:border-stone-800 shadow-sm cursor-pointer hover:border-stone-300 dark:hover:border-stone-700 transition-colors"
+        <div className="bg-white dark:bg-stone-900 rounded-[32px] p-6 flex items-center gap-5 border border-stone-200/60 dark:border-stone-800/60 shadow-sm cursor-pointer hover:border-amber-200 dark:hover:border-amber-900/40 hover:-translate-y-1 hover:shadow-xl transition-all group"
              onClick={() => setActivePage('personal_info')}>
           {profile.avatar_url ? (
-             <img src={profile.avatar_url} alt="Profile" className="w-14 h-14 rounded-full object-cover shrink-0 border border-stone-200 dark:border-stone-800" referrerPolicy="no-referrer" />
+             <img src={profile.avatar_url} alt="Profile" className="w-16 h-16 rounded-[20px] object-cover shrink-0 border border-stone-200 dark:border-stone-800 shadow-sm" referrerPolicy="no-referrer" />
           ) : (
-            <div className={`w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold shrink-0 ${profile.avatarColor}`}>
+            <div className={`w-16 h-16 rounded-[20px] flex items-center justify-center text-2xl font-black shrink-0 ${profile.avatarColor} shadow-inner`}>
               {profile.initial}
             </div>
           )}
           <div className="flex-1 min-w-0">
-            <h2 className="text-lg font-bold text-stone-900 dark:text-stone-50 font-sans truncate">{profile.name}</h2>
-            <p className="text-sm text-stone-500 dark:text-stone-400 font-sans truncate">{profile.email}</p>
+            <h2 className="text-2xl font-black text-stone-900 dark:text-stone-50 font-sans truncate group-hover:text-amber-600 transition-colors uppercase tracking-tight">{profile.name}</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-stone-400 dark:text-stone-500 font-sans truncate">{profile.email}</p>
           </div>
-          <button className="w-11 h-11 flex items-center justify-center bg-stone-50 dark:bg-stone-950 rounded-full text-stone-600 dark:text-stone-300 pointer-events-none">
+          <button className="w-12 h-12 flex items-center justify-center bg-stone-50 dark:bg-stone-800 rounded-full text-stone-400 dark:text-stone-500 pointer-events-none group-hover:text-amber-500 group-hover:scale-110 transition-all">
             <ChevronRight size={20} />
           </button>
         </div>
 
         {/* Account Group */}
         <div>
-          <div className="text-xs font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-2 ml-2">Account</div>
-          <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 overflow-hidden shadow-sm">
+          <div className="text-[10px] font-black tracking-[0.25em] uppercase text-stone-400 dark:text-stone-500 font-sans mb-3 ml-2">Account</div>
+          <div className="bg-white dark:bg-stone-900 rounded-[24px] border border-stone-200/60 dark:border-stone-800/60 overflow-hidden shadow-sm">
             <SettingsItem icon={<User size={18} />} label="Personal Information" onClick={() => setActivePage('personal_info')} />
             <SettingsItem icon={<Key size={18} />} label="Password & Security" onClick={() => setActivePage('security')} />
             <SettingsItem icon={<MonitorSmartphone size={18} />} label="Active Sessions" onClick={() => setActivePage('sessions')} noBorder />
@@ -141,8 +144,8 @@ export default function ProfileSettings({ role }: { role: Role }) {
 
         {/* Preferences Group */}
         <div>
-          <div className="text-xs font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-2 ml-2">Preferences</div>
-          <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 overflow-hidden shadow-sm">
+          <div className="text-[10px] font-black tracking-[0.25em] uppercase text-stone-400 dark:text-stone-500 font-sans mb-3 ml-2">Preferences</div>
+          <div className="bg-white dark:bg-stone-900 rounded-[24px] border border-stone-200/60 dark:border-stone-800/60 overflow-hidden shadow-sm">
             <SettingsItem icon={<Bell size={18} />} label="Notifications" onClick={() => setActivePage('notifications')} />
             <SettingsItem icon={<Shield size={18} />} label="Privacy" onClick={() => setActivePage('privacy')} noBorder />
           </div>
@@ -150,8 +153,8 @@ export default function ProfileSettings({ role }: { role: Role }) {
 
         {/* Support Group */}
         <div>
-          <div className="text-xs font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-2 ml-2">Support</div>
-          <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 overflow-hidden shadow-sm">
+          <div className="text-[10px] font-black tracking-[0.25em] uppercase text-stone-400 dark:text-stone-500 font-sans mb-3 ml-2">Support</div>
+          <div className="bg-white dark:bg-stone-900 rounded-[24px] border border-stone-200/60 dark:border-stone-800/60 overflow-hidden shadow-sm">
             <SettingsItem icon={<CircleHelp size={18} />} label="Help Center" onClick={() => setActivePage('help')} />
             <SettingsItem icon={<Shield size={18} />} label="Terms of Service" onClick={() => setActivePage('terms')} />
             <SettingsItem label="App Version" value="v2.1.1" noBorder />
@@ -164,9 +167,9 @@ export default function ProfileSettings({ role }: { role: Role }) {
              await supabase.auth.signOut();
              window.location.reload();
           }}
-          className="w-full bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 flex items-center justify-center gap-2 text-rose-600 dark:text-rose-500 font-bold font-sans shadow-sm hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors active:scale-[0.98] cursor-pointer"
+          className="w-full bg-rose-50 dark:bg-rose-500/10 border border-rose-200/60 dark:border-rose-900/50 rounded-[24px] p-5 flex items-center justify-center gap-2 text-rose-600 dark:text-rose-500 font-black tracking-[0.2em] text-[10px] uppercase font-sans shadow-sm hover:bg-rose-100 hover:border-rose-300 dark:hover:bg-rose-500/20 transition-all active:scale-[0.98] cursor-pointer group hover:-translate-y-0.5"
         >
-          <LogOut size={18} />
+          <LogOut size={16} className="group-hover:-translate-x-1 transition-transform" />
           Sign Out
         </button>
 
@@ -301,9 +304,9 @@ function PersonalInfoView({ details, setDetails, role }: { details: any, setDeta
   };
 
   return (
-    <div className="flex flex-col gap-6 animate-fade-in relative">
+    <div className="flex flex-col gap-6 animate-fade-in relative max-w-4xl mx-auto w-full pb-24">
       {/* Cover Backdrop */}
-      <div className="h-44 bg-stone-200 dark:bg-stone-800 relative group overflow-hidden">
+      <div className="h-48 md:h-64 bg-stone-200 dark:bg-stone-800 relative group overflow-hidden md:rounded-b-[40px] shadow-sm">
         {coverUrl ? (
           <img src={coverUrl} alt="Cover" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
         ) : (
@@ -311,32 +314,33 @@ function PersonalInfoView({ details, setDetails, role }: { details: any, setDeta
              <Camera size={48} />
           </div>
         )}
-        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
             <button 
               onClick={() => coverInputRef.current?.click()}
-              className="bg-white/90 dark:bg-stone-900/90 text-stone-900 dark:text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg active:scale-95 transition-all cursor-pointer"
+              className="bg-white/90 dark:bg-stone-900/90 text-stone-900 dark:text-white px-6 py-3 rounded-[20px] text-[10px] uppercase font-black tracking-widest shadow-xl active:scale-95 transition-all cursor-pointer hover:bg-white flex items-center gap-2"
             >
+              <Camera size={16} />
               {isUploadingCover ? "Saving..." : "Change Cover"}
             </button>
         </div>
         <input type="file" ref={coverInputRef} className="hidden" accept="image/*" onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], 'cover')} />
       </div>
 
-      <div className="px-6 -mt-16 flex flex-col items-start relative z-10 gap-6">
+      <div className="px-6 -mt-20 flex flex-col items-start relative z-10 gap-8">
         <div className="relative group">
           {avatarUrl ? (
-             <img src={avatarUrl} alt="Avatar" className="w-28 h-28 rounded-full object-cover shadow-xl border-4 border-white dark:border-stone-950 bg-stone-100 dark:bg-stone-800" referrerPolicy="no-referrer" />
+             <img src={avatarUrl} alt="Avatar" className="w-32 h-32 md:w-40 md:h-40 rounded-[32px] object-cover shadow-2xl border-[6px] border-stone-50 dark:border-stone-950 bg-stone-100 dark:bg-stone-800" referrerPolicy="no-referrer" />
           ) : (
-            <div className={`w-28 h-28 rounded-full flex items-center justify-center text-4xl font-bold shadow-xl border-4 border-white dark:border-stone-950 ${details.avatarColor}`}>
+            <div className={`w-32 h-32 md:w-40 md:h-40 rounded-[32px] flex items-center justify-center text-5xl md:text-6xl font-black shadow-2xl border-[6px] border-stone-50 dark:border-stone-950 shadow-inner ${details.avatarColor}`}>
               {details.initial}
             </div>
           )}
           <button 
             onClick={() => fileInputRef.current?.click()}
-            className="absolute bottom-1 right-1 w-9 h-9 bg-sky-500 text-white rounded-full flex items-center justify-center shadow-md hover:bg-sky-600 transition-colors cursor-pointer border-2 border-white dark:border-stone-950 z-20"
+            className="absolute -bottom-2 -right-2 w-12 h-12 bg-sky-500 text-white rounded-2xl flex items-center justify-center shadow-xl hover:bg-sky-600 hover:scale-105 active:scale-95 transition-all cursor-pointer border-4 border-stone-50 dark:border-stone-950 z-20"
             aria-label="Upload avatar"
           >
-            {isUploadingAvatar ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Camera size={16} />}
+            {isUploadingAvatar ? <div className="w-5 h-5 border-[3px] border-white border-t-transparent rounded-full animate-spin" /> : <Camera size={20} />}
           </button>
         </div>
 
@@ -349,40 +353,40 @@ function PersonalInfoView({ details, setDetails, role }: { details: any, setDeta
         />
 
         {error && (
-          <div className="w-full flex items-center gap-2 text-rose-600 dark:text-rose-400 text-xs font-semibold bg-rose-50 dark:bg-rose-900/10 px-4 py-3 rounded-2xl border border-rose-200 dark:border-rose-900/50">
+          <div className="w-full flex items-center gap-2 text-rose-600 dark:text-rose-400 text-xs font-semibold bg-rose-50 dark:bg-rose-900/10 px-4 py-3 rounded-[24px] border border-rose-200 dark:border-rose-900/50">
             <AlertCircle size={16} className="shrink-0" />
             {error}
           </div>
         )}
       </div>
       
-      <div className="px-6 pb-12 space-y-6">
-        <div className="space-y-4">
+      <div className="px-6 pb-12 space-y-8">
+        <div className="space-y-6">
           <div>
-            <label htmlFor="name-input" className="block text-[10px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-1.5 ml-1">Full Name</label>
+            <label htmlFor="name-input" className="block text-[10px] font-black tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-3 ml-1">Full Name</label>
             <input 
               id="name-input" 
               value={tempName} 
               onChange={(e) => setTempName(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 font-sans text-sm bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-sky-500 transition-all shadow-sm" 
+              className="w-full px-5 py-4 rounded-[20px] border border-stone-200 dark:border-stone-800 font-sans text-sm font-bold bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-amber-500 transition-all shadow-sm focus:ring-4 focus:ring-amber-500/10" 
             />
           </div>
           <div>
-            <label htmlFor="email-input" className="block text-[10px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-1.5 ml-1">Email Address</label>
-            <input id="email-input" defaultValue={details.email} className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 font-sans text-sm bg-stone-100 dark:bg-stone-950 text-stone-500 dark:text-stone-400 outline-none shadow-sm cursor-not-allowed" disabled />
-            <p className="text-[11px] text-stone-500 dark:text-stone-400 mt-1.5 ml-1">Email verification is required for changes.</p>
+            <label htmlFor="email-input" className="block text-[10px] font-black tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-3 ml-1">Email Address</label>
+            <input id="email-input" defaultValue={details.email} className="w-full px-5 py-4 rounded-[20px] border border-stone-200 dark:border-stone-800 font-sans text-sm font-bold bg-stone-100 dark:bg-stone-950 text-stone-500 dark:text-stone-400 outline-none shadow-sm cursor-not-allowed" disabled />
+            <p className="text-[10px] uppercase font-black tracking-[0.2em] text-amber-600 dark:text-amber-500 mt-2 ml-1">Email verification is required for changes.</p>
           </div>
           <div>
-            <label htmlFor="phone-input" className="block text-[10px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-1.5 ml-1">Phone Number</label>
+            <label htmlFor="phone-input" className="block text-[10px] font-black tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-3 ml-1">Phone Number</label>
             <input 
               id="phone-input" 
               value={tempPhone} 
               onChange={(e) => setTempPhone(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 font-sans text-sm bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-sky-500 transition-all shadow-sm" 
+              className="w-full px-5 py-4 rounded-[20px] border border-stone-200 dark:border-stone-800 font-sans text-sm font-bold bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-amber-500 transition-all shadow-sm focus:ring-4 focus:ring-amber-500/10" 
             />
           </div>
           <div>
-            <label htmlFor="meta-input" className="block text-[10px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-1.5 ml-1">
+            <label htmlFor="meta-input" className="block text-[10px] font-black tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-3 ml-1">
               {role === 'student' ? 'Class / Grade' : (role === 'teacher' ? 'Teaching Subject' : 'Reference Info')}
             </label>
             <input 
@@ -390,7 +394,7 @@ function PersonalInfoView({ details, setDetails, role }: { details: any, setDeta
               value={tempMeta} 
               onChange={(e) => setTempMeta(e.target.value)}
               placeholder={role === 'student' ? "e.g. Class 10" : "e.g. Mathematics"}
-              className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 font-sans text-sm bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-sky-500 transition-all shadow-sm" 
+              className="w-full px-5 py-4 rounded-[20px] border border-stone-200 dark:border-stone-800 font-sans text-sm font-bold bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-amber-500 transition-all shadow-sm focus:ring-4 focus:ring-amber-500/10 placeholder:font-medium placeholder:text-stone-400" 
             />
           </div>
         </div>
@@ -410,28 +414,30 @@ function PersonalInfoView({ details, setDetails, role }: { details: any, setDeta
 function PasswordSecurityView() {
   const [mfa, setMfa] = useState(false);
   return (
-    <div className="p-6 flex flex-col gap-8 animate-fade-in">
-      <div className="space-y-4">
-        <h3 className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans">Change Password</h3>
-        <div>
-          <label htmlFor="cur-pass" className="block text-[10px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-1">Current Password</label>
-          <input type="password" id="cur-pass" placeholder="••••••••" className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 font-sans text-sm bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-sky-500 transition-all shadow-sm" />
-        </div>
-        <div>
-          <label htmlFor="new-pass" className="block text-[10px] font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-1">New Password</label>
-          <input type="password" id="new-pass" placeholder="Enter new password" className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-800 font-sans text-sm bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-sky-500 transition-all shadow-sm" />
+    <div className="px-6 py-6 pb-24 flex flex-col gap-10 animate-fade-in max-w-4xl mx-auto w-full">
+      <div className="space-y-6">
+        <h3 className="text-2xl font-black text-stone-900 dark:text-stone-50 font-sans tracking-tight">Change Password</h3>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="cur-pass" className="block text-[10px] font-black tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-3 ml-1">Current Password</label>
+            <input type="password" id="cur-pass" placeholder="••••••••" className="w-full px-5 py-4 rounded-[20px] border border-stone-200 dark:border-stone-800 font-sans text-sm font-bold bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-amber-500 transition-all shadow-sm focus:ring-4 focus:ring-amber-500/10 placeholder:text-stone-400" />
+          </div>
+          <div>
+            <label htmlFor="new-pass" className="block text-[10px] font-black tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-3 ml-1">New Password</label>
+            <input type="password" id="new-pass" placeholder="Enter new password" className="w-full px-5 py-4 rounded-[20px] border border-stone-200 dark:border-stone-800 font-sans text-sm font-bold bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-50 outline-none focus:border-amber-500 transition-all shadow-sm focus:ring-4 focus:ring-amber-500/10 placeholder:text-stone-400" />
+          </div>
         </div>
         <Btn label="Update Password" full variant="secondary" />
       </div>
 
-      <div className="bg-stone-200 dark:bg-stone-800 h-px w-full" />
+      <div className="bg-stone-200/50 dark:bg-stone-800/50 h-px w-full" />
 
       <div>
-         <h3 className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans mb-4">Extra Security</h3>
-         <div className="flex items-center justify-between p-4 bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm">
+         <h3 className="text-2xl font-black text-stone-900 dark:text-stone-50 font-sans tracking-tight mb-6">Extra Security</h3>
+         <div className="flex items-center justify-between p-6 bg-white dark:bg-stone-900 rounded-[24px] border border-stone-200/60 dark:border-stone-800/60 shadow-sm">
             <div>
-              <div className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans">Two-Factor Auth</div>
-              <div className="text-xs text-stone-500 dark:text-stone-400 font-sans mt-0.5">Use an Authenticator app</div>
+              <div className="text-[10px] font-black tracking-widest uppercase text-stone-900 dark:text-stone-50 font-sans mb-2">Two-Factor Auth</div>
+              <div className="text-sm font-bold text-stone-500 dark:text-stone-400 font-sans">Use an Authenticator app</div>
             </div>
             <Toggle checked={mfa} onChange={() => setMfa(!mfa)} />
          </div>
@@ -442,44 +448,44 @@ function PasswordSecurityView() {
 
 function ActiveSessionsView() {
   return (
-    <div className="p-6 animate-fade-in">
-      <p className="text-sm text-stone-500 dark:text-stone-400 mb-6 font-sans">
+    <div className="px-6 py-6 pb-24 animate-fade-in max-w-4xl mx-auto w-full">
+      <p className="text-sm font-bold text-stone-500 dark:text-stone-400 mb-8 font-sans max-w-xl">
         You are currently logged in to these devices. Manage your active sessions to ensure account security.
       </p>
       <div className="flex flex-col gap-4">
         {/* Current Device */}
-        <div className="p-4 bg-white dark:bg-stone-900 border border-emerald-200 dark:border-emerald-900 rounded-2xl shadow-sm flex items-start gap-4">
-          <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-             <Smartphone size={20} />
+        <div className="p-6 bg-white dark:bg-stone-900 border-2 border-emerald-400 dark:border-emerald-500/50 rounded-[24px] shadow-sm flex items-start gap-4">
+          <div className="w-12 h-12 rounded-[16px] bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-100 dark:border-emerald-900/40">
+             <Smartphone size={24} />
           </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans flex items-center gap-2">
+          <div className="flex-1 min-w-0 pt-1">
+            <div className="text-xl font-black text-stone-900 dark:text-stone-50 font-sans flex items-center gap-3 tracking-tight mb-1">
               iPhone 13 
-              <span className="text-[10px] bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.5 rounded font-bold uppercase tracking-wide">Current</span>
+              <span className="text-[10px] bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 px-2 py-1 rounded-md font-black uppercase tracking-[0.2em] shadow-inner">Current</span>
             </div>
-            <div className="text-xs text-stone-500 dark:text-stone-400 font-sans truncate">Safari Browser · Mumbai, India</div>
-            <div className="text-xs text-stone-400 dark:text-stone-500 font-sans mt-1">Active right now</div>
+            <div className="text-sm font-bold text-stone-500 dark:text-stone-400 font-sans truncate">Safari Browser · Mumbai, India</div>
+            <div className="text-[10px] text-stone-400 dark:text-stone-500 font-black uppercase tracking-widest mt-2">Active right now</div>
           </div>
         </div>
 
         {/* Other Device */}
-        <div className="p-4 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl shadow-sm flex items-start gap-4">
-          <div className="w-10 h-10 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 flex items-center justify-center shrink-0">
-             <Laptop size={20} />
+        <div className="p-6 bg-white dark:bg-stone-900 border border-stone-200/60 dark:border-stone-800/60 rounded-[24px] shadow-sm flex items-start gap-4 hover:shadow-md transition-shadow">
+          <div className="w-12 h-12 rounded-[16px] bg-stone-50 dark:bg-stone-800 text-stone-400 dark:text-stone-500 flex items-center justify-center shrink-0 border border-stone-200 dark:border-stone-700 shadow-inner">
+             <Laptop size={24} />
           </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans">
+          <div className="flex-1 min-w-0 pt-1">
+            <div className="text-xl font-black text-stone-900 dark:text-stone-50 font-sans tracking-tight mb-1">
               Windows PC
             </div>
-            <div className="text-xs text-stone-500 dark:text-stone-400 font-sans truncate">Chrome Browser · Delhi, India</div>
-            <div className="text-xs text-stone-400 dark:text-stone-500 font-sans mt-1">Last active: 2 hours ago</div>
+            <div className="text-sm font-bold text-stone-500 dark:text-stone-400 font-sans truncate">Chrome Browser · Delhi, India</div>
+            <div className="text-[10px] text-stone-400 dark:text-stone-500 font-black uppercase tracking-widest mt-2">Last active: 2 hours ago</div>
           </div>
-          <button className="text-rose-600 text-xs font-bold font-sans p-2 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer">
+          <button className="text-rose-600 dark:text-rose-500 text-[10px] font-black uppercase tracking-widest p-3 bg-rose-50 dark:bg-rose-500/10 hover:bg-rose-100 dark:hover:bg-rose-500/20 rounded-xl transition-colors cursor-pointer border border-rose-200 dark:border-rose-900/50 active:scale-95">
             Revoke
           </button>
         </div>
       </div>
-      <div className="mt-8">
+      <div className="mt-10">
         <Btn label="Sign out of all other devices" variant="danger" full />
       </div>
     </div>
@@ -497,27 +503,27 @@ function NotificationsView() {
   });
   
   const T = ({ k, title, sub }: { k: keyof typeof nots, title: string, sub: string }) => (
-    <div className="flex items-center justify-between p-4 mix-blend-multiply dark:mix-blend-normal">
+    <div className="flex items-center justify-between p-6">
       <div className="pr-4">
-        <div className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans">{title}</div>
-        <div className="text-xs text-stone-500 dark:text-stone-400 font-sans mt-0.5">{sub}</div>
+        <div className="text-xl font-black text-stone-900 dark:text-stone-50 font-sans tracking-tight mb-1">{title}</div>
+        <div className="text-sm font-bold text-stone-500 dark:text-stone-400 font-sans">{sub}</div>
       </div>
       <Toggle checked={nots[k]} onChange={() => setNots({ ...nots, [k]: !nots[k] })} />
     </div>
   );
 
   return (
-    <div className="p-6 flex flex-col gap-6 animate-fade-in">
+    <div className="px-6 py-6 pb-24 flex flex-col gap-10 animate-fade-in max-w-4xl mx-auto w-full">
       <div>
-         <div className="text-xs font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-2 ml-2">Delivery Methods</div>
-         <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm divide-y divide-stone-100 dark:divide-stone-800">
+         <div className="text-[10px] font-black tracking-[0.25em] uppercase text-stone-400 dark:text-stone-500 font-sans mb-4 ml-2">Delivery Methods</div>
+         <div className="bg-white dark:bg-stone-900 rounded-[24px] border border-stone-200/60 dark:border-stone-800/60 shadow-sm divide-y divide-stone-100 dark:divide-stone-800/50">
            <T k="push" title="Push Notifications" sub="Receive alerts directly on your device." />
            <T k="email" title="Email Summaries" sub="Daily digests sent to your email." />
          </div>
       </div>
       <div>
-         <div className="text-xs font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-2 ml-2">Notification Types</div>
-         <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm divide-y divide-stone-100 dark:divide-stone-800">
+         <div className="text-[10px] font-black tracking-[0.25em] uppercase text-stone-400 dark:text-stone-500 font-sans mb-4 ml-2">Notification Types</div>
+         <div className="bg-white dark:bg-stone-900 rounded-[24px] border border-stone-200/60 dark:border-stone-800/60 shadow-sm divide-y divide-stone-100 dark:divide-stone-800/50">
            <T k="classes" title="Class Reminders" sub="15 minutes before classes start." />
            <T k="assignments" title="Assignments" sub="When new homework is assigned or graded." />
            <T k="messages" title="Messages" sub="When teachers or admin send direct messages." />
@@ -536,20 +542,20 @@ function PrivacyView() {
   });
   
   const T = ({ k, title, sub }: { k: keyof typeof priv, title: string, sub: string }) => (
-    <div className="flex items-center justify-between p-4 mix-blend-multiply dark:mix-blend-normal">
+    <div className="flex items-center justify-between p-6">
       <div className="pr-4">
-        <div className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans">{title}</div>
-        <div className="text-xs text-stone-500 dark:text-stone-400 font-sans mt-0.5">{sub}</div>
+        <div className="text-xl font-black text-stone-900 dark:text-stone-50 font-sans tracking-tight mb-1">{title}</div>
+        <div className="text-sm font-bold text-stone-500 dark:text-stone-400 font-sans">{sub}</div>
       </div>
       <Toggle checked={priv[k]} onChange={() => setPriv({ ...priv, [k]: !priv[k] })} />
     </div>
   );
 
   return (
-    <div className="p-6 flex flex-col gap-6 animate-fade-in">
+    <div className="px-6 py-6 pb-24 flex flex-col gap-10 animate-fade-in max-w-4xl mx-auto w-full">
       <div>
-        <div className="text-xs font-bold tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans mb-2 ml-2">Data Sharing</div>
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm divide-y divide-stone-100 dark:divide-stone-800">
+        <div className="text-[10px] font-black tracking-[0.25em] uppercase text-stone-400 dark:text-stone-500 font-sans mb-4 ml-2">Data Sharing</div>
+        <div className="bg-white dark:bg-stone-900 rounded-[24px] border border-stone-200/60 dark:border-stone-800/60 shadow-sm divide-y divide-stone-100 dark:divide-stone-800/50">
           <T k="visible" title="Profile Visibility" sub="Allow other students in your batch to see your basic profile." />
           <T k="analytics" title="Share Analytics" sub="Help improve Drona by sending anonymous usage data." />
           <T k="contacts" title="Sync Contacts" sub="Find classmates based on your phone contacts." />
@@ -558,7 +564,7 @@ function PrivacyView() {
       
       <div className="mt-4 space-y-4">
         <Btn label="Request My Data" variant="secondary" full />
-        <button className="w-full p-4 rounded-xl border border-rose-200 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-900/10 text-rose-600 dark:text-rose-500 text-sm font-bold text-center cursor-pointer hover:bg-rose-100 dark:hover:bg-rose-900/20 transition-colors">
+        <button className="w-full bg-rose-50 dark:bg-rose-500/10 border border-rose-200/60 dark:border-rose-900/50 rounded-[24px] p-5 flex items-center justify-center gap-2 text-rose-600 dark:text-rose-500 font-black tracking-[0.2em] text-[10px] uppercase font-sans shadow-sm hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all active:scale-[0.98] cursor-pointer">
           Delete Account
         </button>
       </div>
@@ -579,28 +585,29 @@ function HelpCenterView() {
   };
 
   return (
-    <div className="p-6 animate-fade-in">
-       <div className="bg-sky-50 dark:bg-sky-500/10 border border-sky-100 dark:border-sky-900 p-6 rounded-2xl mb-8 flex flex-col items-center text-center">
-         <div className="w-12 h-12 bg-sky-100 dark:bg-sky-500/20 rounded-full text-sky-600 dark:text-sky-400 flex items-center justify-center mb-3">
-           <CircleHelp size={24} />
+    <div className="px-6 py-6 pb-24 animate-fade-in max-w-4xl mx-auto w-full">
+       <div className="bg-sky-50 dark:bg-sky-500/10 border border-sky-200/60 dark:border-sky-900/50 p-8 rounded-[32px] mb-12 flex flex-col items-center text-center shadow-inner relative overflow-hidden group">
+         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none mix-blend-multiply dark:mix-blend-color-dodge transition-opacity duration-1000 group-hover:opacity-20 text-sky-500" />
+         <div className="w-16 h-16 bg-sky-100 dark:bg-sky-500/20 rounded-[20px] text-sky-600 dark:text-sky-400 flex items-center justify-center mb-6 shadow-inner border border-sky-100 dark:border-sky-900/40 relative z-10">
+           <CircleHelp size={28} />
          </div>
-         <h3 className="text-lg font-bold text-stone-900 dark:text-stone-50 font-sans">Need assistance?</h3>
-         <p className="text-sm text-stone-500 dark:text-stone-400 font-sans mt-1 mb-4">Our support team is active Mon-Fri, 9am - 6pm.</p>
-         <Btn label="Contact Support" variant="primary" />
+         <h3 className="text-3xl font-black text-sky-900 dark:text-sky-50 font-sans tracking-tight relative z-10">Need assistance?</h3>
+         <p className="text-sm font-bold text-sky-700/70 dark:text-sky-300/70 font-sans mt-2 mb-8 max-w-sm relative z-10">Our support team is active Mon-Fri, 9am - 6pm. We're here to help you succeed.</p>
+         <Btn label="Contact Support" variant="primary" className="relative z-10 bg-sky-500 hover:bg-sky-400 border-none shadow-sky-500/20" />
        </div>
        
-       <h3 className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans mb-4">Developer Tools</h3>
-       <div className="mb-8 p-4 bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 rounded-2xl shadow-sm flex flex-col gap-3 items-start">
-         <span className="text-sm font-medium text-stone-600 dark:text-stone-400">Clear the local cache state to replay the Drona initialization sequence for testing.</span>
-         <button onClick={handleResetOnboarding} className="px-4 py-2 font-bold text-sm bg-stone-200 dark:bg-stone-800 rounded-lg hover:bg-stone-300 transition-colors">Replay Onboarding</button>
+       <h3 className="text-[10px] font-black tracking-[0.25em] uppercase text-stone-400 dark:text-stone-500 font-sans mb-4 ml-2">Troubleshooting</h3>
+       <div className="mb-12 p-6 bg-stone-100 dark:bg-stone-900/50 border border-stone-200/60 dark:border-stone-800/60 rounded-[24px] shadow-inner flex flex-col gap-4 items-start">
+         <span className="text-sm font-bold text-stone-600 dark:text-stone-400">Clear the local cache state to replay the Drona initialization sequence for testing.</span>
+         <button onClick={handleResetOnboarding} className="px-5 py-3 font-black tracking-widest text-[10px] uppercase bg-stone-200 dark:bg-stone-800 rounded-[16px] hover:bg-stone-300 dark:hover:bg-stone-700 transition-colors shadow-sm active:scale-95 border border-stone-300 dark:border-stone-700/50 text-stone-700 dark:text-stone-300">Replay Onboarding</button>
        </div>
 
-       <h3 className="text-sm font-bold text-stone-900 dark:text-stone-50 font-sans mb-4">Frequently Asked Questions</h3>
+       <h3 className="text-[10px] font-black tracking-[0.25em] uppercase text-stone-400 dark:text-stone-500 font-sans mb-4 ml-2">Frequently Asked Questions</h3>
        <div className="space-y-4">
          {faqs.map((faq, i) => (
-           <div key={i} className="bg-white dark:bg-stone-900 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm">
-             <div className="font-bold text-stone-900 dark:text-stone-50 text-sm font-sans mb-1">{faq.q}</div>
-             <div className="text-sm text-stone-500 dark:text-stone-400 font-sans leading-relaxed">{faq.a}</div>
+           <div key={i} className="bg-white dark:bg-stone-900 p-6 rounded-[24px] border border-stone-200/60 dark:border-stone-800/60 shadow-sm hover:shadow-md transition-shadow">
+             <div className="font-black text-stone-900 dark:text-stone-50 text-xl font-sans mb-2 tracking-tight">{faq.q}</div>
+             <div className="text-sm font-bold text-stone-500 dark:text-stone-400 font-sans leading-relaxed">{faq.a}</div>
            </div>
          ))}
        </div>
@@ -610,27 +617,31 @@ function HelpCenterView() {
 
 function TermsView() {
   return (
-    <div className="p-6 animate-fade-in prose dark:prose-invert prose-sm font-sans prose-stone w-full max-w-none pb-20">
-      <div className="text-xs text-stone-400 dark:text-stone-500 mb-6 font-bold uppercase tracking-widest">Last Updated: October 2023</div>
-      
-      <p className="text-stone-600 dark:text-stone-400 leading-relaxed max-w-full break-words">
-        Welcome to Drona platform. These Terms of Service ("Terms") dictate how you can use our mobile application, websites, and associated services. By creating an account or using our services, you agree to these Terms. If you do not agree to all the terms, please do not use the application.
-      </p>
+    <div className="px-6 py-6 pb-24 animate-fade-in max-w-4xl mx-auto w-full">
+      <div className="bg-white dark:bg-stone-900 rounded-[32px] border border-stone-200/60 dark:border-stone-800/60 p-8 shadow-sm">
+        <div className="text-[10px] text-stone-400 dark:text-stone-500 mb-8 font-black uppercase tracking-[0.2em]">Last Updated: October 2026</div>
+        
+        <div className="prose dark:prose-invert prose-stone max-w-none">
+          <p className="text-stone-600 dark:text-stone-400 leading-relaxed text-sm md:text-base font-medium">
+            Welcome to Drona platform. These Terms of Service ("Terms") dictate how you can use our mobile application, websites, and associated services. By creating an account or using our services, you agree to these Terms. If you do not agree to all the terms, please do not use the application.
+          </p>
 
-      <h3 className="font-bold text-stone-900 dark:text-stone-50 mt-6 mb-2 text-base">User Responsibilities</h3>
-      <p className="text-stone-600 dark:text-stone-400 leading-relaxed max-w-full break-words">
-        You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. The platform is designed for educational purposes; any misuse involving hate speech, academic dishonesty, or spam will result in immediate suspension.
-      </p>
+          <h3 className="font-black text-stone-900 dark:text-stone-50 mt-10 mb-4 text-xl tracking-tight">User Responsibilities</h3>
+          <p className="text-stone-600 dark:text-stone-400 leading-relaxed text-sm md:text-base font-medium">
+            You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. The platform is designed for educational purposes; any misuse involving hate speech, academic dishonesty, or spam will result in immediate suspension.
+          </p>
 
-      <h3 className="font-bold text-stone-900 dark:text-stone-50 mt-6 mb-2 text-base">Content Ownership</h3>
-      <p className="text-stone-600 dark:text-stone-400 leading-relaxed max-w-full break-words">
-        All course material, videos, lectures, and notes provided via this application remain the intellectual property of the institution. You may not distribute, reproduce, or resell these materials without explicit written consent.
-      </p>
-      
-      <h3 className="font-bold text-stone-900 dark:text-stone-50 mt-6 mb-2 text-base">Limitation of Liability</h3>
-      <p className="text-stone-600 dark:text-stone-400 leading-relaxed max-w-full break-words">
-        Drona provides the platform on an "as is" and "as available" basis. We do not warrant that the application will be uninterrupted, error-free, or completely secure. In no event shall Drona be liable for any indirect or consequential damages.
-      </p>
+          <h3 className="font-black text-stone-900 dark:text-stone-50 mt-10 mb-4 text-xl tracking-tight">Content Ownership</h3>
+          <p className="text-stone-600 dark:text-stone-400 leading-relaxed text-sm md:text-base font-medium">
+            All course material, videos, lectures, and notes provided via this application remain the intellectual property of the institution. You may not distribute, reproduce, or resell these materials without explicit written consent.
+          </p>
+          
+          <h3 className="font-black text-stone-900 dark:text-stone-50 mt-10 mb-4 text-xl tracking-tight">Limitation of Liability</h3>
+          <p className="text-stone-600 dark:text-stone-400 leading-relaxed text-sm md:text-base font-medium">
+            Drona provides the platform on an "as is" and "as available" basis. We do not warrant that the application will be uninterrupted, error-free, or completely secure. In no event shall Drona be liable for any indirect or consequential damages.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -650,22 +661,22 @@ function SettingsItem({ icon, label, value, noBorder, onClick }: {
     <button 
       onClick={onClick}
       disabled={!onClick && !value}
-      className={`w-full p-4 flex items-center gap-3 bg-white dark:bg-stone-900 transition-colors text-left font-sans ${onClick ? 'hover:bg-stone-50 dark:hover:bg-stone-800/50 active:bg-stone-100 dark:active:bg-stone-800 cursor-pointer' : ''} ${noBorder ? '' : 'border-b border-stone-100 dark:border-stone-800/50'}`}
+      className={`w-full p-5 flex items-center gap-4 transition-colors text-left font-sans ${onClick ? 'hover:bg-stone-50/50 dark:hover:bg-stone-800/30 active:bg-stone-100 dark:active:bg-stone-800 cursor-pointer object-hover-lift' : ''} ${noBorder ? '' : 'border-b border-stone-100 dark:border-stone-800/50'} bg-transparent`}
     >
       {icon && (
-        <div className="w-8 h-8 rounded-full bg-stone-50 dark:bg-stone-950 flex items-center justify-center text-stone-600 dark:text-stone-400 shrink-0 border border-stone-100 dark:border-stone-800/50">
+        <div className="w-10 h-10 rounded-2xl bg-stone-50 dark:bg-stone-900 flex items-center justify-center text-stone-500 dark:text-stone-400 shrink-0 border border-stone-200/50 dark:border-stone-800/50 shadow-inner group-hover:scale-110 transition-transform">
           {icon}
         </div>
       )}
-      <div className="flex-1 text-sm font-semibold text-stone-900 dark:text-stone-50">
+      <div className="flex-1 text-sm font-bold text-stone-900 dark:text-stone-50 tracking-tight">
         {label}
       </div>
       {value ? (
-        <div className="text-sm font-medium text-stone-500 dark:text-stone-400">
+        <div className="text-[10px] uppercase font-black tracking-[0.2em] text-stone-600 dark:text-stone-300 bg-stone-100 dark:bg-stone-800 px-2.5 py-1 rounded-md border border-stone-200 dark:border-stone-700">
           {value}
         </div>
       ) : onClick ? (
-        <ChevronRight size={18} className="text-stone-400 dark:text-stone-500" />
+        <ChevronRight size={18} className="text-stone-300 dark:text-stone-600 group-hover:translate-x-1 transition-transform group-hover:text-amber-500" />
       ) : null}
     </button>
   );

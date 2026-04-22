@@ -52,68 +52,76 @@ export default function TeacherStudents() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 scrollbar-hide overflow-y-auto">
+    <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 scrollbar-hide overflow-y-auto premium-texture">
       {/* Premium Header */}
-      <div className="px-6 py-8 pb-4 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md z-20">
-        <div className="flex justify-between items-center max-w-7xl mx-auto w-full">
-          <div>
-            <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans">Students</h1>
-            <p className="text-sm font-medium text-stone-500 dark:text-stone-400 mt-1">Nurturing {stds.length} active students</p>
+      <div className="px-6 py-8 pb-6 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md z-20 border-b border-stone-200 dark:border-stone-800">
+        <div className="max-w-7xl mx-auto w-full flex flex-col sm:flex-row sm:justify-between sm:items-center gap-6 relative z-10">
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-[72px] rounded-[24px] bg-white dark:bg-stone-900 border border-stone-200/60 dark:border-stone-800/60 flex items-center justify-center text-4xl shadow-sm -rotate-3 transition-transform hover:rotate-2 hover:scale-105 duration-500 hidden md:flex">
+              🧑‍🎓
+            </div>
+            <div>
+              <h1 className="text-4xl md:text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-sans leading-none mb-2">Students</h1>
+              <p className="text-[10px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-widest leading-none drop-shadow-sm">Nurturing {stds.length} active students</p>
+            </div>
           </div>
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setAddSheet(true)}
-            aria-label="Add Student"
-            className="w-14 h-14 rounded-2xl bg-amber-600 text-white flex items-center justify-center shadow-lg shadow-amber-600/20 group"
-          >
-            <UserPlus size={24} className="group-hover:scale-110 transition-transform" />
-          </motion.button>
+          <div className="flex items-center gap-4">
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setAddSheet(true)}
+              aria-label="Add Student" 
+              className="w-14 h-14 rounded-full bg-amber-400 dark:bg-amber-500 text-amber-950 flex items-center justify-center cursor-pointer shadow-sm relative group overflow-hidden active:scale-95 transition-all"
+            >
+              <UserPlus size={24} strokeWidth={2.5} className="group-hover:scale-110 transition-transform relative z-10" />
+            </motion.button>
+          </div>
         </div>
 
         {/* Search & Filter Bar */}
-        <div className="max-w-7xl mx-auto w-full mt-8 flex flex-col md:flex-row gap-4">
-          <div className="flex-1 relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-amber-500 transition-colors" size={18} />
+        <div className="max-w-7xl mx-auto w-full mt-8 flex flex-col md:flex-row gap-4 relative z-10">
+          <div className="flex-1 relative group w-full md:max-w-md">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-amber-500 transition-colors" size={18} strokeWidth={2.5} />
             <input 
               type="text" 
               placeholder="Search by name or email..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-11 pr-4 py-3.5 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all shadow-sm"
+              className="w-full pl-11 pr-4 py-3.5 bg-white dark:bg-stone-900 border border-stone-200/60 dark:border-stone-800/60 rounded-2xl text-sm font-bold text-stone-900 dark:text-stone-50 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all shadow-sm"
             />
           </div>
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide py-1">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide py-1 flex-1 items-center">
             {batches.map(b => (
               <button
                 key={b}
                 onClick={() => setFilterBatch(b)}
-                className={`px-5 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all border ${
                   filterBatch === b 
-                    ? "bg-amber-600 text-white border-amber-600 shadow-md shadow-amber-600/20" 
-                    : "bg-white dark:bg-stone-900 text-stone-500 border-stone-200 dark:border-stone-800 hover:border-amber-500"
+                    ? "bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-400 border-amber-200 dark:border-amber-800 shadow-sm" 
+                    : "bg-white dark:bg-stone-900 text-stone-500 hover:text-stone-900 dark:hover:text-stone-100 border-stone-200/60 dark:border-stone-800/60 hover:bg-stone-50 dark:hover:bg-stone-800 hover:border-stone-300 dark:hover:border-stone-700 shadow-sm"
                 }`}
               >
-                {b.charAt(0).toUpperCase() + b.slice(1)}
+                {b === "all" ? "All Batches" : b.charAt(0).toUpperCase() + b.slice(1)}
               </button>
             ))}
           </div>
         </div>
       </div>
       
-      <div className="flex-1 px-6 pb-24 max-w-7xl mx-auto w-full mt-8">
+      <div className="flex-1 px-6 pb-24 max-w-7xl mx-auto w-full mt-10">
         <AnimatePresence mode="popLayout">
           {filtered.length === 0 ? (
-            <motion.div 
+             <motion.div 
                initial={{ opacity: 0, scale: 0.95 }}
                animate={{ opacity: 1, scale: 1 }}
-               className="flex-1 flex flex-col items-center justify-center text-center py-24 px-6 bg-white dark:bg-stone-900 rounded-[40px] border border-stone-200 dark:border-stone-800 shadow-sm"
+               className="flex-1 flex flex-col items-center justify-center text-center py-24 px-6 bg-white dark:bg-stone-900 rounded-[48px] border border-stone-200/60 dark:border-stone-800/60 shadow-sm relative overflow-hidden"
              >
-                <div className="w-24 h-24 bg-stone-50 dark:bg-stone-800/50 rounded-[32px] flex items-center justify-center mb-8 border border-stone-100 dark:border-stone-700/50 text-stone-400">
-                   <Search size={40} />
+                <div className="absolute inset-0 bg-stone-50/50 dark:bg-stone-950/20 opacity-50 pointer-events-none" />
+                <div className="w-24 h-24 bg-stone-50 dark:bg-stone-800 rounded-[32px] flex items-center justify-center mb-8 border border-stone-100 dark:border-stone-700/50 text-stone-400 relative z-10 shadow-inner">
+                   <Search size={40} strokeWidth={2.5} />
                 </div>
-                <h3 className="text-2xl font-bold text-stone-900 dark:text-stone-50 font-sans mb-3">No students found</h3>
-                <p className="text-base text-stone-500 dark:text-stone-400 max-w-[320px] mx-auto font-sans leading-relaxed">Try adjusting your search or filters to find what you're looking for.</p>
+                <h3 className="text-3xl lg:text-4xl font-black text-stone-900 dark:text-stone-50 font-sans tracking-tight mb-4 relative z-10">No students found</h3>
+                <p className="text-base text-stone-500 dark:text-stone-400 max-w-md mx-auto font-bold leading-relaxed relative z-10">Try adjusting your search or filters to find what you're looking for.</p>
              </motion.div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -124,10 +132,10 @@ export default function TeacherStudents() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
                   key={s.id}
-                  className="bg-white dark:bg-stone-900 rounded-[40px] p-10 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-2xl hover:border-amber-200 dark:hover:border-amber-900/40 transition-all cursor-pointer group flex flex-col h-full overflow-hidden relative"
+                  className="bg-white dark:bg-stone-900 rounded-[32px] p-8 md:p-10 border border-stone-200/60 dark:border-stone-800/60 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-amber-200 dark:hover:border-amber-900/40 transition-all cursor-pointer group flex flex-col h-full overflow-hidden relative"
                 >
-                  <div className="flex justify-between items-start mb-8">
-                    <div className="w-16 h-16 rounded-[24px] bg-stone-50 dark:bg-stone-800 flex items-center justify-center text-3xl shadow-inner border border-stone-100 dark:border-stone-700/50 group-hover:scale-110 transition-transform duration-500">
+                  <div className="flex justify-between items-start mb-8 relative z-10">
+                    <div className="w-20 h-20 rounded-[24px] bg-stone-50 dark:bg-stone-800 flex items-center justify-center text-4xl shadow-inner border border-stone-100 dark:border-stone-700/50 group-hover:scale-110 transition-transform duration-500 font-sans font-black text-stone-300 dark:text-stone-600 uppercase">
                       {s.name.charAt(0)}
                     </div>
                     <Chip 
@@ -137,45 +145,50 @@ export default function TeacherStudents() {
                     />
                   </div>
 
-                  <h3 className="text-2xl font-bold text-stone-900 dark:text-stone-50 font-sans mb-1 group-hover:text-amber-600 transition-colors tracking-tight line-clamp-1">{s.name}</h3>
-                  <p className="text-sm font-medium text-amber-600 dark:text-amber-500 mb-8">{s.batch}</p>
+                  <div className="relative z-10">
+                    <h3 className="text-3xl font-black text-stone-900 dark:text-stone-50 font-sans leading-none tracking-tight mb-3 group-hover:text-amber-600 transition-colors line-clamp-1">{s.name}</h3>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-500/10 w-max px-2 py-1 rounded-md mb-10 border border-amber-200 dark:border-amber-900/50">{s.batch}</p>
+                  </div>
 
-                  <div className="mb-10">
-                    <div className="flex items-center justify-between mb-2">
-                       <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Growth Progress</span>
-                       <span className="text-[10px] font-bold text-stone-900 dark:text-stone-50 font-mono">{s.progress}%</span>
+                  <div className="mb-10 relative z-10">
+                    <div className="flex items-center justify-between mb-3">
+                       <span className="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">Growth</span>
+                       <span className="text-xs font-black text-stone-900 dark:text-stone-50 font-mono">{s.progress}%</span>
                     </div>
-                    <div className="h-2 bg-stone-50 dark:bg-stone-800/50 rounded-full overflow-hidden border border-stone-100 dark:border-stone-800/30">
+                    <div className="h-2 bg-stone-100 dark:bg-stone-800/80 rounded-full overflow-hidden border border-stone-200/60 dark:border-stone-700/60 shadow-inner">
                        <motion.div 
                          initial={{ width: 0 }}
                          animate={{ width: `${s.progress}%` }}
                          transition={{ duration: 1, delay: i * 0.1 + 0.3 }}
-                         className={`h-full rounded-full ${s.progress >= 80 ? 'bg-emerald-500 shadow-sm shadow-emerald-500/20' : s.progress >= 60 ? 'bg-amber-500' : 'bg-rose-500'}`} 
+                         className={`h-full border-r border-white/20 ${s.progress >= 80 ? 'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)]' : s.progress >= 60 ? 'bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.5)]' : 'bg-rose-400 shadow-[0_0_10px_rgba(251,113,133,0.5)]'}`} 
                        />
                     </div>
                   </div>
 
-                  <div className="mt-auto space-y-4 text-stone-500 dark:text-stone-400">
+                  <div className="mt-auto space-y-4 text-stone-500 dark:text-stone-400 relative z-10">
                     <div className="flex items-center gap-3 group/link hover:text-amber-600 transition-colors">
-                      <Mail size={16} />
-                      <span className="text-sm font-medium truncate">{s.email || "No email"}</span>
+                      <div className="w-8 h-8 rounded-full bg-stone-50 dark:bg-stone-800 flex items-center justify-center border border-stone-100 dark:border-stone-700 group-hover/link:border-amber-200 dark:group-hover/link:border-amber-900/40">
+                        <Mail size={14} />
+                      </div>
+                      <span className="text-sm font-bold truncate">{s.email || "No email"}</span>
                     </div>
                     <div className="flex items-center gap-3 group/link hover:text-amber-600 transition-colors">
-                      <Phone size={16} />
-                      <span className="text-sm font-medium">{s.phone || "No phone"}</span>
+                      <div className="w-8 h-8 rounded-full bg-stone-50 dark:bg-stone-800 flex items-center justify-center border border-stone-100 dark:border-stone-700 group-hover/link:border-amber-200 dark:group-hover/link:border-amber-900/40">
+                        <Phone size={14} />
+                      </div>
+                      <span className="text-sm font-bold">{s.phone || "No phone"}</span>
                     </div>
                   </div>
 
-                  <div className="mt-10 pt-6 border-t border-stone-100 dark:border-stone-800/50 flex items-center justify-between">
+                  <div className="mt-8 pt-6 border-t border-stone-200/60 dark:border-stone-800/60 flex items-center justify-between relative z-10">
                     <div className="flex flex-col">
-                       <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Enrolled</span>
-                       <span className="text-xs font-bold text-stone-700 dark:text-stone-300">{s.joined || "N/A"}</span>
+                       <span className="text-[10px] font-black uppercase tracking-widest text-stone-400 dark:text-stone-500 mb-1">Enrolled</span>
+                       <span className="text-sm font-black uppercase tracking-widest text-stone-700 dark:text-stone-300">{s.joined || "N/A"}</span>
                     </div>
                     <motion.div 
-                      whileHover={{ x: 5 }}
-                      className="w-12 h-12 rounded-2xl bg-stone-50 dark:bg-stone-800 flex items-center justify-center text-stone-400 group-hover:bg-amber-600 group-hover:text-white transition-all shadow-sm"
+                      className="w-12 h-12 rounded-[14px] bg-stone-50 dark:bg-stone-800 flex items-center justify-center text-stone-400 group-hover:bg-amber-400 dark:group-hover:bg-amber-500 group-hover:text-amber-950 transition-all shadow-sm border border-stone-100 dark:border-stone-700 group-hover:border-transparent group-hover:translate-x-1"
                     >
-                      <ChevronRight size={22} />
+                      <ChevronRight size={20} strokeWidth={2.5} />
                     </motion.div>
                   </div>
                 </motion.div>

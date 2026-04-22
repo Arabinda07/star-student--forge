@@ -103,31 +103,30 @@ function BottomNav({ role, active, onNav }: { role: Role; active: number; onNav:
   const tabs = getTabs(role);
   
   return (
-    <div className="md:hidden bg-white dark:bg-stone-900 border-t border-stone-100 dark:border-stone-800/50 flex pb-safe pt-2 px-2 shadow-[0_-4px_24px_rgba(0,0,0,0.02)] shrink-0 z-20 relative">
+    <div className="md:hidden bg-white/80 dark:bg-stone-900/80 backdrop-blur-xl border-t border-stone-100 dark:border-stone-800/50 flex pb-[env(safe-area-inset-bottom)] pt-3 px-4 shadow-[0_-8px_30px_rgba(0,0,0,0.04)] shrink-0 z-20 relative">
       {tabs.map((tab, i) => {
         const isActive = active === i;
         return (
           <motion.button
             key={i}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             role="tab"
             aria-selected={isActive}
             aria-label={tab.label}
             onClick={() => onNav(i)}
-            className="flex-1 border-none bg-transparent cursor-pointer flex flex-col items-center justify-center gap-1 p-2 relative group focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 rounded-xl"
+            className="flex-1 border-none bg-transparent cursor-pointer flex flex-col items-center justify-center gap-1.5 p-2 relative group rounded-2xl transition-all"
           >
-            <div className={`transition-all duration-200 ${isActive ? getRoleColorClass(role) : "text-stone-500 dark:text-stone-400"} ${isActive ? "-translate-y-1" : ""}`}>
+            <div className={`transition-all duration-300 ${isActive ? getRoleColorClass(role) : "text-stone-400 dark:text-stone-600"} ${isActive ? "-translate-y-0.5 scale-110" : ""}`}>
               {tab.icon}
             </div>
             {tab.badge !== undefined && !isActive && (
-              <div className="absolute top-1 left-1/2 ml-1 bg-rose-500 text-white rounded-full min-w-[16px] h-4 px-1 text-[11px] font-bold flex items-center justify-center border-2 border-white dark:border-stone-900">
+              <div className="absolute top-1 left-1/2 ml-2 bg-rose-500 text-white rounded-full min-w-[14px] h-3.5 px-0.5 text-[9px] font-black flex items-center justify-center border-2 border-white dark:border-stone-900 shadow-sm">
                 {tab.badge}
               </div>
             )}
             <div
-              className={`text-[11px] font-sans transition-all duration-200 ${isActive ? "font-semibold opacity-100" : "font-medium opacity-0 translate-y-1"} ${getRoleColorClass(role)}`}
-              style={{ position: isActive ? 'relative' : 'absolute', bottom: isActive ? 'auto' : '2px' }}
+              className={`text-[9px] font-black font-sans uppercase tracking-[0.1em] transition-all duration-300 ${isActive ? "opacity-100 scale-100" : "opacity-0 scale-75 translate-y-1"} ${getRoleColorClass(role)}`}
             >
               {tab.label}
             </div>
@@ -142,34 +141,40 @@ function DesktopNav({ role, active, onNav }: { role: Role; active: number; onNav
   const tabs = getTabs(role);
   
   return (
-    <nav className="p-4 flex flex-col gap-2">
+    <nav className="p-6 flex flex-col gap-3">
       {tabs.map((tab, i) => {
         const isActive = active === i;
         return (
           <motion.button
             key={i}
-            whileHover={{ x: 4, backgroundColor: "rgba(0,0,0,0.02)" }}
+            whileHover={{ x: 6 }}
             whileTap={{ scale: 0.98 }}
             role="tab"
             aria-selected={isActive}
             aria-label={tab.label}
             onClick={() => onNav(i)}
-            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 cursor-pointer ${
+            className={`w-full flex items-center justify-between px-5 py-4 rounded-[18px] transition-all cursor-pointer relative group ${
               isActive 
-                ? getRoleBgClass(role) + " font-bold shadow-sm ring-1 ring-inset ring-black/5 dark:ring-white/5" 
-                : "text-stone-600 dark:text-stone-400 font-medium hover:bg-stone-50 dark:hover:bg-stone-800/50"
+                ? getRoleBgClass(role) + " shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05)] border border-black/5 dark:border-white/5" 
+                : "text-stone-500 dark:text-stone-500 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-50 dark:hover:bg-stone-800/30"
             }`}
           >
-            <div className="flex items-center gap-3">
-              <div className={isActive ? getRoleColorClass(role) : "text-stone-500 dark:text-stone-400"}>
+            <div className="flex items-center gap-4">
+              <div className={`transition-transform duration-500 ${isActive ? getRoleColorClass(role) + " scale-110" : "text-stone-400 dark:text-stone-600 group-hover:scale-110"}`}>
                 {tab.icon}
               </div>
-              <span className="text-sm tracking-wide">{tab.label}</span>
+              <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all ${isActive ? "opacity-100" : "opacity-80"}`}>{tab.label}</span>
             </div>
             {tab.badge !== undefined && (
-              <div className={`text-white rounded-full min-w-[20px] h-5 px-1.5 text-xs font-bold flex items-center justify-center shadow-sm ${isActive ? "bg-rose-500" : "bg-stone-300 dark:bg-stone-600 text-stone-700 dark:text-stone-200"}`}>
+              <div className={`rounded-full min-w-[20px] h-5 px-1.5 text-[10px] font-black flex items-center justify-center shadow-sm ${isActive ? "bg-rose-500 text-white" : "bg-stone-100 dark:bg-stone-800 text-stone-500"}`}>
                 {tab.badge}
               </div>
+            )}
+            {isActive && (
+               <motion.div 
+                 layoutId="active-nav-indicator"
+                 className="absolute left-0 w-1 h-6 bg-current rounded-full" 
+               />
             )}
           </motion.button>
         );
@@ -382,21 +387,24 @@ export default function App() {
         )}
 
       {/* App Header & Role Switcher */}
-      <header className="bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 shrink-0 z-20 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="text-xl font-bold text-stone-900 dark:text-stone-50 tracking-tight">Drona</div>
-            <div className="text-[11px] bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 px-2 py-0.5 rounded-md font-mono font-medium uppercase tracking-widest hidden sm:block">Platform</div>
+      <header className="bg-white/80 dark:bg-stone-900/80 backdrop-blur-xl border-b border-stone-200 dark:border-stone-800 shrink-0 z-40 relative">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="text-3xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display uppercase italic">Drona</div>
+            <div className="h-4 w-px bg-stone-200 dark:bg-stone-800 mx-2" />
+            <div className="text-[10px] bg-stone-950 dark:bg-white text-white dark:text-stone-950 px-3 py-1 rounded-full font-sans font-black uppercase tracking-[0.25em] scale-90">v2.1</div>
           </div>
           
-          <div className="flex items-center gap-3">
-            <button 
+          <div className="flex items-center gap-4">
+            <motion.button 
+              whileHover={{ scale: 1.1, rotate: 10 }}
+              whileTap={{ scale: 0.9 }}
               onClick={toggleDark} 
               aria-label="Toggle dark mode"
-              className="p-1.5 rounded-full text-stone-500 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+              className="w-10 h-10 flex items-center justify-center rounded-2xl bg-stone-50 dark:bg-stone-800 text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 transition-all border border-stone-100 dark:border-stone-700 shadow-sm"
             >
               {isDark ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
+            </motion.button>
           </div>
         </div>
       </header>

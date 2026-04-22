@@ -161,29 +161,29 @@ export default function TeacherLibrary() {
     const currentSubjectNotes = notes.filter(n => n.subject === subject).filter(n => n.title.toLowerCase().includes(searchQuery.toLowerCase()));
     const sc = SUBJECTS[subject] || SUBJECTS.Physics;
     return (
-      <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 scrollbar-hide overflow-y-auto">
-        <div className="px-6 py-8 pb-4 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md z-20">
+      <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 scrollbar-hide overflow-y-auto premium-texture">
+        <div className="px-8 py-14 pb-6 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-xl z-20 border-b border-stone-100/50 dark:border-stone-800/30">
           <div className="max-w-7xl mx-auto w-full">
-            <button onClick={() => selectSubject(null)} className="flex items-center gap-2 bg-transparent border-none cursor-pointer font-sans text-sm font-bold text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors mb-6 group">
-              <ChevronLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> Back to Library
+            <button onClick={() => selectSubject(null)} className="flex items-center gap-2 bg-transparent border-none cursor-pointer font-sans text-xs font-black uppercase tracking-widest text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors mb-8 group">
+              <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to Library
             </button>
-            <div className="flex justify-between items-center mb-8">
-              <div className="flex items-center gap-5">
-                <div className={`w-16 h-16 rounded-[22px] flex items-center justify-center text-4xl shadow-sm border border-stone-100 dark:border-stone-800 ${sc.bg}`}>
+            <div className="flex justify-between items-center mb-10">
+              <div className="flex items-center gap-8">
+                <div className={`w-20 h-20 rounded-[32px] flex items-center justify-center text-5xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-stone-100 dark:border-stone-800 -rotate-3 transition-transform hover:rotate-0 hover:scale-110 duration-500 hidden md:flex ${sc.bg}`}>
                   {sc.icon}
                 </div>
                 <div>
-                  <h2 className="text-3xl font-black text-stone-900 dark:text-stone-50 tracking-tight font-sans">{subject}</h2>
-                  <div className="text-sm font-bold text-amber-600 dark:text-amber-500 font-sans uppercase tracking-widest">{currentSubjectNotes.length} resources available</div>
+                  <h2 className="text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display uppercase leading-[0.85] mb-2">{subject}</h2>
+                  <div className="text-[10px] font-black text-amber-600 dark:text-amber-500 uppercase tracking-[0.3em] leading-none">{currentSubjectNotes.length} resources available</div>
                 </div>
               </div>
               <motion.button 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => { setForm({ ...form, subject: subject }); setUploadSheet(true); }}
-                className="w-14 h-14 rounded-2xl bg-amber-600 text-white flex items-center justify-center shadow-lg shadow-amber-600/20 group"
+                className="w-16 h-16 rounded-[24px] bg-amber-500 text-white flex items-center justify-center shadow-xl shadow-amber-500/20 group relative overflow-hidden border border-amber-400"
               >
-                <Plus size={24} className="group-hover:rotate-90 transition-transform" />
+                <Plus size={26} className="group-hover:rotate-90 transition-transform relative z-10" />
               </motion.button>
             </div>
 
@@ -211,11 +211,15 @@ export default function TeacherLibrary() {
               <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="py-20"
+                className="flex-1 flex flex-col items-center justify-center text-center py-24 px-6 bg-white dark:bg-stone-900 rounded-[56px] border border-stone-200 dark:border-stone-800 shadow-[0_20px_50px_rgba(0,0,0,0.05)]"
               >
-                <EmptySlate icon="📚" title="Library is empty" sub={searchQuery ? "No results match your search." : "Upload your first resource for this subject to build your library."} />
+                <div className="w-24 h-24 bg-stone-50 dark:bg-stone-800/50 rounded-[32px] flex items-center justify-center mb-8 border border-stone-100 dark:border-stone-700/50 text-stone-400 text-4xl shadow-inner">
+                  📚
+                </div>
+                <h3 className="text-3xl font-black text-stone-900 dark:text-stone-50 font-display tracking-tighter uppercase mb-3 text-center">Library is empty</h3>
+                <p className="text-sm font-medium text-stone-500 dark:text-stone-400 max-w-[320px] mx-auto font-sans leading-relaxed text-center">{searchQuery ? "No results match your search." : "Upload your first resource for this subject to build your library."}</p>
                 {!searchQuery && (
-                  <div className="flex justify-center mt-8">
+                  <div className="flex justify-center mt-10">
                     <Btn label="Upload Now" icon={<Upload size={18} />} onClick={() => { setForm({ ...form, subject: subject }); setUploadSheet(true); }} />
                   </div>
                 )}
@@ -229,39 +233,39 @@ export default function TeacherLibrary() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
                     key={note.id} 
-                    className="bg-white dark:bg-stone-900 rounded-[32px] p-8 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-2xl hover:border-amber-200 dark:hover:border-amber-900/40 transition-all cursor-pointer group relative flex flex-col h-full"
+                    className="bg-white dark:bg-stone-900 rounded-[40px] p-10 border border-stone-200 dark:border-stone-800 shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:shadow-2xl hover:border-amber-200 dark:hover:border-amber-900/40 transition-all cursor-pointer group relative flex flex-col h-full overflow-hidden"
                   >
-                    <div className="flex justify-between items-start mb-6">
-                      <div className={`w-14 h-16 rounded-2xl shrink-0 flex flex-col items-center justify-center gap-1 shadow-inner ${sc.bg}`}>
-                        <FileText size={24} className={sc.fg} />
+                    <div className="flex justify-between items-start mb-8">
+                      <div className={`w-16 h-20 rounded-[24px] shrink-0 flex flex-col items-center justify-center gap-1 shadow-inner ${sc.bg}`}>
+                        <FileText size={28} className={sc.fg} />
                       </div>
                       <div className="flex gap-2">
                         {note.is_new && <Chip label="New" active />}
                         <button 
                           onClick={(e) => { e.stopPropagation(); handleDelete(note.id, note.file_path); }}
-                          className="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-950/30 text-rose-500 opacity-0 group-hover:opacity-100 hover:scale-110 transition-all flex items-center justify-center border border-rose-100 dark:border-rose-900/50"
+                          className="w-12 h-12 rounded-full bg-rose-50 dark:bg-rose-950/30 text-rose-500 opacity-0 group-hover:opacity-100 hover:scale-110 transition-all flex items-center justify-center border border-rose-100 dark:border-rose-900/50"
                         >
-                          <Trash2 size={16} />
+                          <Trash2 size={18} />
                         </button>
                       </div>
                     </div>
 
-                    <h3 className="text-xl font-bold text-stone-900 dark:text-stone-50 font-sans mb-1 group-hover:text-amber-600 transition-colors tracking-tight line-clamp-2">
+                    <h3 className="text-2xl font-black text-stone-900 dark:text-stone-50 font-display leading-[0.85] tracking-tighter uppercase mb-2 group-hover:text-amber-600 transition-colors line-clamp-2">
                       {note.title}
                     </h3>
-                    <p className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-8">{note.uploaded}</p>
+                    <p className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] mb-10 tabular-nums">{note.uploaded}</p>
 
-                    <div className="mt-auto pt-6 border-t border-stone-100 dark:border-stone-800/50 flex items-center justify-between">
-                       <span className="text-xs font-bold text-stone-500">{note.pages} Slides / Pages</span>
+                    <div className="mt-auto pt-8 border-t border-stone-100 dark:border-stone-800/50 flex items-center justify-between">
+                       <span className="text-[10px] font-black uppercase tracking-widest text-stone-500 tabular-nums">{note.pages} Slides / Pages</span>
                        <div className="flex gap-2">
                           {note.file_path && (
                             <motion.button
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
                               onClick={(e) => { e.stopPropagation(); handleDownload(note.file_path, note.title); }}
-                              className="w-10 h-10 rounded-xl bg-stone-50 dark:bg-stone-800 flex items-center justify-center text-stone-500 hover:text-amber-600 transition-all shadow-sm border border-stone-100 dark:border-stone-700/50"
+                              className="w-12 h-12 rounded-[16px] bg-stone-50 dark:bg-stone-800 flex items-center justify-center text-stone-500 hover:text-amber-600 transition-all shadow-sm border border-stone-100 dark:border-stone-700/50"
                             >
-                              <Download size={18} />
+                              <Download size={20} />
                             </motion.button>
                           )}
                           <motion.button 
@@ -272,9 +276,9 @@ export default function TeacherLibrary() {
                                const { data } = await supabase.storage.from('app-files').createSignedUrl(note.file_path, 3600);
                                if (data?.signedUrl) window.open(data.signedUrl, '_blank');
                              }}
-                             className="w-10 h-10 rounded-xl bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 flex items-center justify-center hover:bg-amber-600 dark:hover:bg-amber-500 transition-all shadow-md"
+                             className="w-12 h-12 rounded-[16px] bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 flex items-center justify-center hover:bg-amber-600 dark:hover:bg-amber-500 transition-all shadow-md"
                           >
-                             <ChevronRight size={18} />
+                             <ChevronRight size={20} />
                           </motion.button>
                        </div>
                     </div>
@@ -289,27 +293,32 @@ export default function TeacherLibrary() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 scrollbar-hide overflow-y-auto">
+    <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 scrollbar-hide overflow-y-auto premium-texture">
       {/* Premium Header */}
-      <div className="px-6 py-8 pb-4 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md z-20">
+      <div className="px-8 py-14 pb-6 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-xl z-20 border-b border-stone-100/50 dark:border-stone-800/30">
         <div className="flex justify-between items-center max-w-7xl mx-auto w-full">
-          <div>
-            <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans">Library</h1>
-            <p className="text-sm font-medium text-stone-500 dark:text-stone-400 mt-1">Organized knowledge base for your students</p>
+          <div className="flex items-center gap-8 mb-10">
+            <div className="w-20 h-20 rounded-[32px] bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 flex items-center justify-center text-5xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] -rotate-3 transition-transform hover:rotate-0 hover:scale-110 duration-500 hidden md:flex">
+              📚
+            </div>
+            <div>
+              <h1 className="text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display leading-[0.85] mb-2 uppercase">Library</h1>
+              <p className="text-[10px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-[0.3em] leading-none">Organized knowledge base for your students</p>
+            </div>
           </div>
           <motion.button 
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setUploadSheet(true)}
             aria-label="Upload Resource"
-            className="w-14 h-14 rounded-2xl bg-amber-600 text-white flex items-center justify-center shadow-lg shadow-amber-600/20 group"
+            className="w-16 h-16 rounded-[24px] bg-amber-500 text-white flex items-center justify-center shadow-xl shadow-amber-500/20 group relative overflow-hidden border border-amber-400"
           >
-            <Plus size={24} className="group-hover:rotate-90 transition-transform" />
+            <Plus size={26} className="group-hover:rotate-90 transition-transform relative z-10" />
           </motion.button>
         </div>
         
         {/* Quick Filter */}
-        <div className="max-w-7xl mx-auto w-full mt-8 flex flex-col md:flex-row gap-4">
+        <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-amber-500 transition-colors" size={18} />
             <input 
@@ -339,28 +348,28 @@ export default function TeacherLibrary() {
                 transition={{ delay: i * 0.05 }}
                 key={subj} 
                 onClick={() => selectSubject(subj)} 
-                className="bg-white dark:bg-stone-900 rounded-[32px] p-8 border border-stone-200 dark:border-stone-800 shadow-sm cursor-pointer hover:shadow-2xl hover:border-amber-200 dark:hover:border-amber-900/40 transition-all group flex flex-col h-full relative overflow-hidden"
+                className="bg-white dark:bg-stone-900 rounded-[40px] p-10 border border-stone-200 dark:border-stone-800 shadow-[0_20px_50px_rgba(0,0,0,0.05)] cursor-pointer hover:shadow-2xl hover:border-amber-200 dark:hover:border-amber-900/40 transition-all group flex flex-col h-full relative overflow-hidden"
               >
-                <div className={`w-16 h-16 rounded-[22px] flex items-center justify-center text-4xl mb-8 shadow-sm border border-stone-100 dark:border-stone-800 group-hover:scale-110 transition-transform duration-500 ${sc.bg}`}>
+                <div className={`w-20 h-20 rounded-[28px] flex items-center justify-center text-4xl mb-10 shadow-sm border border-stone-100 dark:border-stone-800 group-hover:scale-110 transition-transform duration-500 ${sc.bg}`}>
                   {sc.icon}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-2xl font-black text-stone-900 dark:text-stone-50 tracking-tight font-sans mb-1">{subj}</h3>
-                  <p className="text-xs font-bold text-stone-400 uppercase tracking-widest">{subjNotes.length} RESOURCES</p>
+                  <h3 className="text-3xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display uppercase leading-[0.85] mb-2">{subj}</h3>
+                  <p className="text-[10px] font-black text-amber-600 dark:text-amber-500 uppercase tracking-[0.2em]">{subjNotes.length} RESOURCES</p>
                 </div>
-                <div className="mt-8 pt-6 border-t border-stone-100 dark:border-stone-800/50 flex items-center justify-between">
+                <div className="mt-10 pt-6 border-t border-stone-100 dark:border-stone-800/50 flex items-center justify-between">
                    <div className="flex -space-x-2">
                       {[1, 2, 3].map(user => (
-                        <div key={user} className="w-8 h-8 rounded-full border-2 border-white dark:border-stone-900 bg-stone-100 dark:bg-stone-800 flex items-center justify-center text-[10px] font-black text-stone-400">
+                        <div key={user} className="w-10 h-10 rounded-[14px] border-2 border-white dark:border-stone-900 bg-stone-50 dark:bg-stone-800 flex items-center justify-center text-[10px] font-black text-stone-400">
                           {user}
                         </div>
                       ))}
                    </div>
                    <motion.div 
                       whileHover={{ x: 5 }}
-                      className="w-10 h-10 rounded-xl bg-stone-50 dark:bg-stone-800 flex items-center justify-center text-stone-300 group-hover:text-amber-600 transition-all"
+                      className="w-12 h-12 rounded-2xl bg-stone-50 dark:bg-stone-800 flex items-center justify-center text-stone-300 group-hover:text-amber-600 transition-all shadow-sm"
                    >
-                     <ChevronRight size={20} />
+                     <ChevronRight size={22} />
                    </motion.div>
                 </div>
               </motion.div>

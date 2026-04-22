@@ -63,51 +63,56 @@ export default function ParentSchedule() {
   }).sort((a,b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
 
   return (
-    <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 scrollbar-hide overflow-y-auto">
+    <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 scrollbar-hide overflow-y-auto premium-texture">
       {/* Premium Header */}
-      <div className="px-6 py-8 pb-4 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md z-20">
-        <div className="max-w-7xl mx-auto w-full">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-50 tracking-tight font-sans mb-1">{childName}'s Schedule</h1>
-              <p className="text-sm font-medium text-stone-500 dark:text-stone-400">Viewing timetable for April 19 - April 25, 2026</p>
+      <div className="px-6 py-8 pb-4 shrink-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md border-b border-stone-200 dark:border-stone-800 sticky top-0 z-20 animate-slide-up">
+        <div className="max-w-7xl mx-auto w-full relative z-10">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-6 mb-8">
+            <div className="flex items-center gap-6">
+              <div className="w-16 h-[72px] rounded-[24px] bg-white dark:bg-stone-900 border border-stone-200/60 dark:border-stone-800/60 flex items-center justify-center text-4xl shadow-sm -rotate-3 transition-transform hover:rotate-2 hover:scale-105 duration-500 hidden md:flex">
+                🗓️
+              </div>
+              <div>
+                <h1 className="text-4xl md:text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-sans leading-none mb-2">{childName}'s Schedule</h1>
+                <p className="text-[10px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-widest leading-none drop-shadow-sm">Viewing timetable for April 19 - April 25</p>
+              </div>
             </div>
           </div>
 
-          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-4">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-4 px-1">
             {WEEK_DATA.map((day, i) => {
               const isSel = i === selDay;
               return (
-                <motion.button
+                <button
                   key={i}
-                  whileHover={{ y: isSel ? 0 : -4 }}
                   onClick={() => setSelDay(i)}
-                  className={`flex-none flex flex-col items-center justify-center p-5 rounded-[28px] min-w-[80px] transition-all duration-300 border cursor-pointer ${
+                  className={`flex flex-col items-center justify-center py-4 px-5 rounded-[20px] min-w-[76px] transition-all duration-300 border cursor-pointer ${
                     isSel 
-                      ? "bg-stone-900 border-stone-100 dark:bg-stone-100 dark:border-white text-white dark:text-stone-900 shadow-xl scale-105" 
-                      : "bg-white dark:bg-stone-900 border-stone-100 dark:border-stone-800 text-stone-400 dark:text-stone-500 hover:border-amber-400 hover:bg-stone-50/50"
+                      ? "bg-stone-900 dark:bg-stone-100 border-transparent text-white dark:text-stone-900 shadow-md transform -translate-y-1" 
+                      : "bg-white dark:bg-stone-900 border-stone-200/60 dark:border-stone-800/60 text-stone-500 dark:text-stone-400 hover:border-amber-300 dark:hover:border-amber-700/50 hover:bg-stone-50 md:hover:bg-amber-50/50 dark:hover:bg-stone-800/80 shadow-sm hover:-translate-y-0.5"
                   }`}
                 >
-                  <span className={`text-[10px] font-black uppercase tracking-[0.2em] font-sans mb-2 ${isSel ? "text-stone-400 dark:text-stone-500" : ""}`}>
+                  <span className={`text-[10px] font-black uppercase tracking-widest font-sans mb-1.5 ${isSel ? "text-stone-400 dark:text-stone-500" : ""}`}>
                     {getDayName(i)}
                   </span>
-                  <span className={`text-2xl font-black font-mono tracking-tighter ${isSel ? "text-white dark:text-stone-900" : "text-stone-900 dark:text-stone-50"}`}>
+                  <span className={`text-2xl font-black font-sans tracking-tight leading-none mb-2 ${isSel ? "text-white dark:text-stone-900" : "text-stone-900 dark:text-stone-50"}`}>
                     {day.d}
                   </span>
-                  <div className="flex gap-1 mt-3">
+                  <div className="flex gap-1 h-1.5 items-center justify-center w-full">
                     {Array.from({ length: Math.min(day.events, 3) }).map((_, j) => (
-                      <div key={j} className={`w-1.5 h-1.5 rounded-full ${isSel ? "bg-amber-500 shadow-sm" : "bg-stone-200 dark:bg-stone-700"}`} />
+                      <div key={j} className={`w-1.5 h-1.5 rounded-full transition-colors ${isSel ? "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]" : "bg-stone-300 dark:bg-stone-600"}`} />
                     ))}
+                    {day.events === 0 && <div className="w-1.5 h-1.5 rounded-full bg-transparent" />}
                   </div>
-                </motion.button>
+                </button>
               );
             })}
           </div>
         </div>
       </div>
 
-      <div className="flex-1 max-w-7xl mx-auto w-full px-6 py-10 pb-24 relative">
-        <div className="absolute left-[84px] top-0 bottom-0 w-px bg-stone-100 dark:bg-stone-800 hidden md:block" />
+      <div className="flex-1 max-w-7xl mx-auto w-full px-6 py-10 pb-24 relative mt-8">
+        <div className="absolute left-[84px] top-0 bottom-0 w-px bg-stone-200/60 dark:bg-stone-800/60 hidden md:block" />
         
         <AnimatePresence mode="wait">
           {isLoading ? (
@@ -117,21 +122,21 @@ export default function ParentSchedule() {
                exit={{ opacity: 0 }}
                className="flex flex-col items-center justify-center py-24"
              >
-                <div className="w-10 h-10 rounded-full border-4 border-stone-200 border-t-amber-500 animate-spin" />
-                <p className="mt-4 text-xs font-black uppercase tracking-widest text-stone-400">Syncing updates...</p>
+                <div className="w-12 h-12 rounded-full border-[3px] border-stone-200/60 dark:border-stone-800/60 border-t-amber-500 animate-spin" />
+                <p className="mt-6 text-[10px] font-black uppercase tracking-widest text-stone-400 dark:text-stone-500">Syncing updates...</p>
              </motion.div>
           ) : currentDayEvents.length === 0 ? (
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="text-center py-24"
+              className="text-center py-24 px-4 bg-white dark:bg-stone-900 rounded-[40px] border border-stone-200/60 dark:border-stone-800/60 shadow-sm opacity-80"
             >
-              <div className="text-6xl mb-6 grayscale opacity-30">🗓️</div>
-              <h3 className="text-xl font-black text-stone-900 dark:text-stone-50 tracking-tight mb-2">Academic Break</h3>
-              <p className="text-sm font-medium text-stone-500 dark:text-stone-400 max-w-[240px] mx-auto leading-relaxed">No scheduled lectures or tasks for this date.</p>
+              <div className="text-6xl mb-8 grayscale opacity-30 drop-shadow-sm filter">🗓️</div>
+              <h3 className="text-3xl font-black text-stone-900 dark:text-stone-50 tracking-tight font-sans mb-3">Academic Break</h3>
+              <p className="text-base font-bold text-stone-500 dark:text-stone-400 max-w-[280px] mx-auto leading-relaxed">No scheduled lectures or tasks for this date.</p>
             </motion.div>
           ) : (
-            <div className="flex flex-col gap-8 relative">
+            <div className="flex flex-col gap-10 relative">
               {currentDayEvents.map((ev, i) => {
                 const isClass = ev.type === "class";
                 const date = new Date(ev.start_time);
@@ -144,41 +149,41 @@ export default function ParentSchedule() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
                     key={ev.id} 
-                    className="flex flex-col md:flex-row gap-6 relative group"
+                    className="flex flex-col md:flex-row gap-8 relative group"
                   >
-                    <div className="w-full md:w-32 items-start md:pt-4 font-mono text-sm font-black text-stone-400 group-hover:text-amber-600 transition-colors md:text-right shrink-0">
+                    <div className="w-full md:w-32 items-start md:pt-6 font-mono text-[15px] font-bold text-stone-500 dark:text-stone-400 group-hover:text-amber-600 dark:group-hover:text-amber-500 transition-colors md:text-right shrink-0 tabular-nums">
                       {time.replace(" PM", "").replace(" AM", "")}
-                      <span className="text-[10px] ml-1 uppercase opacity-50">{time.includes("PM") ? "pm" : "am"}</span>
+                      <span className="text-[10px] ml-1.5 uppercase font-black tracking-widest opacity-60">{time.includes("PM") ? "pm" : "am"}</span>
                     </div>
                     
-                    <div className="absolute left-[80.5px] top-[22px] w-8 h-8 rounded-full border-4 border-white dark:border-stone-950 bg-stone-100 dark:bg-stone-800 items-center justify-center z-10 hidden md:flex">
-                        <div className={`w-3 h-3 rounded-full ${isClass ? 'bg-sky-500 shadow-lg shadow-sky-500/50' : 'bg-emerald-500 shadow-lg shadow-emerald-500/50'}`} />
+                    <div className="absolute left-[80.5px] top-[22px] w-8 h-8 rounded-full border-4 border-stone-50 dark:border-stone-950 bg-stone-100 dark:bg-stone-800 items-center justify-center z-10 hidden md:flex transition-transform group-hover:scale-110 duration-300">
+                        <div className={`w-3 h-3 rounded-full transition-colors ${isClass ? 'bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.6)] group-hover:bg-sky-500' : 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)] group-hover:bg-emerald-500'}`} />
                     </div>
                     
                     <motion.div 
                       whileHover={{ scale: 1.01, x: 4 }}
                       onClick={() => setDetailSheet(ev)}
-                      className="flex-1 rounded-[32px] p-8 bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 shadow-sm cursor-pointer hover:shadow-2xl hover:border-amber-200 dark:hover:border-amber-900/40 transition-all flex flex-col md:flex-row gap-6 items-start justify-between"
+                      className="flex-1 rounded-[32px] p-8 md:p-10 bg-white dark:bg-stone-900 border border-stone-200/60 dark:border-stone-800/60 shadow-sm cursor-pointer hover:shadow-lg transition-all flex flex-col md:flex-row gap-6 items-start justify-between relative overflow-hidden"
                     >
-                      <div className="space-y-4">
+                      <div className="space-y-5 relative z-10">
                         <div className="flex items-center gap-3">
-                          <span className={`text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-lg border ${
+                          <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg border ${
                             isClass 
-                              ? "bg-sky-50 border-sky-100 text-sky-600 dark:bg-sky-950/30 dark:border-sky-900/40 dark:text-sky-400" 
-                              : "bg-emerald-50 border-emerald-100 text-emerald-600 dark:bg-emerald-950/30 dark:border-emerald-900/40 dark:text-emerald-400"
+                              ? "bg-sky-50 border-sky-200 text-sky-600 dark:bg-sky-500/10 dark:border-sky-900/50 dark:text-sky-400" 
+                              : "bg-emerald-50 border-emerald-200 text-emerald-600 dark:bg-emerald-500/10 dark:border-emerald-900/50 dark:text-emerald-400"
                           }`}>
                             {isClass ? 'LIVE LECTURE' : 'ACADEMIC TASK'}
                           </span>
-                          <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">{ev.subject}</span>
+                          <span className="text-[10px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-widest">{ev.subject}</span>
                         </div>
-                        <h3 className="text-2xl font-bold text-stone-900 dark:text-stone-50 font-sans leading-tight tracking-tight group-hover:text-amber-600 transition-colors">
+                        <h3 className="text-2xl md:text-3xl font-black text-stone-900 dark:text-stone-50 font-sans leading-tight tracking-tight uppercase group-hover:text-amber-600 transition-colors">
                           {ev.title}
                         </h3>
                       </div>
                       
                       {isClass && ev.duration && (
-                        <div className="flex items-center gap-2 bg-stone-50 dark:bg-stone-800/50 px-4 py-2 rounded-xl border border-stone-100 dark:border-stone-700/50 text-xs font-black text-stone-500">
-                          <Clock size={14} />
+                        <div className="flex items-center gap-2.5 bg-stone-50 dark:bg-stone-800/50 px-4 py-2.5 rounded-[12px] border border-stone-200/60 dark:border-stone-700/50 text-[11px] font-black text-stone-500 dark:text-stone-400 tracking-widest relative z-10 w-max shrink-0">
+                          <Clock size={16} strokeWidth={2.5} />
                           {ev.duration} MINS
                         </div>
                       )}
@@ -193,50 +198,61 @@ export default function ParentSchedule() {
 
       <Sheet open={!!detailSheet} onClose={() => setDetailSheet(null)}>
         {detailSheet && (
-          <div className="space-y-10 p-2">
+          <div className="space-y-10 p-2 max-w-2xl mx-auto w-full">
             <div>
-              <div className="flex items-center gap-3 mb-4">
-                 <div className={`w-3 h-3 rounded-full ${detailSheet.type === 'class' ? 'bg-sky-500 glow-sky' : 'bg-emerald-500 glow-emerald'}`} />
-                 <span className="text-[10px] font-black tracking-[0.2em] uppercase text-stone-400 font-sans">
+              <div className="flex items-center gap-3 mb-6 bg-stone-50 md:bg-stone-100/50 dark:bg-stone-900 border border-stone-200/60 dark:border-stone-800/60 shadow-sm w-max px-3 py-1.5 rounded-lg">
+                 <div className={`w-2 h-2 rounded-full ${detailSheet.type === 'class' ? 'bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.6)]' : 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]'}`} />
+                 <span className="text-[10px] font-black tracking-widest uppercase text-stone-500 dark:text-stone-400 font-sans">
                    {detailSheet.type === 'class' ? 'Timetable: Live Event' : 'Task: Deadline Reminder'}
                  </span>
               </div>
-              <h2 className="text-4xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-sans leading-tight mb-2">{detailSheet.title}</h2>
-              <p className="text-lg font-bold text-amber-600 dark:text-amber-500 font-sans">{detailSheet.subject}</p>
+              <h2 className="text-3xl md:text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tight font-sans uppercase leading-none mb-4">{detailSheet.title}</h2>
+              <p className="text-sm font-bold text-amber-600 dark:text-amber-500 font-sans uppercase tracking-widest">{detailSheet.subject}</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-               <div className="bg-stone-50 dark:bg-stone-900 rounded-[32px] p-8 border border-stone-100 dark:border-stone-800 flex flex-col gap-2">
-                  <div className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">Time & Date</div>
-                  <div className="flex items-center gap-3 text-lg font-black text-stone-900 dark:text-stone-100">
-                    <Clock size={20} className="text-amber-500" />
+               <div className="bg-stone-50 dark:bg-stone-900 rounded-[28px] p-8 border border-stone-200/60 dark:border-stone-800/60 flex flex-col gap-2 relative overflow-hidden shadow-sm">
+                  <div className="absolute top-0 right-0 p-6 opacity-10">
+                    <Clock size={80} strokeWidth={1} />
+                  </div>
+                  <div className="text-[10px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-widest mb-1 relative z-10">Time & Date</div>
+                  <div className="flex items-center gap-3 text-xl font-black text-stone-900 dark:text-stone-100 font-sans tracking-tight relative z-10">
+                    <Clock size={20} strokeWidth={2.5} className="text-amber-500" />
                     {new Date(detailSheet.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </div>
-                  <div className="text-xs font-bold text-stone-500">{new Date(detailSheet.start_time).toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+                  <div className="text-sm font-bold text-stone-500 dark:text-stone-400 relative z-10">{new Date(detailSheet.start_time).toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' })}</div>
                </div>
                
                {detailSheet.type === 'class' ? (
-                 <div className="bg-sky-50 dark:bg-sky-950/30 rounded-[32px] p-8 border border-sky-100 dark:border-sky-900/40 flex flex-col gap-2 shadow-sm">
-                    <div className="text-[10px] font-black text-sky-600 dark:text-sky-400 uppercase tracking-widest mb-1">Session Data</div>
-                    <div className="flex items-center gap-3 text-lg font-black text-sky-900 dark:text-sky-200">
-                      <Video size={20} className="text-sky-500" />
+                 <div className="bg-sky-50 dark:bg-sky-500/5 rounded-[28px] p-8 border border-sky-200 dark:border-sky-900/40 flex flex-col gap-2 shadow-sm relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-6 opacity-10">
+                       <Video size={80} strokeWidth={1} className="text-sky-500" />
+                    </div>
+                    <div className="text-[10px] font-black text-sky-600 dark:text-sky-400 uppercase tracking-widest mb-1 relative z-10">Session Data</div>
+                    <div className="flex items-center gap-3 text-xl font-black text-sky-900 dark:text-sky-100 tracking-tight relative z-10">
+                      <Video size={20} strokeWidth={2.5} className="text-sky-500" />
                       Virtual Classroom
                     </div>
-                    <div className="text-xs font-bold text-sky-700 dark:text-sky-400/70">Duration: {detailSheet.duration} Minutes</div>
+                    <div className="text-sm font-bold text-sky-700 dark:text-sky-400/80 relative z-10">Duration: {detailSheet.duration} Minutes</div>
                  </div>
                ) : (
-                 <div className="bg-emerald-50 dark:bg-emerald-950/30 rounded-[32px] p-8 border border-emerald-100 dark:border-emerald-900/40 flex flex-col gap-2 shadow-sm">
-                    <div className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1">Submission Status</div>
-                    <div className="flex items-center gap-3 text-lg font-black text-emerald-900 dark:text-emerald-200">
-                      <BookOpen size={20} className="text-emerald-500" />
+                 <div className="bg-emerald-50 dark:bg-emerald-500/5 rounded-[28px] p-8 border border-emerald-200 dark:border-emerald-900/40 flex flex-col gap-2 shadow-sm relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-6 opacity-10">
+                       <BookOpen size={80} strokeWidth={1} className="text-emerald-500" />
+                    </div>
+                    <div className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 relative z-10">Submission Status</div>
+                    <div className="flex items-center gap-3 text-xl font-black text-emerald-900 dark:text-emerald-100 tracking-tight relative z-10">
+                      <BookOpen size={20} strokeWidth={2.5} className="text-emerald-500" />
                       Academic Work
                     </div>
-                    <div className="text-xs font-bold text-emerald-700 dark:text-emerald-400/70">Required for internal assessment</div>
+                    <div className="text-sm font-bold text-emerald-700 dark:text-emerald-400/80 relative z-10">Required for internal assessment</div>
                  </div>
                )}
             </div>
 
-            <Btn label="Close View" variant="outline" className="w-full py-5 rounded-3xl font-black transition-all" onClick={() => setDetailSheet(null)} />
+            <div className="pt-6 border-t border-stone-200/60 dark:border-stone-800/60">
+               <Btn label="Close View" variant="outline" full className="py-5" onClick={() => setDetailSheet(null)} />
+            </div>
           </div>
         )}
       </Sheet>
