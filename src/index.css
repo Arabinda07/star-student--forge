@@ -38,62 +38,56 @@
 
 /* ─── Semantic tokens (outside @theme so dark variant works) ─── */
 :root {
-  /* Text role tokens */
-  --text-heading:   oklch(0.15 0.005 60);   /* ~stone-900 */
-  --text-body:      oklch(0.24 0.006 60);   /* ~stone-800 */
-  --text-secondary: oklch(0.44 0.010 60);   /* ~stone-600 */
-  --text-muted:     oklch(0.57 0.012 60);   /* ~stone-500 */
-  --text-disabled:  oklch(0.73 0.012 60);   /* ~stone-400 */
+  /* Text role tokens — Ink-on-paper */
+  --text-heading:   oklch(0.18 0.005 60);
+  --text-body:      oklch(0.28 0.006 60);
+  --text-secondary: oklch(0.48 0.010 60);
+  --text-muted:     oklch(0.60 0.012 60);
+  --text-disabled:  oklch(0.78 0.012 60);
 
-  /* Type scale — rem (16px browser default) */
-  --text-2xs:  0.625rem;   /* 10px — metadata / decoration only */
-  --text-xs:   0.6875rem;  /* 11px — labels, chips              */
-  --text-sm:   0.8125rem;  /* 13px — secondary body             */
+  /* Type scale — rem */
+  --text-2xs:  0.6875rem;  /* 11px — labels, chips              */
+  --text-xs:   0.75rem;    /* 12px                              */
+  --text-sm:   0.875rem;   /* 14px — secondary body             */
   --text-base: 1rem;       /* 16px — body                       */
   --text-lg:   1.125rem;   /* 18px — large body                 */
-  --text-xl:   1.25rem;    /* 20px — small headings             */
-  --text-2xl:  1.5rem;     /* 24px                              */
-  --text-3xl:  1.875rem;   /* 30px                              */
-  --text-4xl:  2.25rem;    /* 36px                              */
-  --text-5xl:  3rem;       /* 48px                              */
-  --text-6xl:  3.75rem;    /* 60px                              */
+  --text-xl:   1.375rem;   /* 22px — small headings             */
+  --text-2xl:  1.75rem;    /* 28px                              */
+  --text-3xl:  2.25rem;    /* 36px                              */
+  --text-4xl:  3rem;       /* 48px                              */
+  --text-5xl:  3.75rem;    /* 60px                              */
 
   /* Letter-spacing roles */
-  --tracking-display: -0.04em; /* tight — hero/display text     */
-  --tracking-label:    0.08em; /* wide  — UI labels, nav items  */
-  --tracking-meta:     0.25em; /* extra — all-caps small caps   */
+  --tracking-display: -0.02em;
+  --tracking-label:    0.05em;
+  --tracking-meta:     0.15em;
 
-  /* Surface elevation */
-  --surface-base:    oklch(0.97 0.005 60); /* page background  */
-  --surface-raised:  oklch(1.00 0.000 60); /* cards, panels    */
-  --surface-overlay: oklch(0.99 0.003 60); /* modals, sheets   */
+  /* Surface elevation — Clean & Refined */
+  --surface-base:    oklch(1.00 0.000 60); /* pure white base */
+  --surface-raised:  oklch(0.99 0.003 60); /* very subtle stone offset */
+  --surface-overlay: oklch(1.00 0.000 60);
 
-  /* Semantic color aliases */
-  --color-success:    oklch(0.55 0.15 160); /* emerald */
-  --color-success-bg: oklch(0.97 0.03 160);
-  --color-warning:    oklch(0.72 0.14  72); /* amber   */
-  --color-warning-bg: oklch(0.98 0.03  72);
-  --color-danger:     oklch(0.58 0.19  15); /* rose    */
-  --color-danger-bg:  oklch(0.98 0.02  15);
-  --color-info:       oklch(0.62 0.14 225); /* sky     */
-  --color-info-bg:    oklch(0.97 0.03 225);
-
-  /* Role accent tokens — replaces hardcoded hex COLORS object */
-  --color-student: oklch(0.55 0.15 160); /* emerald */
-  --color-teacher: oklch(0.72 0.14  72); /* amber   */
-  --color-parent:  oklch(0.62 0.14 225); /* sky     */
+  /* Semantic color aliases — Muted & Professional */
+  --color-success:    oklch(0.55 0.12 160);
+  --color-success-bg: oklch(0.98 0.02 160);
+  --color-warning:    oklch(0.72 0.12  72);
+  --color-warning-bg: oklch(0.99 0.02  72);
+  --color-danger:     oklch(0.58 0.16  15);
+  --color-danger-bg:  oklch(0.99 0.01  15);
+  --color-info:       oklch(0.62 0.12 225);
+  --color-info-bg:    oklch(0.98 0.02 225);
 }
 
 .dark {
-  --text-heading:   oklch(0.97 0.003 60);
-  --text-body:      oklch(0.90 0.005 60);
-  --text-secondary: oklch(0.65 0.010 60);
-  --text-muted:     oklch(0.52 0.010 60);
-  --text-disabled:  oklch(0.38 0.008 60);
+  --text-heading:   oklch(0.95 0.002 60);
+  --text-body:      oklch(0.85 0.003 60);
+  --text-secondary: oklch(0.60 0.005 60);
+  --text-muted:     oklch(0.45 0.005 60);
+  --text-disabled:  oklch(0.30 0.004 60);
 
-  --surface-base:    oklch(0.09 0.003 60);
-  --surface-raised:  oklch(0.13 0.004 60);
-  --surface-overlay: oklch(0.16 0.005 60);
+  --surface-base:    oklch(0.12 0.002 60);
+  --surface-raised:  oklch(0.15 0.003 60);
+  --surface-overlay: oklch(0.18 0.004 60);
 }
 
 /* ─── Utilities ─────────────────────────────────────────── */
@@ -111,137 +105,79 @@
   .text-muted     { color: var(--text-muted); }
   .text-disabled  { color: var(--text-disabled); }
 
-  /* Performance: off-screen content skips rendering until near viewport */
   .content-auto { content-visibility: auto; }
 }
 
 /* ─── Base layer ─────────────────────────────────────────── */
 @layer base {
   html {
-    font-size: 100%; /* never override user zoom preferences */
+    font-size: 100%;
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-stone-50 text-stone-900 dark:bg-stone-950 dark:text-stone-50
+    @apply bg-white text-stone-800 dark:bg-stone-950 dark:text-stone-200
            selection:bg-brand-500/10 selection:text-brand-600;
     font-feature-settings: "ss01", "ss03", "cv02", "cv11";
     font-size: var(--text-base);
     line-height: 1.6;
   }
 
-  /* Heading baseline */
+  /* Heading baseline — Refined weights */
   h1, h2, h3, h4, .font-display {
-    @apply font-display tracking-tight;
-    line-height: 1.05;
+    @apply font-display tracking-tight font-semibold;
+    line-height: 1.1;
     font-feature-settings: "ss01", "kern";
-    text-wrap: balance; /* prevents orphaned words on multi-line headings */
+    text-wrap: balance;
   }
 
-  /* Hero/display text — tightest acceptable leading */
   h1 {
-    @apply tracking-tighter;
-    line-height: 0.95;
+    @apply tracking-tighter font-bold;
+    line-height: 1;
   }
 
-  h2 { line-height: 1.1; }
-  h3, h4 { line-height: 1.2; }
-
-  /* Minimum metadata text — below 11px is decoration only */
   small, .text-2xs {
     font-size: var(--text-2xs);
     letter-spacing: var(--tracking-meta);
+    @apply font-medium uppercase opacity-60;
   }
 
   .tabular { font-variant-numeric: tabular-nums; }
 
-  /* Focus ring */
+  /* Focus ring — Refined */
   button:focus-visible,
   a:focus-visible,
   input:focus-visible,
   textarea:focus-visible,
   select:focus-visible {
-    outline: 2px solid var(--color-brand-500);
-    outline-offset: 3px;
+    outline: 1.5px solid var(--color-brand-500);
+    outline-offset: 2px;
     border-radius: 4px;
-  }
-
-  /* View transitions */
-  ::view-transition-group(root) {
-    animation-duration: 0.5s;
-    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  ::view-transition-old(root) {
-    animation: fade-out 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-  ::view-transition-new(root) {
-    animation: slide-from-right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  @keyframes fade-out {
-    from { opacity: 1; }
-    to   { opacity: 0; }
-  }
-  @keyframes slide-from-right {
-    from { transform: translateX(30px); opacity: 0; }
-    to   { transform: translateX(0);    opacity: 1; }
-  }
-
-  /* Noise texture overlay */
-  .premium-texture::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    pointer-events: none;
-    opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    mix-blend-mode: overlay;
   }
 }
 
 /* ─── Animation keyframes ────────────────────────────────── */
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes slideInRight {
-  from { transform: translateX(100%); }
-  to   { transform: translateX(0); }
-}
-@keyframes slideSheet {
-  from { transform: translateY(100%); }
-  to   { transform: translateY(0); }
 }
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
-.animate-slide-up       { animation: slideUp       0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.animate-slide-in-right { animation: slideInRight  0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.animate-slide-sheet    { animation: slideSheet    0.4s cubic-bezier(0.32, 0.72, 0, 1) both; }
-.animate-fade-in        { animation: fadeIn        0.25s ease-out both; }
+.animate-slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-fade-in  { animation: fadeIn 0.4s ease-out both; }
 
-/* ─── Reduced motion — respect user system preference ────── */
+/* ─── Reduced motion ────── */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-
-  .animate-slide-up,
-  .animate-slide-in-right,
-  .animate-slide-sheet,
-  .animate-fade-in {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
 }
+
 

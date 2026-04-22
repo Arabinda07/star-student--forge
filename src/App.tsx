@@ -105,39 +105,26 @@ function BottomNav({ role, active, onNav }: { role: Role; active: number; onNav:
   return (
     <nav
       aria-label="Main navigation"
-      className="md:hidden bg-white/90 dark:bg-stone-900/90 backdrop-blur-2xl border-t border-stone-100 dark:border-stone-800 pb-[env(safe-area-inset-bottom)] pt-4 px-6 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] shrink-0 z-20 relative rounded-t-[32px]"
+      className="md:hidden bg-white/80 dark:bg-stone-950/80 backdrop-blur-md border-t border-stone-100 dark:border-stone-900 pb-[env(safe-area-inset-bottom)] pt-3 px-6 shrink-0 z-20 relative"
     >
-      <ul role="tablist" aria-label="Navigation tabs" className="flex list-none p-0 m-0">
+      <ul role="tablist" aria-label="Navigation tabs" className="flex list-none p-0 m-0 justify-around">
         {tabs.map((tab, i) => {
           const isActive = active === i;
-          const tabId = `nav-tab-${i}`;
           return (
-            <li key={i} role="presentation" className="flex-1">
-              <motion.button
-                id={tabId}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+            <li key={i} role="presentation">
+              <button
                 role="tab"
                 aria-selected={isActive}
-                aria-controls="main-content"
-                aria-label={tab.label}
                 onClick={() => onNav(i)}
-                className="w-full border-none bg-transparent cursor-pointer flex flex-col items-center justify-center gap-2 p-2 relative group rounded-2xl transition-all"
+                className="bg-transparent border-none cursor-pointer flex flex-col items-center gap-1.5 p-2 transition-all"
               >
-              <div className={`transition-all duration-500 ${isActive ? getRoleColorClass(role) : "text-stone-300 dark:text-stone-700"} ${isActive ? "-translate-y-1 scale-110" : ""}`}>
-                {tab.icon}
-              </div>
-              {tab.badge !== undefined && !isActive && (
-                <div className="absolute top-1 left-1/2 ml-3 bg-rose-500 text-white rounded-full min-w-[16px] h-4 px-1 text-[8px] font-black flex items-center justify-center border-2 border-white dark:border-stone-900 shadow-md">
-                  {tab.badge}
+                <div className={`transition-colors duration-300 ${isActive ? "text-stone-900 dark:text-stone-100" : "text-stone-300 dark:text-stone-700"}`}>
+                  {tab.icon}
                 </div>
-              )}
-              <div
-                className={`text-[9px] font-bold font-sans uppercase tracking-[0.18em] transition-all duration-500 ${isActive ? "opacity-100 scale-100" : "opacity-0 scale-75 translate-y-2"} ${getRoleColorClass(role)}`}
-              >
-                {tab.label}
-              </div>
-            </motion.button>
+                <div className={`text-[10px] font-medium tracking-wider transition-opacity duration-300 ${isActive ? "opacity-100" : "opacity-0"}`}>
+                  {tab.label}
+                </div>
+              </button>
             </li>
           );
         })}
@@ -150,40 +137,27 @@ function DesktopNav({ role, active, onNav }: { role: Role; active: number; onNav
   const tabs = getTabs(role);
   
   return (
-    <nav aria-label="Main navigation" className="p-8 flex flex-col gap-4">
-      <ul role="tablist" aria-label="Navigation tabs" className="flex flex-col gap-4 list-none p-0 m-0">
+    <nav aria-label="Main navigation" className="p-10 flex flex-col gap-6">
+      <ul role="tablist" aria-label="Navigation tabs" className="flex flex-col gap-2 list-none p-0 m-0">
         {tabs.map((tab, i) => {
           const isActive = active === i;
-          const tabId = `desktop-tab-${i}`;
           return (
             <li key={i} role="presentation">
-              <motion.button
-                id={tabId}
-                whileHover={{ x: 8 }}
-                whileTap={{ scale: 0.98 }}
+              <button
                 role="tab"
                 aria-selected={isActive}
-                aria-controls="main-content"
-                aria-label={tab.label}
                 onClick={() => onNav(i)}
-                className={`w-full flex items-center justify-between px-6 py-5 rounded-[24px] transition-all cursor-pointer relative group ${
+                className={`w-full flex items-center gap-4 px-5 py-3 rounded-xl transition-all border-none cursor-pointer text-left ${
                   isActive 
-                    ? getRoleBgClass(role) + " shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-black/5 dark:border-white/5 backdrop-blur-md" 
-                    : "text-stone-400 dark:text-stone-600 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-50 dark:hover:bg-stone-800/30"
+                    ? "bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100" 
+                    : "text-stone-400 hover:text-stone-600 dark:text-stone-600 dark:hover:text-stone-400 bg-transparent"
                 }`}
               >
-              <div className="flex items-center gap-5">
-                <div className={`transition-all duration-700 ${isActive ? getRoleColorClass(role) + " scale-125 rotate-6" : "text-stone-300 dark:text-stone-700 group-hover:scale-110 group-hover:text-stone-900"}`}>
+                <div className={`transition-colors ${isActive ? "text-stone-900 dark:text-stone-100" : "text-stone-300 dark:text-stone-700"}`}>
                   {tab.icon}
                 </div>
-                <span className={`text-[11px] font-semibold tracking-[0.2em] transition-all font-sans ${isActive ? "opacity-100 translate-x-1" : "opacity-50 translate-x-0"}`}>{tab.label}</span>
-              </div>
-              {tab.badge !== undefined && (
-                <div className={`rounded-full min-w-[24px] h-6 px-2 text-[9px] font-black flex items-center justify-center shadow-lg transform transition-transform group-hover:scale-110 ${isActive ? "bg-rose-500 text-white" : "bg-stone-100 dark:bg-stone-800 text-stone-400"}`}>
-                  {tab.badge}
-                </div>
-              )}
-            </motion.button>
+                <span className="text-[11px] font-bold uppercase tracking-widest font-sans">{tab.label}</span>
+              </button>
             </li>
           );
         })}
@@ -394,7 +368,7 @@ export default function App() {
 
   if (session) {
     return (
-      <div className="h-[100dvh] bg-stone-50 dark:bg-stone-950 font-sans flex flex-col overflow-hidden text-stone-900 dark:text-stone-50 relative premium-texture">
+      <div className="h-[100dvh] bg-white dark:bg-stone-950 font-sans flex flex-col overflow-hidden text-body relative">
         
         {showWalkthrough && (
           <Walkthrough 
@@ -408,46 +382,38 @@ export default function App() {
         )}
 
       {/* App Header & Role Switcher */}
-      <header className="bg-white/90 dark:bg-stone-900/90 backdrop-blur-2xl border-b border-stone-100 dark:border-stone-800 shrink-0 z-40 relative">
-        <div className="max-w-7xl mx-auto px-8 h-24 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <div className="text-4xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display uppercase italic leading-none">Drona</div>
-            <div className="h-6 w-px bg-stone-100 dark:bg-stone-800 mx-1" />
-            <div className="text-[10px] bg-stone-900 dark:bg-white text-white dark:text-stone-950 px-4 py-1.5 rounded-xl font-sans font-black uppercase tracking-[0.4em] italic shadow-xl">v2.1</div>
+      <header className="bg-white/80 dark:bg-stone-950/80 backdrop-blur-md border-b border-stone-100 dark:border-stone-900 shrink-0 z-40 relative">
+        <div className="max-w-7xl mx-auto px-8 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="text-2xl font-bold text-stone-900 dark:text-stone-100 tracking-tight font-display">Drona</div>
           </div>
           
-          <div className="flex items-center gap-6">
-            <motion.button 
-              whileHover={{ scale: 1.1, rotate: 10 }}
-              whileTap={{ scale: 0.9 }}
+          <div className="flex items-center gap-4">
+            <button 
               onClick={toggleDark} 
               aria-label="Toggle dark mode"
-              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-stone-900 text-stone-400 hover:text-stone-900 dark:text-stone-500 dark:hover:text-stone-100 transition-all border border-stone-100 dark:border-stone-800 shadow-xl"
+              className="w-10 h-10 flex items-center justify-center rounded-full text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors bg-transparent border-none cursor-pointer"
             >
-              {isDark ? <Sun size={22} weight="duotone" /> : <Moon size={22} weight="duotone" />}
-            </motion.button>
+              {isDark ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
           </div>
         </div>
       </header>
 
       {/* Main Web App Container */}
-      <div className="flex-1 w-full max-w-7xl mx-auto flex overflow-hidden bg-stone-50 dark:bg-stone-950/50 md:border-x border-stone-200 dark:border-stone-800 shadow-sm">
+      <div className="flex-1 w-full max-w-7xl mx-auto flex overflow-hidden">
         {/* Desktop Sidebar */}
-        <div className="hidden md:flex flex-col w-72 border-r border-stone-100 dark:border-stone-800 bg-white dark:bg-stone-900 z-10 shrink-0">
+        <div className="hidden md:flex flex-col w-64 border-r border-stone-100 dark:border-stone-900 bg-white dark:bg-stone-950 z-10 shrink-0">
           <DesktopNav role={role} active={tab} onNav={handleTabChange} />
-          <div className="mt-auto p-8 hidden md:block border-t border-stone-100 dark:border-stone-800/50">
-            <div className="text-xs font-bold text-stone-400 dark:text-stone-600">Drona</div>
-            <div className="text-[10px] text-stone-300 dark:text-stone-700 mt-1 font-medium">v2.1.1</div>
-          </div>
         </div>
         
         {/* Dynamic Content Area */}
-        <div className="flex-1 flex flex-col relative overflow-hidden bg-stone-50 dark:bg-stone-950">
+        <div className="flex-1 flex flex-col relative overflow-hidden bg-white dark:bg-stone-950">
           <main
             id="main-content"
             role="tabpanel"
             tabIndex={-1}
-            className="flex-1 relative overflow-y-auto w-full mx-auto flex flex-col bg-stone-50 dark:bg-stone-950"
+            className="flex-1 relative overflow-y-auto w-full mx-auto flex flex-col bg-white dark:bg-stone-950"
           >
             {role === 'student' && tab === 0 && <StudentHome />}
             {role === 'student' && tab === 1 && <StudentMyWork />}

@@ -151,24 +151,24 @@ export default function StudentMyWork() {
   const isDone = tab === "submitted" || tab === "graded";
 
   return (
-    <div className="h-full flex flex-col bg-stone-50 md:bg-white dark:bg-stone-950 md:dark:bg-stone-900 scrollbar-hide overflow-y-auto premium-texture relative">
+    <div className="h-full flex flex-col bg-white dark:bg-stone-950 scrollbar-hide overflow-y-auto relative">
       {/* Dynamic Header Section */}
       <div className="px-6 py-8 md:py-12 pb-6 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md z-20 border-b border-stone-200 dark:border-stone-800">
         <div className="max-w-7xl mx-auto w-full">
           <div className="flex justify-between items-end mb-10 relative z-10">
             <div>
-              <h1 className="text-4xl md:text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display mb-2 uppercase italic leading-none">My Work</h1>
-              <p className="text-[10px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-[0.3em] leading-none italic">
-                 <span className="text-brand-600 dark:text-brand-400 drop-shadow-sm font-black">{items.length}</span> tasks total
+              <h1 className="text-4xl font-bold text-heading tracking-tight mb-2 uppercase">My Work</h1>
+              <p className="text-[10px] font-medium text-muted uppercase tracking-[0.2em] leading-none">
+                 <span className="text-brand-600 dark:text-brand-400 font-bold">{items.length}</span> assignments total
               </p>
             </div>
             <motion.button 
-              whileHover={{ scale: 1.05, rotate: 90 }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={createTask}
-              className="w-16 h-16 rounded-full bg-stone-900 dark:bg-stone-100 flex items-center justify-center shadow-2xl shadow-stone-900/20 dark:shadow-none border-none cursor-pointer"
+              className="w-14 h-14 rounded-full bg-stone-900 dark:bg-stone-100 flex items-center justify-center shadow-lg border-none cursor-pointer"
             >
-              <Plus size={28} weight="bold" className="text-white dark:text-stone-900" />
+              <Plus size={24} weight="bold" className="text-white dark:text-stone-900" />
             </motion.button>
           </div>
           
@@ -180,7 +180,7 @@ export default function StudentMyWork() {
                 <button
                   key={key}
                   onClick={() => setTab(key)}
-                  className={`flex-1 min-w-[110px] py-4 rounded-[24px] font-black text-[10px] uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 relative overflow-hidden group border-none cursor-pointer ${
+                  className={`flex-1 min-w-[110px] py-3.5 rounded-2xl font-bold text-[10px] uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 relative overflow-hidden group border-none cursor-pointer ${
                     isActive 
                       ? "text-stone-900 dark:text-stone-50" 
                       : "text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
@@ -189,15 +189,15 @@ export default function StudentMyWork() {
                   {isActive && (
                     <motion.div 
                       layoutId="active-task-tab"
-                      className="absolute inset-0 bg-stone-50 dark:bg-stone-800/80 shadow-inner z-0"
+                      className="absolute inset-0 bg-stone-50 dark:bg-stone-800/50 z-0"
                     />
                   )}
                   <span className="relative z-10 flex items-center gap-2">
-                    <span className={`transition-transform duration-500 ${isActive ? 'scale-110' : 'group-hover:scale-110 shadow-none'}`} style={{ color: isActive ? config.color : undefined }}>
+                    <span className={`transition-transform duration-500 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} style={{ color: isActive ? config.color : undefined }}>
                       {config.icon}
                     </span>
-                    <span className="font-black italic">{config.label}</span>
-                    <span className={`ml-1 px-2 py-0.5 rounded-lg text-[9px] font-black ${isActive ? 'bg-white dark:bg-stone-700 shadow-sm text-brand-600' : 'bg-stone-50 dark:bg-stone-800'}`}>
+                    <span className="font-bold">{config.label}</span>
+                    <span className={`ml-1 px-2 py-0.5 rounded-md text-[9px] font-bold ${isActive ? 'bg-white dark:bg-stone-700 shadow-sm text-brand-600' : 'bg-stone-50 dark:bg-stone-800'}`}>
                       {count}
                     </span>
                   </span>
@@ -240,60 +240,55 @@ export default function StudentMyWork() {
                   return (
                     <motion.div
                       layout
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 15 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
+                      exit={{ opacity: 0, scale: 0.98 }}
                       key={item.id}
                       onClick={() => setSelTask(item)}
-                      className="group bg-white dark:bg-stone-900 p-10 rounded-[40px] border border-stone-100 dark:border-stone-800 shadow-sm hover:shadow-2xl hover:border-brand-500/20 transition-all cursor-pointer flex flex-col relative overflow-hidden h-full hover:-translate-y-1"
-                      transition={{ delay: i * 0.03 }}
+                      className="group bg-white dark:bg-stone-900 p-8 rounded-3xl border border-stone-100 dark:border-stone-800/50 shadow-sm hover:shadow-xl hover:border-brand-500/20 transition-all cursor-pointer flex flex-col relative overflow-hidden h-full"
+                      transition={{ delay: i * 0.02, duration: 0.4 }}
                     >
-                       <div className="flex justify-between items-start mb-10 relative z-10">
-                        <div className={`w-14 h-18 rounded-[24px] shrink-0 flex items-center justify-center text-3xl shadow-inner border border-white/20 dark:border-black/20 ${
+                       <div className="flex justify-between items-start mb-8 relative z-10">
+                        <div className={`w-12 h-16 rounded-2xl shrink-0 flex items-center justify-center text-2xl border border-white/10 dark:border-black/10 ${
                           isDone ? "bg-stone-50 dark:bg-stone-800 text-stone-300 grayscale" : sc.bg
                         }`}>
-                          {isDone ? <CheckCircle size={32} weight="duotone" /> : sc.icon}
+                          {isDone ? <CheckCircle size={28} weight="duotone" /> : sc.icon}
                         </div>
                         <div className="flex gap-2">
                            <button 
                             onClick={(e) => deleteTask(item.id, e)}
-                            className="bg-white dark:bg-stone-800 w-12 h-12 rounded-[18px] flex items-center justify-center text-stone-300 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 opacity-0 group-hover:opacity-100 transition-all shadow-sm border border-stone-100 dark:border-stone-800 active:scale-95 cursor-pointer"
+                            className="bg-stone-50 dark:bg-stone-800 w-10 h-10 rounded-xl flex items-center justify-center text-stone-300 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 opacity-0 group-hover:opacity-100 transition-all border border-stone-100 dark:border-stone-700 active:scale-95 cursor-pointer"
                           >
-                            <Trash size={20} weight="duotone" />
+                            <Trash size={18} weight="duotone" />
                           </button>
                         </div>
                       </div>
 
                       <div className="flex-1 relative z-10">
                         <div className="flex flex-wrap items-center gap-3 mb-4">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-stone-400 dark:text-stone-500 bg-stone-50 dark:bg-stone-800 px-3 py-1.5 rounded-xl border border-stone-100 dark:border-stone-700">{item.type}</span>
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-muted bg-stone-50 dark:bg-stone-800 px-2.5 py-1 rounded-lg border border-stone-100 dark:border-stone-700">{item.type}</span>
                           {tab === 'overdue' && (
-                           <span className="text-[10px] font-black uppercase tracking-widest text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 px-3 py-1.5 rounded-xl border border-rose-200 dark:border-rose-900/50 italic">Overdue</span>
+                           <span className="text-[10px] font-bold uppercase tracking-wider text-rose-600 bg-rose-50 dark:bg-rose-500/10 px-2.5 py-1 rounded-lg border border-rose-100 dark:border-rose-900/30">Overdue</span>
                           )}
-                           <span className="text-[10px] font-black text-stone-300 dark:text-stone-600 uppercase tracking-widest pl-3 border-l border-stone-100 dark:border-stone-800 italic underline decoration-brand-500/30 underline-offset-4">{item.due || "No deadline"}</span>
+                           <span className="text-[10px] font-medium text-muted uppercase tracking-wider pl-3 border-l border-stone-100 dark:border-stone-800">{item.due || "No deadline"}</span>
                         </div>
-                        <h3 className={`text-3xl font-black font-display leading-[0.9] tracking-tighter mb-6 group-hover:text-brand-600 transition-colors uppercase italic ${isDone ? "text-stone-200 dark:text-stone-700 line-through decoration-stone-200 dark:decoration-stone-700" : "text-stone-900 dark:text-stone-50"}`}>
+                        <h3 className={`text-2xl font-bold font-display leading-tight tracking-tight mb-6 group-hover:text-brand-600 transition-colors uppercase ${isDone ? "text-stone-300 dark:text-stone-700 line-through" : "text-heading"}`}>
                           {item.title}
                         </h3>
                       </div>
 
-                      <div className="mt-10 pt-8 border-t border-stone-50 dark:border-stone-800/50 flex justify-between items-center shrink-0 relative z-10 italic">
-                         <div className="text-[10px] font-black uppercase tracking-[0.25em]" style={{ color: isDone ? '#d6d3d1' : sc.fg }}>
+                      <div className="mt-8 pt-6 border-t border-stone-50 dark:border-stone-800/50 flex justify-between items-center shrink-0 relative z-10">
+                         <div className="text-[10px] font-bold uppercase tracking-[0.15em]" style={{ color: isDone ? 'var(--text-disabled)' : sc.fg }}>
                            {item.subject}
                          </div>
+                         {!isDone && <CaretRight size={20} weight="bold" className="text-stone-200 dark:text-stone-700 group-hover:text-brand-500 group-hover:translate-x-1 transition-all" />}
                          {tab === "graded" && item.fb && (
-                            <div className="flex items-center gap-1.5 text-brand-600 bg-brand-50 dark:bg-brand-500/10 px-3 py-1.5 rounded-xl border border-brand-200 dark:border-brand-900/50 shadow-sm">
-                               <Sparkle size={14} weight="fill" />
-                               <span className="text-[10px] font-black uppercase tracking-widest font-display">Archived A+</span>
+                            <div className="flex items-center gap-1.5 text-brand-600 bg-brand-50 dark:bg-brand-500/10 px-3 py-1.5 rounded-lg border border-brand-100 dark:border-brand-900/30 shadow-sm">
+                               <Sparkle size={12} weight="fill" />
+                               <span className="text-[9px] font-bold uppercase tracking-widest">Graded</span>
                             </div>
                          )}
-                         {!isDone && <CaretRight size={22} weight="bold" className="text-stone-200 dark:text-stone-700 group-hover:text-brand-500 group-hover:translate-x-1 transition-all" />}
                       </div>
-
-                      {/* Accent highlight */}
-                      {!isDone && (
-
-                      )}
                     </motion.div>
                   );
                 })

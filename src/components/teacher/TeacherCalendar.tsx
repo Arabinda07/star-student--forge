@@ -50,18 +50,18 @@ export default function TeacherCalendar() {
   }).sort((a,b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
 
   return (
-    <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 overflow-hidden relative premium-texture">
+    <div className="h-full flex flex-col bg-white dark:bg-stone-950 overflow-hidden relative">
       <div className="px-6 py-8 pb-4 shrink-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md border-b border-stone-200 dark:border-stone-800 sticky top-0 z-20 animate-slide-up">
         <div className="flex justify-between items-start mb-8 max-w-7xl mx-auto w-full relative z-10">
           <div>
-            <h1 className="text-4xl md:text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-sans leading-none mb-2">Calendar</h1>
-            <p className="text-[10px] font-black text-stone-400 dark:text-stone-500 font-sans uppercase tracking-widest drop-shadow-sm">April 2026</p>
+            <h1 className="text-3xl font-bold text-heading tracking-tight mb-1 uppercase">Calendar</h1>
+            <p className="text-[10px] font-medium text-muted uppercase tracking-[0.2em] leading-none">April 2026 Cycle</p>
           </div>
           <button 
             onClick={() => setAddSheet(true)}
-            className="w-14 h-14 bg-amber-400 dark:bg-amber-500 text-amber-950 rounded-full flex items-center justify-center shadow-sm hover:scale-105 active:scale-95 transition-all outline-none border border-transparent hover:border-amber-500/20"
+            className="w-12 h-12 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all outline-none border-none"
           >
-            <Plus size={24} strokeWidth={2.5} />
+            <Plus size={20} weight="bold" />
           </button>
         </div>
 
@@ -72,23 +72,22 @@ export default function TeacherCalendar() {
               <button
                 key={i}
                 onClick={() => setSelDay(i)}
-                className={`flex flex-col items-center justify-center py-4 px-5 rounded-[20px] min-w-[76px] transition-all duration-300 border cursor-pointer ${
+                className={`flex flex-col items-center justify-center py-4 px-5 rounded-2xl min-w-[64px] transition-all duration-300 border cursor-pointer ${
                   isSel 
-                    ? "bg-stone-900 dark:bg-stone-100 border-transparent text-white dark:text-stone-900 shadow-md transform -translate-y-1" 
-                    : "bg-white dark:bg-stone-900 border-stone-200/60 dark:border-stone-800/60 text-stone-500 dark:text-stone-400 hover:border-amber-300 dark:hover:border-amber-700/50 hover:bg-stone-50 md:hover:bg-amber-50/50 dark:hover:bg-stone-800/80 shadow-sm hover:-translate-y-0.5"
+                    ? "bg-stone-900 border-stone-900 shadow-xl scale-105" 
+                    : "bg-white dark:bg-stone-900 border-stone-100 dark:border-stone-800 hover:border-brand-500/20 hover:bg-stone-50 dark:hover:bg-stone-800/50"
                 }`}
               >
-                <span className={`text-[10px] font-black uppercase tracking-widest font-sans mb-1.5 ${isSel ? "text-stone-400 dark:text-stone-500" : ""}`}>
+                <span className={`text-[9px] font-bold uppercase tracking-wider font-sans mb-2 ${isSel ? "text-stone-500" : "text-muted"}`}>
                   {getDayName(i)}
                 </span>
-                <span className={`text-2xl font-black font-sans tracking-tight leading-none mb-2 ${isSel ? "text-white dark:text-stone-900" : "text-stone-900 dark:text-stone-50"}`}>
+                <span className={`text-xl font-bold font-display tracking-tight mb-2 ${isSel ? "text-white" : "text-heading"}`}>
                   {day.d}
                 </span>
-                <div className="flex gap-1 h-1.5 items-center justify-center w-full">
+                <div className="flex gap-1 h-1.5 flex-wrap justify-center max-w-[40px]">
                   {Array.from({ length: Math.min(day.events, 3) }).map((_, j) => (
-                    <div key={j} className={`w-1.5 h-1.5 rounded-full transition-colors ${isSel ? "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]" : "bg-stone-300 dark:bg-stone-600"}`} />
+                    <div key={j} className={`w-1 h-1 rounded-full ${isSel ? "bg-brand-400" : "bg-stone-200 dark:bg-stone-700"}`} />
                   ))}
-                  {day.events === 0 && <div className="w-1.5 h-1.5 rounded-full bg-transparent" />}
                 </div>
               </button>
             );
@@ -96,8 +95,8 @@ export default function TeacherCalendar() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-6 py-10 scrollbar-hide relative max-w-7xl mx-auto w-full">
-        <div className="absolute left-[64px] top-0 bottom-0 w-px bg-stone-200 dark:bg-stone-800" />
+      <div className="flex-1 overflow-y-auto px-6 py-10 scrollbar-hide relative bg-white dark:bg-stone-950 border-x border-stone-100/50 dark:border-stone-800/30 max-w-4xl mx-auto w-full">
+        <div className="absolute left-[64px] top-0 bottom-0 w-px bg-stone-100 dark:bg-stone-800" />
         
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
@@ -129,29 +128,28 @@ export default function TeacherCalendar() {
                   
                   <div 
                     onClick={() => setDetailSheet(ev)}
-                    className="flex-1 rounded-[24px] p-6 bg-white dark:bg-stone-900 border border-stone-200/60 dark:border-stone-800/60 shadow-sm cursor-pointer hover:shadow-xl hover:-translate-y-0.5 hover:border-amber-200 dark:hover:border-amber-900/40 transition-all ml-2 mb-2 relative overflow-hidden"
+                    className="flex-1 rounded-3xl p-8 border border-stone-100 dark:border-stone-800/50 shadow-sm cursor-pointer hover:shadow-xl transition-all bg-white dark:bg-stone-900 group relative overflow-hidden"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-br from-stone-50/50 to-transparent dark:from-stone-800/20 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                     <div className="flex justify-between items-start mb-4 relative z-10">
                        <div>
-                         <div className="text-xl font-black text-stone-900 dark:text-stone-50 font-sans leading-tight tracking-tight mb-2 relative z-10 group-hover/item:text-amber-600 dark:group-hover/item:text-amber-500 transition-colors">
+                         <div className="text-xl font-bold text-heading font-display leading-tight tracking-tight mb-2 uppercase group-hover:text-brand-600 transition-colors">
                            {ev.title}
                          </div>
-                         <div className="text-[10px] font-black text-stone-400 dark:text-stone-500 font-sans uppercase tracking-[0.2em] flex items-center gap-2">
-                           <span className="w-1 h-1 rounded-full bg-stone-300 dark:bg-stone-600" />
+                         <div className="text-[10px] font-medium text-muted font-sans uppercase tracking-widest flex items-center gap-2">
+                           <span className="w-1 h-1 rounded-full bg-stone-100 dark:bg-stone-800" />
                            {ev.batch_id}
                          </div>
                        </div>
                        {isClass && (
-                         <div className="text-[10px] font-black font-mono bg-stone-100 dark:bg-stone-800/80 border border-stone-200/60 dark:border-stone-700/60 text-stone-600 dark:text-stone-400 px-3 py-1.5 rounded-lg uppercase tracking-widest tabular-nums top-1 relative shadow-sm">
+                         <div className="text-[10px] font-bold font-mono bg-stone-50 dark:bg-stone-800 text-stone-600 dark:text-stone-300 px-2.5 py-1 rounded-lg mb-auto shrink-0 border border-stone-100 dark:border-stone-700">
                            {ev.duration} MIN
                          </div>
                        )}
                     </div>
                     
                     {ev.meeting_link && (
-                      <div className="flex items-center gap-1.5 mt-5 text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-3 py-1.5 rounded-lg w-max border border-emerald-200/60 dark:border-emerald-900/50 relative z-10">
-                        <Video size={12} strokeWidth={2.5} /> Live Link Attached
+                      <div className="flex items-center gap-1.5 mt-5 text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 px-3 py-1.5 rounded-lg w-max border border-emerald-100 dark:border-emerald-900/30 relative z-10">
+                        <Video size={12} weight="bold" /> Session Link
                       </div>
                     )}
                   </div>

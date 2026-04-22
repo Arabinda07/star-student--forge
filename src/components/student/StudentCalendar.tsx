@@ -62,13 +62,13 @@ export default function StudentCalendar() {
   }).sort((a,b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
 
   return (
-    <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 overflow-hidden relative">
+    <div className="h-full flex flex-col bg-white dark:bg-stone-950 overflow-hidden relative">
       <div className="px-6 py-12 pb-4 shrink-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md border-b border-stone-200 dark:border-stone-800 sticky top-0 z-20 animate-fade-in">
         <div className="max-w-4xl mx-auto w-full">
           <div className="flex justify-between items-start mb-10">
             <div>
-              <h1 className="text-4xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display uppercase italic leading-none mb-3">Agenda Registry</h1>
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-600 dark:text-brand-400 font-sans italic">April 2026 Cycle</p>
+              <h1 className="text-3xl font-bold text-heading tracking-tight mb-1 uppercase">Calendar</h1>
+              <p className="text-[10px] font-medium text-muted uppercase tracking-[0.2em] leading-none">April 2026 Cycle</p>
             </div>
           </div>
 
@@ -79,21 +79,21 @@ export default function StudentCalendar() {
                 <button
                   key={i}
                   onClick={() => setSelDay(i)}
-                  className={`flex flex-col items-center justify-center p-5 rounded-[28px] min-w-[72px] transition-all duration-300 border cursor-pointer ${
+                  className={`flex flex-col items-center justify-center p-4 rounded-2xl min-w-[64px] transition-all duration-300 border cursor-pointer ${
                     isSel 
-                      ? "bg-stone-900 border-stone-900 shadow-2xl shadow-stone-900/40 scale-105" 
-                      : "bg-white dark:bg-stone-900 border-stone-100 dark:border-stone-800 hover:border-brand-500/30 hover:bg-stone-50 dark:hover:bg-stone-800/50 hover:shadow-lg"
+                      ? "bg-stone-900 border-stone-900 shadow-xl scale-105" 
+                      : "bg-white dark:bg-stone-900 border-stone-100 dark:border-stone-800 hover:border-brand-500/20 hover:bg-stone-50 dark:hover:bg-stone-800/50"
                   }`}
                 >
-                  <span className={`text-[10px] font-black uppercase tracking-[0.2em] font-sans mb-3 ${isSel ? "text-stone-500" : "text-stone-400 dark:text-stone-500"}`}>
+                  <span className={`text-[9px] font-bold uppercase tracking-wider font-sans mb-2 ${isSel ? "text-stone-500" : "text-muted"}`}>
                     {getDayName(i)}
                   </span>
-                  <span className={`text-2xl font-black font-display tracking-tight mb-3 ${isSel ? "text-white" : "text-stone-900 dark:text-stone-50"}`}>
+                  <span className={`text-xl font-bold font-display tracking-tight mb-2 ${isSel ? "text-white" : "text-heading"}`}>
                     {day.d}
                   </span>
                   <div className="flex gap-1 h-1.5 flex-wrap justify-center max-w-[40px]">
                     {Array.from({ length: Math.min(day.events, 3) }).map((_, j) => (
-                      <div key={j} className={`w-1.5 h-1.5 rounded-full ${isSel ? "bg-brand-400 shadow-[0_0_8px_rgba(255,255,255,0.5)]" : "bg-stone-200 dark:bg-stone-700"}`} />
+                      <div key={j} className={`w-1 h-1 rounded-full ${isSel ? "bg-brand-400" : "bg-stone-200 dark:bg-stone-700"}`} />
                     ))}
                   </div>
                 </button>
@@ -103,7 +103,7 @@ export default function StudentCalendar() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-6 py-10 scrollbar-hide relative bg-stone-50 md:bg-white dark:bg-stone-950 md:dark:bg-stone-900 border-x border-stone-100 dark:border-stone-800/50 max-w-4xl mx-auto w-full shadow-inner premium-texture">
+      <div className="flex-1 overflow-y-auto px-6 py-10 scrollbar-hide relative bg-white dark:bg-stone-950 border-x border-stone-100/50 dark:border-stone-800/30 max-w-4xl mx-auto w-full">
         <div className="absolute left-10 top-0 bottom-0 w-px bg-stone-100 dark:bg-stone-800" />
         
         {isLoading ? (
@@ -131,33 +131,33 @@ export default function StudentCalendar() {
                   
                   <div 
                     onClick={() => setDetailSheet(ev)}
-                    className="flex-1 rounded-[40px] p-8 border shadow-sm cursor-pointer hover:shadow-2xl transition-all bg-white dark:bg-stone-900 border-stone-100 dark:border-stone-800 group hover:-translate-y-1 relative overflow-hidden"
+                    className="flex-1 rounded-3xl p-8 border border-stone-100 dark:border-stone-800/50 shadow-sm cursor-pointer hover:shadow-xl transition-all bg-white dark:bg-stone-900 group relative overflow-hidden"
                   >
                     <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none duration-700">
                       <div className="text-6xl">{isClass ? <VideoCamera size={80} weight="duotone"/> : <CalendarBlank size={80} weight="duotone"/>}</div>
                     </div>
                     <div className="flex justify-between items-start mb-4 relative z-10">
                        <div>
-                         <div className={`text-[10px] tracking-[0.25em] uppercase font-black mb-3 leading-none font-sans italic ${isClass ? 'text-blue-500' : 'text-emerald-500'}`}>
-                           {isClass ? 'Sync: Live Session' : 'Event: Artifact Submission'}
+                         <div className={`text-[10px] tracking-widest uppercase font-bold mb-3 leading-none font-sans ${isClass ? 'text-blue-500' : 'text-emerald-500'}`}>
+                           {isClass ? 'Live Session' : 'Assignment'}
                          </div>
-                         <div className="text-3xl font-black text-stone-900 dark:text-stone-50 font-display leading-[0.9] mb-3 group-hover:text-brand-600 transition-colors uppercase italic tracking-tighter">
+                         <div className="text-2xl font-bold text-heading font-display leading-tight mb-3 group-hover:text-brand-600 transition-colors uppercase tracking-tight">
                            {ev.title}
                          </div>
-                         <div className="text-xs font-bold text-stone-400 dark:text-stone-500 font-sans uppercase tracking-[0.1em]">
+                         <div className="text-[10px] font-medium text-muted font-sans uppercase tracking-widest">
                            {ev.subject}
                          </div>
                        </div>
                        {isClass && (
-                         <div className="text-[10px] font-black font-mono bg-stone-50 dark:bg-stone-800 text-stone-600 dark:text-stone-300 px-3 py-1.5 rounded-xl mb-auto shrink-0 border border-stone-100 dark:border-stone-700 shadow-inner">
+                         <div className="text-[10px] font-bold font-mono bg-stone-50 dark:bg-stone-800 text-stone-600 dark:text-stone-300 px-2.5 py-1 rounded-lg mb-auto shrink-0 border border-stone-100 dark:border-stone-700">
                            {ev.duration}m
                          </div>
                        )}
                     </div>
                     
                     {isClass && ev.meeting_link && (
-                      <div className="flex items-center gap-2.5 mt-6 text-[10px] font-black uppercase tracking-[0.2em] text-white bg-stone-900 hover:bg-black dark:bg-stone-50 dark:text-stone-900 px-5 py-3 rounded-2xl w-max relative z-10 transition-all italic shadow-xl">
-                        <VideoCamera size={16} weight="bold" /> Start Protocol
+                      <div className="flex items-center gap-2 mt-6 text-[10px] font-bold uppercase tracking-widest text-white bg-stone-900 hover:bg-black dark:bg-stone-50 dark:text-stone-900 px-5 py-3 rounded-xl w-max relative z-10 transition-all shadow-lg">
+                        <VideoCamera size={14} weight="bold" /> Start Session
                       </div>
                     )}
                   </div>

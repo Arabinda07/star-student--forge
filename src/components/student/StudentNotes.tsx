@@ -181,17 +181,17 @@ export default function StudentNotes() {
     const sc = SUBJECTS[subject] || SUBJECTS.Physics;
     const isSaved = openNote.is_saved;
     return (
-      <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 scrollbar-hide overflow-y-auto" style={{ viewTransitionName: 'library-detail' }}>
+      <div className="h-full flex flex-col bg-white dark:bg-stone-950 scrollbar-hide overflow-y-auto">
         {/* Detail Header */}
         <div className="px-6 py-8 pb-6 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md z-30 border-b border-stone-200 dark:border-stone-800">
           <div className="max-w-4xl mx-auto w-full">
             <div className="flex justify-between items-start mb-8">
               <button 
                 onClick={() => openNoteDetail(null)} 
-                className="flex items-center gap-3 bg-transparent border-none cursor-pointer font-sans text-[10px] uppercase tracking-[0.3em] font-black text-stone-400 dark:text-stone-500 hover:text-stone-900 transition-all group italic"
+                className="flex items-center gap-3 bg-transparent border-none cursor-pointer font-sans text-[10px] uppercase tracking-[0.2em] font-bold text-muted hover:text-heading transition-all group"
               >
                 <div className="w-10 h-10 rounded-full border border-stone-100 dark:border-stone-800 flex items-center justify-center bg-white dark:bg-stone-900 shadow-sm group-hover:scale-105 transition-all">
-                   <CaretLeft size={18} weight="bold" className="group-hover:-translate-x-0.5 transition-transform" />
+                   <CaretLeft size={18} weight="bold" />
                 </div>
                 Return to {subject}
               </button>
@@ -218,17 +218,17 @@ export default function StudentNotes() {
               </div>
               <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
                  <div>
-                    <h2 className="text-5xl lg:text-7xl font-black text-stone-900 dark:text-stone-50 leading-[0.85] font-display tracking-tighter mb-4 uppercase italic">
+                    <h2 className="text-4xl lg:text-5xl font-bold text-heading leading-tight font-display tracking-tight mb-4 uppercase">
                       {openNote.title}
                     </h2>
-                    <div className="text-[11px] font-semibold text-stone-400 dark:text-stone-600 uppercase tracking-wide">{openNote.pages} page{openNote.pages !== 1 ? 's' : ''}</div>
+                    <div className="text-[11px] font-bold text-muted uppercase tracking-wider">{openNote.pages} page{openNote.pages !== 1 ? 's' : ''}</div>
                  </div>
                  {openNote.file_path && (
                    <Btn
                      label="Retrieve Source"
                      icon={<DownloadSimple size={20} weight="bold" />}
                      variant="primary"
-                     className="px-10 py-5 rounded-[24px] font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl italic shadow-stone-900/10 active:scale-95 transition-all"
+                     className="px-8 py-4 rounded-2xl font-bold text-[10px] uppercase tracking-widest shadow-lg active:scale-95 transition-all"
                      onClick={() => handleDownload(openNote.file_path, openNote.title)}
                    />
                  )}
@@ -240,20 +240,20 @@ export default function StudentNotes() {
         <div className="flex-1 max-w-4xl mx-auto w-full px-6 py-12 pb-24 space-y-12">
           {openNote.recording && (
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-stone-900 dark:bg-stone-800 rounded-[40px] p-10 shadow-2xl overflow-hidden relative cursor-pointer group"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-stone-900 dark:bg-stone-800 rounded-3xl p-8 shadow-xl overflow-hidden relative cursor-pointer group"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-brand-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="flex items-center gap-8 relative z-10">
-                <div className="w-20 h-20 rounded-[28px] bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl">
-                  <Play size={32} weight="fill" className="text-white ml-1" />
+              <div className="absolute inset-0 bg-gradient-to-r from-brand-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="flex items-center gap-6 relative z-10">
+                <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Play size={24} weight="fill" className="text-white ml-1" />
                 </div>
                 <div>
-                  <div className="text-2xl font-black text-white font-display mb-1 uppercase italic tracking-tight">Audio recording</div>
-                  <div className="text-sm font-medium text-stone-400 font-sans opacity-80">Play the recording attached to this note.</div>
+                  <div className="text-xl font-bold text-white font-display mb-1 uppercase tracking-tight">Audio recording</div>
+                  <div className="text-xs font-medium text-white/50 font-sans">Play the recording attached to this note.</div>
                 </div>
-                <div className="ml-auto flex items-center gap-3 text-[11px] font-bold uppercase tracking-wide text-brand-400">
+                <div className="ml-auto flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-brand-400">
                   Play
                 </div>
               </div>
@@ -271,26 +271,26 @@ export default function StudentNotes() {
                      if (data?.signedUrl) window.open(data.signedUrl, '_blank');
                   } catch (e) { console.error(e); }
                 }}
-                className="w-full bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 p-10 rounded-[40px] shadow-sm hover:shadow-2xl hover:border-amber-200 dark:hover:border-amber-900/40 transition-all group cursor-pointer text-left relative overflow-hidden"
+                className="w-full bg-white dark:bg-stone-900 border border-stone-100/50 dark:border-stone-800/50 p-8 rounded-3xl shadow-sm hover:shadow-xl hover:border-brand-500/10 transition-all group cursor-pointer text-left relative overflow-hidden"
               >
                 <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none group-hover:opacity-10 transition-opacity">
-                  <FileText size={160} />
+                  <FileText size={140} />
                 </div>
-                <div className="flex items-center gap-8 relative z-10">
-                  <div className={`w-20 h-20 rounded-3xl shrink-0 flex items-center justify-center text-4xl ${sc.bg} group-hover:scale-110 transition-transform shadow-inner`}>
-                    <FileText size={40} className={sc.fg} />
+                <div className="flex items-center gap-6 relative z-10">
+                  <div className={`w-14 h-18 rounded-2xl shrink-0 flex items-center justify-center text-3xl ${sc.bg} group-hover:scale-105 transition-transform shadow-inner`}>
+                    <FileText size={32} className={sc.fg} />
                   </div>
                   <div>
-                    <div className="font-black text-stone-900 dark:text-stone-50 text-2xl mb-2 group-hover:text-amber-600 transition-colors">
-                      Access Primary Document
+                    <div className="font-bold text-heading text-xl mb-1 uppercase tracking-tight">
+                      Open Primary Document
                     </div>
-                    <div className="text-base font-medium text-stone-400 dark:text-stone-500 max-w-sm leading-relaxed">
-                      Securely launch the document viewer for high-fidelity examination.
+                    <div className="text-xs font-medium text-muted max-w-sm leading-relaxed uppercase tracking-wider">
+                      Launch high-fidelity document viewer
                     </div>
                   </div>
                   <div className="ml-auto hidden md:block">
-                    <div className="w-12 h-12 rounded-full border-2 border-stone-50 dark:border-stone-800 flex items-center justify-center text-stone-300 group-hover:text-amber-500 group-hover:border-amber-500 transition-all">
-                       <ChevronRight size={24} />
+                    <div className="w-10 h-10 rounded-full border border-stone-100 dark:border-stone-800 flex items-center justify-center text-stone-200 group-hover:text-brand-500 group-hover:border-brand-500 transition-all">
+                       <ChevronRight size={20} />
                     </div>
                   </div>
                 </div>
@@ -331,7 +331,7 @@ export default function StudentNotes() {
   if (subject) {
     const sc = SUBJECTS[subject] || SUBJECTS.Physics;
     return (
-      <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 scrollbar-hide overflow-y-auto" style={{ viewTransitionName: 'library-detail' }}>
+      <div className="h-full flex flex-col bg-white dark:bg-stone-950 scrollbar-hide overflow-y-auto">
         {/* Subject Header */}
         <div className="px-6 py-8 pb-6 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md z-30 border-b border-stone-200 dark:border-stone-800">
           <div className="max-w-7xl mx-auto w-full">
@@ -466,19 +466,19 @@ export default function StudentNotes() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 scrollbar-hide overflow-y-auto">
+      <div className="h-full flex flex-col bg-white dark:bg-stone-950 scrollbar-hide overflow-y-auto">
       {/* Premium Header */}
-      <div className="px-6 py-12 pb-4 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md z-20 border-b border-stone-200 dark:border-stone-800">
+      <div className="px-6 py-10 pb-4 shrink-0 animate-slide-up sticky top-0 bg-white/80 dark:bg-stone-950/80 backdrop-blur-md z-20 border-b border-stone-100 dark:border-stone-900">
         <div className="max-w-7xl mx-auto w-full">
-          <div className="flex justify-between items-end mb-10">
+          <div className="flex justify-between items-end mb-8">
             <div>
-              <h1 className="text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display mb-2 uppercase italic leading-none">Notes</h1>
-              <p className="text-[11px] font-semibold text-stone-400 dark:text-stone-500 tracking-wide">
-                <span className="text-brand-600 dark:text-brand-400 font-black mr-1">{notes.length}</span> notes across <span className="text-brand-600 dark:text-brand-400 font-black mx-1">{subjectsToDisplay.length}</span> subjects
+              <h1 className="text-4xl font-bold text-heading tracking-tight mb-2 uppercase">Notes</h1>
+              <p className="text-[10px] font-bold text-muted uppercase tracking-[0.2em]">
+                <span className="text-brand-600 dark:text-brand-400 mr-1">{notes.length}</span> documents indexed
               </p>
             </div>
             <div className="hidden md:block">
-              <Btn label="Trans-Library Search" variant="outline" className="rounded-[24px] h-16 border italic font-black text-[11px] uppercase tracking-[0.3em] px-10 shadow-sm hover:shadow-xl transition-all" icon={<MagnifyingGlass size={20} weight="bold" />} />
+              <Btn label="Global Search" variant="outline" className="rounded-xl h-12 border font-bold text-[10px] uppercase tracking-widest px-6 shadow-sm hover:shadow-lg transition-all" icon={<MagnifyingGlass size={16} weight="bold" />} />
             </div>
           </div>
         </div>
@@ -507,34 +507,33 @@ export default function StudentNotes() {
               return (
                 <motion.div 
                   layout
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
                   key={subj} 
                   onClick={() => selectSubject(subj as string)} 
-                  className="bg-white dark:bg-stone-900 rounded-[44px] p-10 border border-stone-100 dark:border-stone-800 shadow-sm cursor-pointer hover:shadow-2xl hover:border-brand-500/20 transition-all flex flex-col group relative overflow-hidden"
-                  style={{ viewTransitionName: subject === subj ? 'library-detail' : 'none' }}
+                  className="bg-white dark:bg-stone-900 rounded-[32px] p-8 border border-stone-100 dark:border-stone-800/50 shadow-sm cursor-pointer hover:shadow-xl hover:border-brand-500/10 transition-all flex flex-col group relative overflow-hidden"
                 >
-                  <div className="absolute top-0 right-0 p-10 opacity-5 grayscale group-hover:scale-125 group-hover:opacity-10 transition-all pointer-events-none duration-1000 blur-[1px]">
-                    <span className="text-9xl">{sc.icon}</span>
+                  <div className="absolute top-0 right-0 p-8 opacity-5 grayscale group-hover:opacity-10 transition-all pointer-events-none duration-1000">
+                    <span className="text-8xl">{sc.icon}</span>
                   </div>
                   
-                  <div className={`w-20 h-24 rounded-[28px] shrink-0 flex items-center justify-center text-5xl ${sc.bg} mb-12 shadow-inner group-hover:rotate-6 transition-transform duration-700 border border-white/20 dark:border-black/10`}>
+                  <div className={`w-14 h-18 rounded-2xl shrink-0 flex items-center justify-center text-4xl ${sc.bg} mb-10 shadow-inner group-hover:scale-105 transition-transform duration-700 border border-white/10 dark:border-black/10`}>
                     {sc.icon}
                   </div>
                   
-                  <div className="mt-auto relative z-10 italic">
+                  <div className="mt-auto relative z-10">
                     <div className="flex items-center gap-3 mb-3">
-                       {newCount > 0 && <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-600 bg-brand-50 dark:bg-brand-950/30 px-3 py-1.5 rounded-xl border border-brand-100 dark:border-brand-900">Protocol Release</span>}
-                       <span className="text-[10px] font-black uppercase tracking-[0.3em] text-stone-400">{subjectNotes.length} In-Index</span>
+                       {newCount > 0 && <span className="text-[9px] font-bold uppercase tracking-wider text-brand-600 bg-brand-50 dark:bg-brand-950/30 px-2.5 py-1 rounded-lg border border-brand-100 dark:border-brand-900/30">New Artifacts</span>}
+                       <span className="text-[9px] font-bold uppercase tracking-widest text-muted">{subjectNotes.length} files</span>
                     </div>
-                    <div className="text-3xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display mb-1 group-hover:text-brand-600 transition-colors uppercase leading-none italic">
+                    <div className="text-2xl font-bold text-heading tracking-tight font-display mb-1 group-hover:text-brand-600 transition-colors uppercase leading-none">
                       {subj}
                     </div>
                   </div>
                   
-                  <div className="absolute bottom-10 right-10 w-12 h-12 rounded-full bg-stone-50 dark:bg-stone-800 flex items-center justify-center text-stone-200 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all shadow-inner">
-                     <CaretRight size={24} weight="bold" />
+                  <div className="absolute bottom-8 right-8 w-10 h-10 rounded-full border border-stone-50 dark:border-stone-800 flex items-center justify-center text-stone-200 opacity-0 translate-x-3 group-hover:opacity-100 group-hover:translate-x-0 transition-all shadow-sm">
+                     <CaretRight size={20} weight="bold" />
                   </div>
                 </motion.div>
               );

@@ -81,29 +81,29 @@ export default function StudentHome() {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="h-full flex flex-col overflow-y-auto scrollbar-hide bg-stone-50 dark:bg-stone-950 premium-texture"
+      className="h-full flex flex-col overflow-y-auto scrollbar-hide bg-white dark:bg-stone-950"
     >
       {/* Premium Header */}
       <div className="px-6 py-8 md:px-8 md:py-14 pb-6 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-xl z-30 border-b border-stone-100/50 dark:border-stone-800/30">
         <div className="max-w-7xl mx-auto w-full flex justify-between items-center">
-          <div className="flex items-center gap-8">
-            <div className="w-20 h-20 rounded-[32px] bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 flex items-center justify-center text-5xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] -rotate-3 transition-transform hover:rotate-0 hover:scale-110 duration-500">
+          <div className="flex items-center gap-6">
+            <div className="w-14 h-14 rounded-2xl bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 flex items-center justify-center text-3xl shadow-sm transition-transform hover:scale-105 duration-500">
               🎓
             </div>
             <div>
-              <h1 className="text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display leading-[0.85] mb-2 uppercase italic">Dashboard</h1>
-              <p className="text-[10px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-[0.3em] leading-none italic">Your school workspace</p>
+              <h1 className="text-3xl font-bold text-heading tracking-tight mb-1 uppercase">Dashboard</h1>
+              <p className="text-[10px] font-medium text-muted uppercase tracking-[0.2em] leading-none">Your school workspace</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="w-16 h-16 rounded-[24px] bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 flex items-center justify-center cursor-pointer shadow-xl shadow-stone-900/5 relative group overflow-hidden"
+              className="w-12 h-12 rounded-xl bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 flex items-center justify-center cursor-pointer shadow-sm relative group overflow-hidden"
             >
               <div className="absolute inset-0 bg-brand-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <Bell size={26} weight="duotone" className="text-stone-400 dark:text-stone-500 group-hover:text-brand-500 transition-colors relative z-10" />
-              <div className="absolute top-5 right-5 w-3 h-3 bg-rose-500 rounded-full border-2 border-white dark:border-stone-900 ring-4 ring-rose-500/20" />
+              <Bell size={22} weight="duotone" className="text-muted group-hover:text-brand-500 transition-colors relative z-10" />
+              <div className="absolute top-3 right-3 w-2 h-2 bg-rose-500 rounded-full border-2 border-white dark:border-stone-900" />
             </motion.button>
           </div>
         </div>
@@ -116,30 +116,28 @@ export default function StudentHome() {
           <div className="flex flex-col gap-16">
             {/* Hero Card - Dynamic State */}
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="group rounded-[56px] p-16 bg-stone-900 dark:bg-stone-900 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.4)] relative overflow-hidden flex flex-col justify-center min-h-[400px]"
+              className="group rounded-3xl p-12 bg-stone-900 dark:bg-stone-900 shadow-xl relative overflow-hidden flex flex-col justify-center min-h-[320px]"
             >
-               <div className="relative z-10 flex flex-col md:flex-row items-center gap-14">
-                 <div className="w-28 h-28 bg-white/5 backdrop-blur-2xl rounded-[38px] flex items-center justify-center shrink-0 border border-white/10 group-hover:rotate-6 transition-transform duration-700 shadow-2xl">
-                    <Sparkle size={48} weight="duotone" className="text-amber-400" />
+               <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
+                 <div className="w-20 h-20 bg-white/5 backdrop-blur-2xl rounded-2xl flex items-center justify-center shrink-0 border border-white/10 group-hover:scale-105 transition-transform duration-700 shadow-2xl">
+                    <Sparkle size={36} weight="duotone" className="text-amber-400" />
                  </div>
                  <div className="text-center md:text-left">
-                   <div className="text-[10px] font-black text-amber-500 uppercase tracking-[0.5em] mb-6 italic">Nothing on right now</div>
-                   <h3 className="text-4xl font-black text-white font-display tracking-tight leading-[0.9] mb-6 uppercase italic">You're free for the next hour</h3>
-                   <p className="text-lg font-bold text-white/60 font-sans max-w-sm leading-relaxed italic opacity-80 uppercase tracking-tight">
+                   <div className="text-[10px] font-bold text-amber-500 uppercase tracking-[0.3em] mb-4">Focus Mode</div>
+                   <h3 className="text-3xl font-bold text-white font-display tracking-tight leading-tight mb-4 uppercase">You're free for the next hour</h3>
+                   <p className="text-sm font-medium text-white/60 font-sans max-w-sm leading-relaxed uppercase tracking-tight">
                      No classes or deadlines right now. Good time to get ahead.
                    </p>
-                   <div className="mt-10">
-                     <Btn label="See all work" variant="outline" className="text-white border-white/10 hover:bg-white hover:text-stone-900 italic font-black" />
+                   <div className="mt-8">
+                     <Btn label="See all work" variant="outline" className="text-white border-white/20 hover:bg-white hover:text-stone-900 font-bold uppercase tracking-widest text-[11px]" />
                    </div>
                  </div>
                </div>
                
-               {/* Decorative atmospheric shapes */}
-               <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-500/20 rounded-full blur-[140px] -mr-80 -mt-80 pointer-events-none animate-pulse" />
-               <div className="absolute bottom-0 left-0 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px] -ml-48 -mb-48 pointer-events-none" />
-               <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none mix-blend-overlay" />
+               <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-500/10 rounded-full blur-[120px] -mr-60 -mt-60 pointer-events-none" />
+               <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5 pointer-events-none mix-blend-overlay" />
             </motion.div>
 
             {/* Content Blocks */}
@@ -147,9 +145,9 @@ export default function StudentHome() {
                <div className="flex items-end justify-between px-2">
                   <div>
                     <SectionLabel>Upcoming work</SectionLabel>
-                    <p className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] mt-1 italic">Tasks due soon</p>
+                    <p className="text-[10px] font-medium text-muted uppercase tracking-[0.2em] mt-1">Assignments due soon</p>
                   </div>
-                  <Btn label="See all" variant="outline" className="rounded-xl border px-4 py-2 italic font-black" />
+                  <Btn label="See all" variant="outline" className="rounded-lg border px-3 py-1.5 font-bold text-[10px] uppercase tracking-widest" />
                </div>
 
                <div className="grid gap-6">
@@ -171,29 +169,29 @@ export default function StudentHome() {
                       const sc = SUBJECTS[task.subject] || SUBJECTS.Physics;
                       return (
                          <motion.div 
-                           initial={{ opacity: 0, x: -20 }}
+                           initial={{ opacity: 0, x: -15 }}
                            animate={{ opacity: 1, x: 0 }}
-                           transition={{ delay: i * 0.1 }}
+                           transition={{ delay: i * 0.05 }}
                            key={task.id}
-                           className="group flex flex-col md:flex-row md:items-center gap-8 p-10 bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 rounded-[40px] hover:shadow-2xl hover:border-brand-500/20 transition-all cursor-pointer relative overflow-hidden"
+                           className="group flex items-center gap-6 p-6 bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800/50 rounded-2xl hover:shadow-lg transition-all cursor-pointer relative overflow-hidden"
                          >
-                            <div className={`w-16 h-20 rounded-3xl flex items-center justify-center text-3xl shadow-inner group-hover:scale-110 transition-transform duration-500 ${sc.bg}`}>
+                            <div className={`w-12 h-16 rounded-xl flex items-center justify-center text-2xl border border-white/5 dark:border-black/5 ${sc.bg}`}>
                                {sc.icon}
                             </div>
-                            <div className="flex-1">
-                               <div className="flex items-center gap-3 mb-3">
-                                  <Chip label={task.subject} bg={`${sc.fg}11`} color={sc.fg} border="transparent" />
-                                  <span className="text-[10px] font-black text-stone-300 dark:text-stone-600 uppercase tracking-[0.25em] ml-1">{task.type}</span>
-                               </div>
-                               <h4 className="text-3xl font-black text-stone-900 dark:text-stone-100 leading-[0.9] tracking-tighter mb-4 group-hover:text-brand-600 transition-colors uppercase font-display italic">{task.title}</h4>
-                               <div className="flex items-center gap-4 text-[10px] font-black text-stone-400 uppercase tracking-widest leading-none italic">
-                                  <Clock size={14} weight="duotone" className="text-stone-300" /> 
+                            <div className="flex-1 min-w-0">
+                               <div className="flex items-center gap-3 mb-2">
+                                  <Chip label={task.subject} bg={`${sc.fg}11`} color={sc.fg} border="transparent" small />
+                                  <span className="text-[9px] font-bold text-muted uppercase tracking-wider">{task.type}</span>
+                                </div>
+                               <h4 className="text-xl font-bold text-heading leading-tight truncate uppercase font-display">{task.title}</h4>
+                               <div className="flex items-center gap-3 text-[10px] font-medium text-muted uppercase tracking-widest mt-2">
+                                  <Clock size={12} className="text-stone-300" /> 
                                   <span className="tabular">{task.due}</span>
                                </div>
                             </div>
-                            <div className="ml-auto flex items-center gap-4">
-                               <div className="w-12 h-12 rounded-full border border-stone-100 dark:border-stone-800 flex items-center justify-center text-stone-200 group-hover:border-brand-500 group-hover:text-brand-500 transition-all group-hover:translate-x-1">
-                                  <CaretRight size={24} weight="bold" />
+                            <div className="ml-auto">
+                               <div className="w-8 h-8 rounded-full border border-stone-100 dark:border-stone-800 flex items-center justify-center text-stone-200 group-hover:border-brand-500 group-hover:text-brand-500 transition-all group-hover:translate-x-1">
+                                  <CaretRight size={18} weight="bold" />
                                 </div>
                             </div>
                          </motion.div>
@@ -213,12 +211,12 @@ export default function StudentHome() {
                   <CalendarBlank size={120} weight="duotone" />
                </div>
                
-               <div className="flex items-center justify-between mb-10 relative z-10">
-                <h3 className="text-xl font-black text-stone-900 dark:text-stone-50 font-display flex items-center gap-3 tracking-tighter uppercase italic">
-                  <PushPin size={22} weight="duotone" className="text-amber-500 rotate-45" />
+               <div className="flex items-center justify-between mb-8 relative z-10">
+                <h3 className="text-lg font-bold text-heading font-display flex items-center gap-2.5 tracking-tight uppercase">
+                  <PushPin size={18} weight="duotone" className="text-amber-500 rotate-45" />
                   Agenda
                 </h3>
-                <div className="text-[10px] font-black text-stone-400 uppercase tracking-widest italic leading-none">April Wave</div>
+                <div className="text-[10px] font-bold text-muted uppercase tracking-widest leading-none">April</div>
               </div>
 
               <div className="grid grid-cols-7 gap-2 mb-12 relative z-10">

@@ -21,35 +21,35 @@ export default function ParentFeedback() {
 
   if (openFb) {
     return (
-      <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 scrollbar-hide overflow-y-auto premium-texture">
+      <div className="h-full flex flex-col bg-white dark:bg-stone-950 scrollbar-hide overflow-y-auto">
         <div className="px-6 py-8 pb-6 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md z-30 border-b border-stone-200/60 dark:border-stone-800/60">
           <div className="max-w-4xl mx-auto w-full relative z-10">
             <button 
                onClick={() => { setOpenFb(null); setReplySent(false); setReplyText(""); }} 
-               className="flex items-center gap-2 bg-transparent border-none cursor-pointer font-sans text-[11px] font-black uppercase tracking-widest text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors mb-6 group"
+               className="flex items-center gap-2 bg-transparent border-none cursor-pointer font-sans text-[10px] uppercase tracking-[0.2em] font-bold text-muted hover:text-heading transition-colors mb-6 group"
             >
-              <div className="w-8 h-8 rounded-full border border-stone-200/60 dark:border-stone-800/60 flex items-center justify-center bg-white dark:bg-stone-900 shadow-sm transition-all group-hover:-translate-x-1">
-                <ChevronLeft size={16} strokeWidth={2.5} />
+              <div className="w-8 h-8 rounded-full border border-stone-100 dark:border-stone-800 flex items-center justify-center bg-white dark:bg-stone-900 shadow-sm transition-all group-hover:-translate-x-1">
+                <ChevronLeft size={16} weight="bold" />
               </div>
               Back to Feed
             </button>
             
             <div className="flex flex-col md:flex-row justify-between items-start gap-6">
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-3">
-                   <span className="text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-500/10 px-3 py-1.5 rounded-[8px] border border-amber-200/60 dark:border-amber-900/40 shadow-sm">{openFb.subject}</span>
-                   <span className="text-[10px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-widest flex items-center gap-2">
-                       <span className="w-1 h-1 rounded-full bg-stone-300 dark:bg-stone-700" />
+                <div className="flex items-center gap-3 mb-4">
+                   <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-50 dark:bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-100 dark:border-amber-900/30 shadow-sm">{openFb.subject}</span>
+                   <span className="text-[10px] font-medium text-muted uppercase tracking-wider flex items-center gap-2">
+                       <span className="w-1 h-1 rounded-full bg-stone-100 dark:bg-stone-800" />
                        {openFb.gradedAt}
                    </span>
                 </div>
-                <h2 className="text-3xl md:text-5xl font-black text-stone-900 dark:text-stone-50 leading-tight font-sans tracking-tight">{openFb.title}</h2>
+                <h2 className="text-3xl md:text-4xl font-bold text-heading leading-tight font-display tracking-tight uppercase">{openFb.title}</h2>
               </div>
-              <div className="flex flex-col items-center gap-2 shrink-0 p-5 bg-white dark:bg-stone-900 rounded-[28px] border border-stone-200/60 dark:border-stone-800/60 shadow-sm">
-                 <div className="w-16 h-16 rounded-[20px] flex items-center justify-center text-3xl shadow-inner border border-black/5 dark:border-white/5" style={{ backgroundColor: openFb.rbg }}>
+              <div className="flex flex-col items-center gap-2 shrink-0 p-5 bg-white dark:bg-stone-900 rounded-3xl border border-stone-100 dark:border-stone-800/50 shadow-sm">
+                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-inner border border-black/5 dark:border-white/5" style={{ backgroundColor: openFb.rbg }}>
                     <span className="drop-shadow-sm">{openFb.icon}</span>
                  </div>
-                 <div className="text-[10px] font-black uppercase tracking-widest font-sans" style={{ color: openFb.rc }}>{openFb.label}</div>
+                 <div className="text-[9px] font-bold uppercase tracking-widest font-sans" style={{ color: openFb.rc }}>{openFb.label}</div>
               </div>
             </div>
           </div>
@@ -133,20 +133,20 @@ export default function ParentFeedback() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 scrollbar-hide overflow-y-auto premium-texture">
+    <div className="h-full flex flex-col bg-white dark:bg-stone-950 scrollbar-hide overflow-y-auto">
       {/* Premium Header */}
       <div className="px-6 py-12 md:py-16 pb-6 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md z-30 border-b border-stone-200/60 dark:border-stone-800/60 relative z-10 overflow-hidden">
         <div className="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none -translate-y-8 select-none">
           <MessageSquare size={320} strokeWidth={0.5} />
         </div>
         <div className="max-w-7xl mx-auto w-full relative z-10">
-          <div className="flex items-center gap-8 mb-10">
-            <div className="w-20 h-20 rounded-[32px] bg-white dark:bg-stone-900 border border-stone-200/60 dark:border-stone-800/60 flex items-center justify-center text-5xl shadow-sm -rotate-3 transition-transform hover:rotate-0 hover:scale-110 duration-500 hidden md:flex">
+          <div className="flex items-center gap-6 mb-8">
+            <div className="w-14 h-14 rounded-2xl bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 flex items-center justify-center text-3xl shadow-sm hidden md:flex">
               💭
             </div>
             <div>
-              <h1 className="text-4xl md:text-6xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-sans leading-none mb-3">Feedback</h1>
-              <p className="text-[11px] font-black text-stone-500 dark:text-stone-400 uppercase tracking-[0.25em] leading-none">Direct communications from the classroom</p>
+              <h1 className="text-3xl font-bold text-heading tracking-tight mb-1 uppercase">Feedback</h1>
+              <p className="text-[10px] font-medium text-muted uppercase tracking-[0.2em] leading-none">Direct communications from the classroom</p>
             </div>
           </div>
           
@@ -193,38 +193,38 @@ export default function ParentFeedback() {
               {filtered.map((fb, i) => (
                 <motion.div 
                   layout
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
                   key={fb.id} 
                   onClick={() => setOpenFb(fb)} 
-                  className="bg-white dark:bg-stone-900 rounded-[40px] p-10 border border-stone-200/60 dark:border-stone-800/60 shadow-sm cursor-pointer hover:shadow-xl hover:border-amber-200 dark:hover:border-amber-900/40 hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full relative overflow-hidden"
+                  className="bg-white dark:bg-stone-900 rounded-3xl p-8 border border-stone-100 dark:border-stone-800/50 shadow-sm cursor-pointer hover:shadow-xl hover:border-brand-500/10 transition-all duration-300 group flex flex-col h-full relative overflow-hidden"
                 >
-                  <div className="absolute top-0 bottom-0 left-0 w-2 transition-all duration-300 group-hover:w-3" style={{ backgroundColor: fb.rc }} />
+                  <div className="absolute top-0 bottom-0 left-0 w-1.5 transition-all duration-300 group-hover:w-2" style={{ backgroundColor: fb.rc }} />
                   
                   <div className="flex justify-between items-start gap-4 mb-8">
                      <div className="flex flex-wrap items-center gap-2">
-                       <span className="text-[10px] font-black uppercase tracking-widest text-stone-500 dark:text-stone-400 bg-stone-50 dark:bg-stone-800/50 px-3 py-1.5 rounded-[8px] border border-stone-100 dark:border-stone-800/50">{fb.subject}</span>
-                       {fb.replied && <span className="text-[10px] font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-500/10 px-3 py-1.5 rounded-[8px] border border-sky-200/60 dark:border-sky-900/40">Replied</span>}
+                       <span className="text-[10px] font-bold uppercase tracking-wider text-muted bg-stone-50 dark:bg-stone-800 px-2 py-1 rounded-lg border border-stone-100 dark:border-stone-800">{fb.subject}</span>
+                       {fb.replied && <span className="text-[9px] font-bold uppercase tracking-widest text-brand-600 bg-brand-50 dark:bg-brand-500/10 px-2 py-1 rounded-lg border border-brand-100 dark:border-brand-900/30">Replied</span>}
                      </div>
-                     <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest tabular-nums shrink-0">{fb.gradedAt}</span>
+                     <span className="text-[10px] font-medium text-muted uppercase tracking-widest tabular-nums shrink-0">{fb.gradedAt}</span>
                   </div>
 
-                  <h3 className="text-2xl md:text-3xl font-black text-stone-900 dark:text-stone-50 leading-tight font-sans tracking-tight mb-4 group-hover:text-amber-600 dark:group-hover:text-amber-500 transition-colors line-clamp-2">{fb.title}</h3>
+                  <h3 className="text-xl font-bold text-heading leading-tight font-display tracking-tight mb-4 group-hover:text-brand-600 transition-colors line-clamp-2 uppercase">{fb.title}</h3>
                   
                   <div className="mt-auto space-y-6">
                     <div className="flex gap-4 items-center">
-                       <div className="w-14 h-14 rounded-[20px] flex items-center justify-center text-xl shadow-inner shrink-0 border border-black/5 dark:border-white/5" style={{ backgroundColor: fb.rbg }}>{fb.icon}</div>
-                       <div className="flex flex-col gap-1">
-                          <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: fb.rc }}>{fb.label} Performance</span>
-                          <p className="text-sm font-semibold text-stone-500 dark:text-stone-400 font-sans leading-relaxed line-clamp-2 italic">"{fb.comment}"</p>
+                       <div className="w-12 h-12 rounded-xl flex items-center justify-center text-xl shadow-inner shrink-0 border border-black/5 dark:border-white/5" style={{ backgroundColor: fb.rbg }}>{fb.icon}</div>
+                       <div className="flex flex-col gap-0.5">
+                          <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: fb.rc }}>{fb.label} Performance</span>
+                          <p className="text-xs font-medium text-muted font-sans leading-relaxed line-clamp-1">"{fb.comment}"</p>
                        </div>
                     </div>
                     
-                    <div className="pt-6 border-t border-stone-100 dark:border-stone-800 flex justify-end">
-                       <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-stone-400 dark:text-stone-500 group-hover:text-amber-600 dark:group-hover:text-amber-500 transition-colors">
-                         View details 
-                         <ChevronRight size={16} strokeWidth={2.5} className="group-hover:translate-x-1 transition-transform" />
+                    <div className="pt-6 border-t border-stone-50 dark:border-stone-800 flex justify-end">
+                       <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted group-hover:text-brand-500 transition-colors">
+                          Details 
+                          <ChevronRight size={14} weight="bold" className="group-hover:translate-x-1 transition-transform" />
                        </div>
                     </div>
                   </div>
