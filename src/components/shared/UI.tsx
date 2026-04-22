@@ -172,6 +172,7 @@ export function Skeleton({
   width?: string;
   height?: string;
   className?: string;
+  key?: any;
 }) {
   const base = "animate-pulse bg-stone-100 dark:bg-stone-800 rounded-xl";
 

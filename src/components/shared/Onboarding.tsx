@@ -335,6 +335,7 @@ export default function Onboarding({ onComplete, onSkip }: OnboardingProps) {
 
         <div className="mt-6 flex items-center justify-center">
           <button
+            type="button"
             onClick={onSkip}
             className="text-[10px] font-black text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 uppercase tracking-[0.3em] italic transition-colors border-none bg-transparent cursor-pointer py-2 px-4"
           >

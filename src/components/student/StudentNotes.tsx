@@ -16,6 +16,7 @@ import {
   PushPin,
   Clock
 } from "@phosphor-icons/react";
+import { ChevronRight } from "lucide-react";
 import { supabase } from "../../supabaseClient";
 import { Sheet, Btn, Chip, SectionLabel, EmptySlate } from "../shared/UI";
 

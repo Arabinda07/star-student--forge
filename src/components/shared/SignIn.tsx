@@ -1,6 +1,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { supabase } from "../../supabaseClient";
 import { GraduationCap, ArrowRight, WarningCircle, CheckCircle } from "@phosphor-icons/react";
+import { motion } from "motion/react";
 
 interface SignInProps {
   onSuccess: () => void;
@@ -172,10 +173,10 @@ export default function SignIn({ onSuccess, onNavigateToSignUp, onBackToOnboardi
           </form>
 
           <div className="mt-10 flex flex-col items-center gap-4 border-t border-stone-50 dark:border-stone-800 pt-8">
-             <button onClick={onNavigateToSignUp} className="text-[10px] font-black text-brand-600 dark:text-brand-400 uppercase tracking-widest hover:brightness-110 transition-all bg-transparent border-none cursor-pointer p-2">
+             <button type="button" onClick={onNavigateToSignUp} className="text-[10px] font-black text-brand-600 dark:text-brand-400 uppercase tracking-widest hover:brightness-110 transition-all bg-transparent border-none cursor-pointer p-2">
               Create an account
             </button>
-            <button onClick={onBackToOnboarding} className="text-[9px] font-black text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors uppercase tracking-widest bg-transparent border-none cursor-pointer">
+            <button type="button" onClick={onBackToOnboarding} className="text-[9px] font-black text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors uppercase tracking-widest bg-transparent border-none cursor-pointer">
               ← Back
             </button>
           </div>

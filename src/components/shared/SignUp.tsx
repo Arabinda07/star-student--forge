@@ -160,10 +160,10 @@ export default function SignUp({ onSuccess, onNavigateToSignIn, onBackToOnboardi
           </form>
 
           <div className="mt-10 flex flex-col items-center gap-4 border-t border-stone-50 dark:border-stone-800 pt-8">
-             <button onClick={onNavigateToSignIn} className="text-[10px] font-black text-brand-600 dark:text-brand-400 uppercase tracking-widest hover:brightness-110 transition-all bg-transparent border-none cursor-pointer p-2">
-              Sign in instead
+             <button type="button" onClick={onNavigateToSignIn} className="text-[10px] font-black text-brand-600 dark:text-brand-400 uppercase tracking-widest hover:brightness-110 transition-all bg-transparent border-none cursor-pointer p-2">
+              Already have an account? Sign in
             </button>
-            <button onClick={onBackToOnboarding} className="text-[9px] font-black text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors uppercase tracking-widest bg-transparent border-none cursor-pointer">
+            <button type="button" onClick={onBackToOnboarding} className="text-[9px] font-black text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors uppercase tracking-widest bg-transparent border-none cursor-pointer">
               ← Back
             </button>
           </div>
