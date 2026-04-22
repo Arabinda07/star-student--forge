@@ -17,32 +17,32 @@ export function Btn({
   disabled?: boolean;
   className?: string;
 }) {
-  const baseClass = "font-sans font-bold flex items-center justify-center gap-2 transition-all duration-300 rounded-[14px] px-6 py-3 text-xs uppercase tracking-widest active:scale-[0.97] active:brightness-90";
+  const baseClass = "font-sans font-black flex items-center justify-center gap-3 transition-all duration-300 rounded-[20px] px-8 py-4 text-[10px] uppercase tracking-[0.3em] active:scale-[0.97] active:brightness-90 italic";
   const wClass = full ? "w-full" : "w-auto";
   const dClass = disabled ? "opacity-40 cursor-not-allowed pointer-events-none" : "";
   
   let vClass = "";
   switch (variant) {
     case 'primary':
-      vClass = "bg-stone-900 text-white hover:bg-black dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.15)]";
+      vClass = "bg-stone-900 text-white hover:bg-black dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white shadow-[0_20px_50px_rgba(0,0,0,0.2)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)]";
       break;
     case 'secondary':
       vClass = "bg-brand-500/10 text-brand-700 dark:text-brand-400 hover:bg-brand-500/20 border border-brand-500/10";
       break;
     case 'danger':
-      vClass = "bg-rose-500 text-white hover:bg-rose-600 shadow-md";
+      vClass = "bg-rose-500 text-white hover:bg-rose-600 shadow-xl shadow-rose-500/20";
       break;
     case 'outline':
-      vClass = "bg-transparent text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-800 hover:border-brand-500/30 hover:bg-stone-50/50";
+      vClass = "bg-transparent text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-800 hover:border-brand-500/40 hover:bg-stone-100/30 backdrop-blur-sm";
       break;
     case 'ghost':
-      vClass = "bg-transparent text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 hover:bg-stone-100/50 dark:hover:bg-stone-800/50";
+      vClass = "bg-transparent text-stone-400 hover:text-stone-900 dark:text-stone-500 dark:hover:text-stone-100 hover:bg-stone-100/50 dark:hover:bg-stone-800/50";
       break;
   }
   return (
     <button onClick={onClick} disabled={disabled} className={`${baseClass} ${wClass} ${vClass} ${dClass} ${className}`}>
-      {icon && <span className="shrink-0">{icon}</span>}
-      <span>{label}</span>
+      {icon && <span className="shrink-0 group-hover:scale-110 transition-transform">{icon}</span>}
+      <span className="relative top-[0.5px]">{label}</span>
     </button>
   );
 }
@@ -67,21 +67,21 @@ export function Chip({
   active?: boolean;
 }) {
   const variants: Record<string, string> = {
-    paid: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
-    due: "bg-amber-500/10 text-amber-600 border-amber-500/20",
-    overdue: "bg-rose-500/10 text-rose-600 border-rose-500/20",
-    pending_confirm: "bg-brand-500/10 text-brand-600 border-brand-500/20",
-    submitted: "bg-stone-500/10 text-stone-600 dark:text-stone-400 border-stone-500/20",
-    graded: "bg-sky-500/10 text-sky-600 border-sky-500/20",
-    new: "bg-brand-500 text-white border-brand-600",
-    positive: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
-    mixed: "bg-amber-500/10 text-amber-600 border-amber-500/20",
-    active: "bg-brand-900 dark:bg-stone-100 text-white dark:text-stone-900 border-transparent shadow-lg shadow-brand-900/10",
-    default: "bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 border-stone-200 dark:border-stone-800"
+    paid: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 italic",
+    due: "bg-amber-500/10 text-amber-600 border-amber-500/20 italic",
+    overdue: "bg-rose-500/10 text-rose-600 border-rose-500/20 italic",
+    pending_confirm: "bg-brand-500/10 text-brand-600 border-brand-500/20 italic",
+    submitted: "bg-stone-500/10 text-stone-600 dark:text-stone-400 border-stone-500/10 italic",
+    graded: "bg-brand-500/10 text-brand-600 border-brand-500/10 italic",
+    new: "bg-brand-500 text-white border-brand-600 italic",
+    positive: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 italic",
+    mixed: "bg-amber-500/10 text-amber-600 border-amber-500/20 italic",
+    active: "bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 border-transparent shadow-xl italic tracking-[0.2em]",
+    default: "bg-stone-50/50 dark:bg-stone-800/30 text-stone-500 dark:text-stone-400 border-stone-100 dark:border-stone-800 italic"
   };
   
   const vClass = active ? variants["active"] : (variants[variant] || variants.default);
-  const sizeClass = small ? "text-[9px] px-2 py-0.5" : "text-[10px] px-3 py-1";
+  const sizeClass = small ? "text-[8px] px-2 py-0.5" : "text-[9px] px-3 py-1.5";
   
   const customStyles = {
     backgroundColor: bg,
@@ -93,7 +93,7 @@ export function Chip({
   return (
     <span 
       style={customStyles}
-      className={`inline-flex items-center rounded-lg font-black font-sans whitespace-nowrap uppercase tracking-wider border transition-all ${sizeClass} ${vClass}`}
+      className={`inline-flex items-center rounded-xl font-black font-sans whitespace-nowrap uppercase tracking-[0.25em] border transition-all ${sizeClass} ${vClass}`}
     >
       {label}
     </span>
@@ -102,7 +102,7 @@ export function Chip({
 
 export function SectionLabel({ children }: { children: ReactNode }) {
   return (
-    <div className="text-[10px] font-black tracking-[0.25em] uppercase text-stone-400 dark:text-stone-500 font-sans mb-5">
+    <div className="text-[10px] font-black tracking-[0.4em] uppercase text-stone-300 dark:text-stone-600 font-sans mb-6 italic leading-none">
       {children}
     </div>
   );
@@ -110,12 +110,12 @@ export function SectionLabel({ children }: { children: ReactNode }) {
 
 export function EmptySlate({ icon, title, sub }: { icon: string; title: string; sub: string }) {
   return (
-    <div className="p-12 text-center bg-white dark:bg-stone-900 rounded-[32px] border border-stone-100 dark:border-stone-800 shadow-sm relative overflow-hidden group">
+    <div className="p-20 text-center bg-white dark:bg-stone-900 rounded-[56px] border border-stone-100 dark:border-stone-800 shadow-sm relative overflow-hidden group">
       <div className="absolute inset-0 bg-gradient-to-b from-stone-50/50 to-transparent dark:from-stone-800/10 pointer-events-none" />
       <div className="relative z-10">
-        <div className="text-5xl mb-6 grayscale group-hover:grayscale-0 transition-all duration-700 bg-stone-50 dark:bg-stone-800 w-20 h-20 flex items-center justify-center rounded-[24px] mx-auto shadow-inner border border-stone-100 dark:border-stone-700">{icon}</div>
-        <div className="text-lg font-black mb-2 font-display text-stone-900 dark:text-stone-50 tracking-tight uppercase">{title}</div>
-        <div className="text-sm font-medium font-sans text-stone-400 dark:text-stone-500 max-w-[240px] mx-auto leading-relaxed">{sub}</div>
+        <div className="text-6xl mb-8 grayscale group-hover:grayscale-0 transition-all duration-1000 bg-stone-50 dark:bg-stone-800 w-24 h-24 flex items-center justify-center rounded-[32px] mx-auto shadow-inner border border-stone-50 dark:border-stone-700">{icon}</div>
+        <div className="text-3xl font-black mb-4 font-display text-stone-900 dark:text-stone-50 tracking-tighter uppercase italic leading-none">{title}</div>
+        <div className="text-xs font-black font-sans text-stone-300 dark:text-stone-600 max-w-[200px] mx-auto leading-relaxed uppercase tracking-widest italic">{sub}</div>
       </div>
     </div>
   );

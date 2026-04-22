@@ -2,7 +2,20 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { SUBJECTS } from "../../constants";
 import { SectionLabel, Btn, Chip, EmptySlate } from "../shared/UI";
-import { Bell, Play, ChevronRight, Info, Calendar as CalendarIcon, Clock, Sparkles, Pin, CheckCircle2, TrendingUp, Search, Filter } from "lucide-react";
+import { 
+  Bell, 
+  Play, 
+  CaretRight, 
+  Info, 
+  CalendarBlank, 
+  Clock, 
+  Sparkle, 
+  PushPin, 
+  CheckCircle, 
+  TrendUp, 
+  MagnifyingGlass, 
+  Faders 
+} from "@phosphor-icons/react";
 import { supabase } from "../../supabaseClient";
 
 function useClock(init = 847) {
@@ -78,8 +91,8 @@ export default function StudentHome() {
               🎓
             </div>
             <div>
-              <h1 className="text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display leading-[0.85] mb-2 uppercase">Academy Hall</h1>
-              <p className="text-[10px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-[0.3em] leading-none">Curating your intellectual journey</p>
+              <h1 className="text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display leading-[0.85] mb-2 uppercase italic">Academy Hall</h1>
+              <p className="text-[10px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-[0.3em] leading-none italic">Curating your intellectual journey</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -89,7 +102,7 @@ export default function StudentHome() {
               className="w-16 h-16 rounded-[24px] bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 flex items-center justify-center cursor-pointer shadow-xl shadow-stone-900/5 relative group overflow-hidden"
             >
               <div className="absolute inset-0 bg-brand-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <Bell size={26} className="text-stone-400 dark:text-stone-500 group-hover:text-brand-500 transition-colors relative z-10" />
+              <Bell size={26} weight="duotone" className="text-stone-400 dark:text-stone-500 group-hover:text-brand-500 transition-colors relative z-10" />
               <div className="absolute top-5 right-5 w-3 h-3 bg-rose-500 rounded-full border-2 border-white dark:border-stone-900 ring-4 ring-rose-500/20" />
             </motion.button>
           </div>
@@ -109,16 +122,16 @@ export default function StudentHome() {
             >
                <div className="relative z-10 flex flex-col md:flex-row items-center gap-14">
                  <div className="w-28 h-28 bg-white/5 backdrop-blur-2xl rounded-[38px] flex items-center justify-center shrink-0 border border-white/10 group-hover:rotate-6 transition-transform duration-700 shadow-2xl">
-                    <Sparkles size={48} className="text-amber-400" />
+                    <Sparkle size={48} weight="duotone" className="text-amber-400" />
                  </div>
                  <div className="text-center md:text-left">
-                   <div className="text-[10px] font-black text-amber-500 uppercase tracking-[0.5em] mb-6">Real-time sync active</div>
-                   <h3 className="text-4xl font-black text-white font-display tracking-tight leading-[0.9] mb-6 uppercase">Your schedule is currently in "Zen Mode"</h3>
-                   <p className="text-lg font-medium text-stone-400 font-sans max-w-sm leading-relaxed opacity-80">
+                   <div className="text-[10px] font-black text-amber-500 uppercase tracking-[0.5em] mb-6 italic">Real-time sync active</div>
+                   <h3 className="text-4xl font-black text-white font-display tracking-tight leading-[0.9] mb-6 uppercase italic">Your schedule is currently in "Zen Mode"</h3>
+                   <p className="text-lg font-bold text-white/60 font-sans max-w-sm leading-relaxed italic opacity-80 uppercase tracking-tight">
                      Perfect alignment detected. All academic sessions for the immediate hour are cleared.
                    </p>
                    <div className="mt-10">
-                     <Btn label="Browse Archives" variant="outline" className="text-white border-white/10 hover:bg-white hover:text-stone-900" />
+                     <Btn label="Browse Archives" variant="outline" className="text-white border-white/10 hover:bg-white hover:text-stone-900 italic font-black" />
                    </div>
                  </div>
                </div>
@@ -134,9 +147,9 @@ export default function StudentHome() {
                <div className="flex items-end justify-between px-2">
                   <div>
                     <SectionLabel>Active Mission Log</SectionLabel>
-                    <p className="text-xs font-bold text-stone-400 uppercase tracking-tight mt-1">Pending artifacts for submission</p>
+                    <p className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] mt-1 italic">Pending artifacts for submission</p>
                   </div>
-                  <Btn label="Index All" variant="outline" className="rounded-xl border px-4 py-2" />
+                  <Btn label="Index All" variant="outline" className="rounded-xl border px-4 py-2 italic font-black" />
                </div>
 
                <div className="grid gap-6">
@@ -148,10 +161,10 @@ export default function StudentHome() {
                  ) : tasks.length === 0 ? (
                     <div className="bg-white dark:bg-stone-900/30 border border-stone-100 dark:border-stone-800 rounded-[48px] p-20 text-center flex flex-col items-center">
                        <div className="w-20 h-20 bg-emerald-50 dark:bg-emerald-500/10 rounded-[32px] flex items-center justify-center mb-8 border border-emerald-100 dark:border-emerald-500/20 shadow-inner">
-                         <CheckCircle2 size={32} className="text-emerald-500" />
+                         <CheckCircle size={32} weight="duotone" className="text-emerald-500" />
                        </div>
-                       <h3 className="text-2xl font-black text-stone-900 dark:text-stone-50 tracking-tighter mb-2">Total Clearance</h3>
-                       <p className="text-sm font-medium text-stone-400 max-w-[280px] leading-relaxed italic">"The mind is free when the task log is empty."</p>
+                       <h3 className="text-3xl font-black text-stone-900 dark:text-stone-50 tracking-tighter mb-2 uppercase font-display italic leading-none">Total Clearance</h3>
+                       <p className="text-xs font-black text-stone-400 max-w-[280px] leading-relaxed italic uppercase tracking-widest opacity-60">"The mind is free when the task log is empty."</p>
                     </div>
                  ) : (
                     tasks.map((task, i) => {
@@ -162,7 +175,7 @@ export default function StudentHome() {
                            animate={{ opacity: 1, x: 0 }}
                            transition={{ delay: i * 0.1 }}
                            key={task.id}
-                           className="group flex flex-col md:flex-row md:items-center gap-8 p-10 bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 rounded-[40px] hover:shadow-2xl hover:border-amber-200 transition-all cursor-pointer relative overflow-hidden"
+                           className="group flex flex-col md:flex-row md:items-center gap-8 p-10 bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 rounded-[40px] hover:shadow-2xl hover:border-brand-500/20 transition-all cursor-pointer relative overflow-hidden"
                          >
                             <div className={`w-16 h-20 rounded-3xl flex items-center justify-center text-3xl shadow-inner group-hover:scale-110 transition-transform duration-500 ${sc.bg}`}>
                                {sc.icon}
@@ -170,18 +183,18 @@ export default function StudentHome() {
                             <div className="flex-1">
                                <div className="flex items-center gap-3 mb-3">
                                   <Chip label={task.subject} bg={`${sc.fg}11`} color={sc.fg} border="transparent" />
-                                  <span className="text-[9px] font-black text-stone-300 uppercase tracking-[0.2em] ml-1">{task.type}</span>
+                                  <span className="text-[10px] font-black text-stone-300 dark:text-stone-600 uppercase tracking-[0.25em] ml-1">{task.type}</span>
                                </div>
-                               <h4 className="text-3xl font-black text-stone-900 dark:text-stone-100 leading-[0.9] tracking-tighter mb-4 group-hover:text-brand-600 transition-colors uppercase font-display">{task.title}</h4>
-                               <div className="flex items-center gap-4 text-[10px] font-black text-stone-400 uppercase tracking-widest leading-none">
-                                  <Clock size={12} strokeWidth={3} className="text-stone-300" /> 
+                               <h4 className="text-3xl font-black text-stone-900 dark:text-stone-100 leading-[0.9] tracking-tighter mb-4 group-hover:text-brand-600 transition-colors uppercase font-display italic">{task.title}</h4>
+                               <div className="flex items-center gap-4 text-[10px] font-black text-stone-400 uppercase tracking-widest leading-none italic">
+                                  <Clock size={14} weight="duotone" className="text-stone-300" /> 
                                   <span className="tabular">{task.due}</span>
                                </div>
                             </div>
                             <div className="ml-auto flex items-center gap-4">
-                               <div className="w-12 h-12 rounded-full border border-stone-50 dark:border-stone-800 flex items-center justify-center text-stone-200 group-hover:border-amber-500 group-hover:text-amber-500 transition-all group-hover:translate-x-1">
-                                  <ChevronRight size={24} />
-                               </div>
+                               <div className="w-12 h-12 rounded-full border border-stone-100 dark:border-stone-800 flex items-center justify-center text-stone-200 group-hover:border-brand-500 group-hover:text-brand-500 transition-all group-hover:translate-x-1">
+                                  <CaretRight size={24} weight="bold" />
+                                </div>
                             </div>
                             <div className="absolute top-0 bottom-0 left-0 w-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ backgroundColor: sc.fg }} />
                          </motion.div>
@@ -198,15 +211,15 @@ export default function StudentHome() {
             {/* Planner Widget */}
             <div className="bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 rounded-[48px] p-10 shadow-sm relative overflow-hidden group">
                <div className="absolute top-0 right-0 p-8 opacity-5 grayscale pointer-events-none group-hover:opacity-10 transition-opacity">
-                  <CalendarIcon size={120} />
+                  <CalendarBlank size={120} weight="duotone" />
                </div>
                
                <div className="flex items-center justify-between mb-10 relative z-10">
-                <h3 className="text-xl font-black text-stone-900 dark:text-stone-50 font-sans flex items-center gap-3 tracking-tighter uppercase">
-                  <Pin size={20} className="text-amber-500 rotate-45" />
+                <h3 className="text-xl font-black text-stone-900 dark:text-stone-50 font-display flex items-center gap-3 tracking-tighter uppercase italic">
+                  <PushPin size={22} weight="duotone" className="text-amber-500 rotate-45" />
                   Agenda
                 </h3>
-                <div className="text-[10px] font-black text-stone-400 uppercase tracking-widest">April Wave</div>
+                <div className="text-[10px] font-black text-stone-400 uppercase tracking-widest italic leading-none">April Wave</div>
               </div>
 
               <div className="grid grid-cols-7 gap-2 mb-12 relative z-10">
@@ -218,7 +231,7 @@ export default function StudentHome() {
                     <button 
                       key={i} 
                       onClick={() => setSelectedDate(cal.date)}
-                      className={`flex flex-col items-center py-4 rounded-[18px] transition-all cursor-pointer relative ${
+                      className={`flex flex-col items-center py-4 rounded-[18px] transition-all cursor-pointer relative border-none ${
                         isSelected 
                           ? "bg-stone-900 text-white shadow-2xl shadow-stone-900/20 scale-110 z-10" 
                           : "bg-transparent text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800"
@@ -246,7 +259,7 @@ export default function StudentHome() {
                       className="text-center py-10"
                     >
                       <div className="text-4xl mb-6 opacity-40 grayscale group-hover:grayscale-0 group-hover:rotate-12 transition-all transition-duration-700">📜</div>
-                      <p className="text-xs font-bold text-stone-400 dark:text-stone-500 font-sans px-12 leading-relaxed uppercase tracking-widest italic">
+                      <p className="text-[10px] font-black text-stone-400 dark:text-stone-500 font-sans px-12 leading-relaxed uppercase tracking-widest italic opacity-60">
                         The agenda is perfectly clear for this cycle.
                       </p>
                     </motion.div>
@@ -256,14 +269,14 @@ export default function StudentHome() {
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         key={item.id} 
-                        className="flex items-start gap-4 p-5 rounded-3xl bg-stone-50 dark:bg-stone-950 border border-stone-100 dark:border-stone-800/50 hover:border-amber-200 transition-colors cursor-pointer group/item"
+                        className="flex items-start gap-4 p-5 rounded-3xl bg-stone-50 dark:bg-stone-950 border border-stone-100 dark:border-stone-800/50 hover:border-brand-500/30 transition-colors cursor-pointer group/item"
                       >
-                        <div className={`w-1.5 h-10 rounded-full transition-all group-hover/item:scale-y-110 ${item.type === 'class' ? 'bg-blue-500' : 'bg-amber-500'}`} />
+                        <div className={`w-1.5 h-10 rounded-full transition-all group-hover/item:scale-y-110 ${item.type === 'class' ? 'bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)]'}`} />
                         <div className="flex-1 min-w-0">
-                          <div className="text-[9px] font-black font-sans text-stone-400 flex items-center gap-1.5 mb-2 uppercase tracking-[0.25em]">
+                          <div className="text-[10px] font-black font-sans text-stone-400 flex items-center gap-1.5 mb-2 uppercase tracking-[0.2em] italic">
                              <span className="tabular">{item.time}</span>
                           </div>
-                          <div className="text-lg font-black text-stone-900 dark:text-stone-50 font-display truncate tracking-tight uppercase leading-none">
+                          <div className="text-lg font-black text-stone-900 dark:text-stone-50 font-display truncate tracking-tighter uppercase leading-none italic">
                             {item.title}
                           </div>
                         </div>
@@ -280,16 +293,16 @@ export default function StudentHome() {
               className="shrink-0 rounded-[48px] p-10 bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 shadow-sm relative overflow-hidden group cursor-pointer"
             >
                <div className="absolute top-0 right-0 p-8 opacity-5 grayscale pointer-events-none group-hover:opacity-10 transition-opacity">
-                  <TrendingUp size={120} />
+                  <TrendUp size={120} weight="duotone" />
                </div>
                
                 <div className="flex items-center gap-6 mb-12 relative z-10">
                   <div className="w-16 h-16 rounded-[22px] bg-brand-500/5 dark:bg-brand-500/10 flex items-center justify-center text-4xl shadow-inner group-hover:rotate-12 transition-transform duration-500">🔥</div>
                   <div>
-                    <h3 className="text-2xl font-black text-stone-900 dark:text-stone-50 tracking-tighter uppercase leading-none mb-2 font-display">
+                    <h3 className="text-2xl font-black text-stone-900 dark:text-stone-50 tracking-tighter uppercase leading-none mb-2 font-display italic">
                       4 Day Cycle
                     </h3>
-                    <p className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] leading-none">Consistency Premium</p>
+                    <p className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] leading-none italic">Consistency Premium</p>
                   </div>
                 </div>
 
@@ -301,13 +314,13 @@ export default function StudentHome() {
                            initial={{ height: 0 }}
                            animate={{ height: `${h}%` }}
                            transition={{ duration: 1.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                           className={`rounded-full w-2.5 shadow-inner transition-all duration-500 ${
+                           className={`rounded-full w-2 shadow-inner transition-all duration-500 ${
                              i < 4 ? "bg-brand-500 shadow-[0_10px_20px_rgba(0,0,0,0.1)] group-hover/bar:bg-brand-600" : "bg-stone-100 dark:bg-stone-800"
                            }`}
                          />
-                         <div className="absolute -top-7 opacity-0 group-hover/bar:opacity-100 transition-opacity text-[10px] font-black font-mono text-brand-600">{h}%</div>
+                         <div className="absolute -top-7 opacity-0 group-hover/bar:opacity-100 transition-opacity text-[10px] font-black font-mono text-brand-600 tabular">{h}%</div>
                       </div>
-                      <div className={`mt-6 text-[10px] font-black font-sans leading-none ${i <= 3 ? "text-brand-600 dark:text-brand-500" : "text-stone-300"}`}>
+                      <div className={`mt-6 text-[10px] font-black font-sans leading-none italic ${i <= 3 ? "text-brand-600 dark:text-brand-500" : "text-stone-300 dark:text-stone-700"}`}>
                         {["M", "T", "W", "T", "F", "S", "S"][i]}
                       </div>
                     </div>
@@ -320,3 +333,4 @@ export default function StudentHome() {
     </motion.div>
   );
 }
+

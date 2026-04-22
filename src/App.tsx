@@ -3,18 +3,18 @@ import { motion } from "motion/react";
 import { Role } from "./types";
 import { flushSync } from "react-dom";
 import { 
-  Home as HomeIcon, 
+  HouseLine, 
   Users, 
-  Calendar as CalendarIcon, 
-  Library, 
+  CalendarBlank, 
+  Books, 
   FileText, 
   Coins, 
-  MessageSquare, 
-  School,
+  ChatCenteredText, 
+  GraduationCap,
   User,
   Sun,
   Moon
-} from "lucide-react";
+} from "@phosphor-icons/react";
 
 import StudentHome from "./components/student/StudentHome";
 import StudentMyWork from "./components/student/StudentMyWork";
@@ -46,8 +46,8 @@ const PlaceholderScreen = ({ icon, title }: { icon: string, title: string }) => 
   <div className="h-full flex flex-col items-center justify-center gap-4 p-8 text-center animate-slide-up">
     <div className="text-[48px] opacity-80">{icon}</div>
     <div>
-      <h2 className="text-xl font-bold text-stone-900 dark:text-stone-50 font-sans mb-2">{title}</h2>
-      <p className="text-sm text-stone-500 dark:text-stone-400 font-sans leading-relaxed max-w-[240px]">This feature is part of the next sprint. We're currently building the foundation.</p>
+      <h2 className="text-xl font-black text-stone-900 dark:text-stone-50 font-sans mb-2 uppercase italic tracking-tight">{title}</h2>
+      <p className="text-sm text-stone-500 dark:text-stone-400 font-bold font-sans leading-relaxed max-w-[240px] opacity-70 italic">This feature is part of the next sprint. We're currently building the foundation.</p>
     </div>
   </div>
 );
@@ -61,29 +61,29 @@ interface Tab {
 const getTabs = (role: Role): Tab[] => {
   if (role === "teacher") {
     return [
-      { icon: <HomeIcon size={20} />, label: "Home" },
-      { icon: <School size={20} />, label: "Classes" },
-      { icon: <Users size={20} />, label: "Students" },
-      { icon: <CalendarIcon size={20} />, label: "Calendar" },
-      { icon: <Library size={20} />, label: "Library" },
-      { icon: <User size={20} />, label: "Me" }
+      { icon: <HouseLine weight="duotone" size={24} />, label: "Home" },
+      { icon: <GraduationCap weight="duotone" size={24} />, label: "Classes" },
+      { icon: <Users weight="duotone" size={24} />, label: "Students" },
+      { icon: <CalendarBlank weight="duotone" size={24} />, label: "Calendar" },
+      { icon: <Books weight="duotone" size={24} />, label: "Library" },
+      { icon: <User weight="duotone" size={24} />, label: "Me" }
     ];
   }
   if (role === "parent") {
     return [
-      { icon: <HomeIcon size={20} />, label: "Home" },
-      { icon: <CalendarIcon size={20} />, label: "Schedule" },
-      { icon: <Coins size={20} />, label: "Fees" },
-      { icon: <MessageSquare size={20} />, label: "Feedback" },
-      { icon: <User size={20} />, label: "Me" }
+      { icon: <HouseLine weight="duotone" size={24} />, label: "Home" },
+      { icon: <CalendarBlank weight="duotone" size={24} />, label: "Schedule" },
+      { icon: <Coins weight="duotone" size={24} />, label: "Fees" },
+      { icon: <ChatCenteredText weight="duotone" size={24} />, label: "Feedback" },
+      { icon: <User weight="duotone" size={24} />, label: "Me" }
     ];
   }
   return [
-    { icon: <HomeIcon size={20} />, label: "Home" },
-    { icon: <FileText size={20} />, label: "My Work", badge: 2 },
-    { icon: <School size={20} />, label: "Notes" },
-    { icon: <CalendarIcon size={20} />, label: "Calendar" },
-    { icon: <User size={20} />, label: "Me" }
+    { icon: <HouseLine weight="duotone" size={24} />, label: "Home" },
+    { icon: <FileText weight="duotone" size={24} />, label: "My Work", badge: 2 },
+    { icon: <GraduationCap weight="duotone" size={24} />, label: "Notes" },
+    { icon: <CalendarBlank weight="duotone" size={24} />, label: "Calendar" },
+    { icon: <User weight="duotone" size={24} />, label: "Me" }
   ];
 };
 
@@ -103,7 +103,7 @@ function BottomNav({ role, active, onNav }: { role: Role; active: number; onNav:
   const tabs = getTabs(role);
   
   return (
-    <div className="md:hidden bg-white/80 dark:bg-stone-900/80 backdrop-blur-xl border-t border-stone-100 dark:border-stone-800/50 flex pb-[env(safe-area-inset-bottom)] pt-3 px-4 shadow-[0_-8px_30px_rgba(0,0,0,0.04)] shrink-0 z-20 relative">
+    <div className="md:hidden bg-white/90 dark:bg-stone-900/90 backdrop-blur-2xl border-t border-stone-100 dark:border-stone-800 flex pb-[env(safe-area-inset-bottom)] pt-4 px-6 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] shrink-0 z-20 relative rounded-t-[32px]">
       {tabs.map((tab, i) => {
         const isActive = active === i;
         return (
@@ -115,18 +115,18 @@ function BottomNav({ role, active, onNav }: { role: Role; active: number; onNav:
             aria-selected={isActive}
             aria-label={tab.label}
             onClick={() => onNav(i)}
-            className="flex-1 border-none bg-transparent cursor-pointer flex flex-col items-center justify-center gap-1.5 p-2 relative group rounded-2xl transition-all"
+            className="flex-1 border-none bg-transparent cursor-pointer flex flex-col items-center justify-center gap-2 p-2 relative group rounded-2xl transition-all"
           >
-            <div className={`transition-all duration-300 ${isActive ? getRoleColorClass(role) : "text-stone-400 dark:text-stone-600"} ${isActive ? "-translate-y-0.5 scale-110" : ""}`}>
+            <div className={`transition-all duration-500 ${isActive ? getRoleColorClass(role) : "text-stone-300 dark:text-stone-700"} ${isActive ? "-translate-y-1 scale-110" : ""}`}>
               {tab.icon}
             </div>
             {tab.badge !== undefined && !isActive && (
-              <div className="absolute top-1 left-1/2 ml-2 bg-rose-500 text-white rounded-full min-w-[14px] h-3.5 px-0.5 text-[9px] font-black flex items-center justify-center border-2 border-white dark:border-stone-900 shadow-sm">
+              <div className="absolute top-1 left-1/2 ml-3 bg-rose-500 text-white rounded-full min-w-[16px] h-4 px-1 text-[8px] font-black flex items-center justify-center border-2 border-white dark:border-stone-900 shadow-md">
                 {tab.badge}
               </div>
             )}
             <div
-              className={`text-[9px] font-black font-sans uppercase tracking-[0.1em] transition-all duration-300 ${isActive ? "opacity-100 scale-100" : "opacity-0 scale-75 translate-y-1"} ${getRoleColorClass(role)}`}
+              className={`text-[8px] font-black font-sans uppercase tracking-[0.2em] italic transition-all duration-500 ${isActive ? "opacity-100 scale-100" : "opacity-0 scale-75 translate-y-2"} ${getRoleColorClass(role)}`}
             >
               {tab.label}
             </div>
@@ -141,39 +141,39 @@ function DesktopNav({ role, active, onNav }: { role: Role; active: number; onNav
   const tabs = getTabs(role);
   
   return (
-    <nav className="p-6 flex flex-col gap-3">
+    <nav className="p-8 flex flex-col gap-4">
       {tabs.map((tab, i) => {
         const isActive = active === i;
         return (
           <motion.button
             key={i}
-            whileHover={{ x: 6 }}
+            whileHover={{ x: 8 }}
             whileTap={{ scale: 0.98 }}
             role="tab"
             aria-selected={isActive}
             aria-label={tab.label}
             onClick={() => onNav(i)}
-            className={`w-full flex items-center justify-between px-5 py-4 rounded-[18px] transition-all cursor-pointer relative group ${
+            className={`w-full flex items-center justify-between px-6 py-5 rounded-[24px] transition-all cursor-pointer relative group ${
               isActive 
-                ? getRoleBgClass(role) + " shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05)] border border-black/5 dark:border-white/5" 
-                : "text-stone-500 dark:text-stone-500 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-50 dark:hover:bg-stone-800/30"
+                ? getRoleBgClass(role) + " shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-black/5 dark:border-white/5 backdrop-blur-md" 
+                : "text-stone-400 dark:text-stone-600 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-50 dark:hover:bg-stone-800/30"
             }`}
           >
-            <div className="flex items-center gap-4">
-              <div className={`transition-transform duration-500 ${isActive ? getRoleColorClass(role) + " scale-110" : "text-stone-400 dark:text-stone-600 group-hover:scale-110"}`}>
+            <div className="flex items-center gap-5">
+              <div className={`transition-all duration-700 ${isActive ? getRoleColorClass(role) + " scale-125 rotate-6" : "text-stone-300 dark:text-stone-700 group-hover:scale-110 group-hover:text-stone-900"}`}>
                 {tab.icon}
               </div>
-              <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all ${isActive ? "opacity-100" : "opacity-80"}`}>{tab.label}</span>
+              <span className={`text-[10px] font-black uppercase tracking-[0.3em] transition-all italic font-display ${isActive ? "opacity-100 translate-x-1" : "opacity-60 translate-x-0"}`}>{tab.label}</span>
             </div>
             {tab.badge !== undefined && (
-              <div className={`rounded-full min-w-[20px] h-5 px-1.5 text-[10px] font-black flex items-center justify-center shadow-sm ${isActive ? "bg-rose-500 text-white" : "bg-stone-100 dark:bg-stone-800 text-stone-500"}`}>
+              <div className={`rounded-full min-w-[24px] h-6 px-2 text-[9px] font-black flex items-center justify-center shadow-lg transform transition-transform group-hover:scale-110 ${isActive ? "bg-rose-500 text-white" : "bg-stone-100 dark:bg-stone-800 text-stone-400"}`}>
                 {tab.badge}
               </div>
             )}
             {isActive && (
                <motion.div 
                  layoutId="active-nav-indicator"
-                 className="absolute left-0 w-1 h-6 bg-current rounded-full" 
+                 className="absolute left-0 w-1.5 h-8 bg-current rounded-full" 
                />
             )}
           </motion.button>
@@ -387,23 +387,23 @@ export default function App() {
         )}
 
       {/* App Header & Role Switcher */}
-      <header className="bg-white/80 dark:bg-stone-900/80 backdrop-blur-xl border-b border-stone-200 dark:border-stone-800 shrink-0 z-40 relative">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="text-3xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display uppercase italic">Drona</div>
-            <div className="h-4 w-px bg-stone-200 dark:bg-stone-800 mx-2" />
-            <div className="text-[10px] bg-stone-950 dark:bg-white text-white dark:text-stone-950 px-3 py-1 rounded-full font-sans font-black uppercase tracking-[0.25em] scale-90">v2.1</div>
+      <header className="bg-white/90 dark:bg-stone-900/90 backdrop-blur-2xl border-b border-stone-100 dark:border-stone-800 shrink-0 z-40 relative">
+        <div className="max-w-7xl mx-auto px-8 h-24 flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <div className="text-4xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display uppercase italic leading-none">Drona</div>
+            <div className="h-6 w-px bg-stone-100 dark:bg-stone-800 mx-1" />
+            <div className="text-[10px] bg-stone-900 dark:bg-white text-white dark:text-stone-950 px-4 py-1.5 rounded-xl font-sans font-black uppercase tracking-[0.4em] italic shadow-xl">v2.1</div>
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <motion.button 
               whileHover={{ scale: 1.1, rotate: 10 }}
               whileTap={{ scale: 0.9 }}
               onClick={toggleDark} 
               aria-label="Toggle dark mode"
-              className="w-10 h-10 flex items-center justify-center rounded-2xl bg-stone-50 dark:bg-stone-800 text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 transition-all border border-stone-100 dark:border-stone-700 shadow-sm"
+              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-stone-900 text-stone-400 hover:text-stone-900 dark:text-stone-500 dark:hover:text-stone-100 transition-all border border-stone-100 dark:border-stone-800 shadow-xl"
             >
-              {isDark ? <Sun size={18} /> : <Moon size={18} />}
+              {isDark ? <Sun size={22} weight="duotone" /> : <Moon size={22} weight="duotone" />}
             </motion.button>
           </div>
         </div>
@@ -412,11 +412,11 @@ export default function App() {
       {/* Main Web App Container */}
       <div className="flex-1 w-full max-w-7xl mx-auto flex overflow-hidden bg-stone-50 dark:bg-stone-950/50 md:border-x border-stone-200 dark:border-stone-800 shadow-sm">
         {/* Desktop Sidebar */}
-        <div className="hidden md:flex flex-col w-64 border-r border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 z-10 shrink-0">
+        <div className="hidden md:flex flex-col w-72 border-r border-stone-100 dark:border-stone-800 bg-white dark:bg-stone-900 z-10 shrink-0">
           <DesktopNav role={role} active={tab} onNav={handleTabChange} />
-          <div className="mt-auto p-6 hidden md:block">
-            <div className="text-[10px] text-stone-400 dark:text-stone-500 uppercase tracking-widest font-bold">Drona Platform</div>
-            <div className="text-xs text-stone-500 dark:text-stone-400 mt-1">v2.1.1</div>
+          <div className="mt-auto p-10 hidden md:block">
+            <div className="text-[10px] text-stone-300 dark:text-stone-600 uppercase tracking-[0.4em] font-black italic">Drona Protocol</div>
+            <div className="text-[10px] font-black text-stone-200 dark:text-stone-700 mt-2 italic tracking-widest">BUILD v2.1.1</div>
           </div>
         </div>
         
@@ -448,5 +448,5 @@ export default function App() {
       </div>
     </div>
   );
-}
+  }
 }

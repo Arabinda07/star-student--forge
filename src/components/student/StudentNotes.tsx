@@ -2,7 +2,20 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { flushSync } from "react-dom";
 import { SUBJECTS } from "../../constants";
-import { ChevronRight, ChevronLeft, Search, FileText, Bookmark, Play, Plus, Trash2, Download, Sparkles, Pin } from "lucide-react";
+import { 
+  CaretRight, 
+  CaretLeft, 
+  MagnifyingGlass, 
+  FileText, 
+  BookmarkSimple, 
+  Play, 
+  Plus, 
+  Trash, 
+  DownloadSimple, 
+  Sparkle, 
+  PushPin,
+  Clock
+} from "@phosphor-icons/react";
 import { supabase } from "../../supabaseClient";
 import { Sheet, Btn, Chip, SectionLabel, EmptySlate } from "../shared/UI";
 
@@ -174,46 +187,47 @@ export default function StudentNotes() {
             <div className="flex justify-between items-start mb-8">
               <button 
                 onClick={() => openNoteDetail(null)} 
-                className="flex items-center gap-2 bg-transparent border-none cursor-pointer font-sans text-xs uppercase tracking-widest font-black text-stone-400 dark:text-stone-500 hover:text-stone-900 transition-colors group"
+                className="flex items-center gap-3 bg-transparent border-none cursor-pointer font-sans text-[10px] uppercase tracking-[0.3em] font-black text-stone-400 dark:text-stone-500 hover:text-stone-900 transition-all group italic"
               >
-                <div className="w-8 h-8 rounded-full border border-stone-200 dark:border-stone-800 flex items-center justify-center bg-white dark:bg-stone-900 shadow-sm group-hover:scale-105 transition-all">
-                   <ChevronLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
+                <div className="w-10 h-10 rounded-full border border-stone-100 dark:border-stone-800 flex items-center justify-center bg-white dark:bg-stone-900 shadow-sm group-hover:scale-105 transition-all">
+                   <CaretLeft size={18} weight="bold" className="group-hover:-translate-x-0.5 transition-transform" />
                 </div>
-                Back to {subject}
+                Return to {subject}
               </button>
-              <div className="flex gap-3">
+              <div className="flex gap-4">
                 <button 
                   onClick={(e) => deleteNote(openNote.id, e)}
-                  className="w-12 h-12 rounded-full bg-white dark:bg-stone-900 flex items-center justify-center text-stone-400 hover:text-rose-500 transition-all shadow-sm border border-stone-200 dark:border-stone-800 hover:scale-105 active:scale-95 hover:shadow-md"
+                  className="w-14 h-14 rounded-full bg-white dark:bg-stone-900 flex items-center justify-center text-stone-300 hover:text-rose-500 transition-all shadow-sm border border-stone-100 dark:border-stone-800 hover:scale-105 active:scale-95 hover:shadow-xl cursor-pointer"
                 >
-                  <Trash2 size={18} />
+                  <Trash size={24} weight="duotone" />
                 </button>
                 <button 
                   onClick={(e) => toggleSave(openNote.id, isSaved, e)}
-                  className={`w-12 h-12 rounded-full bg-white dark:bg-stone-900 flex items-center justify-center transition-all shadow-sm border border-stone-200 dark:border-stone-800 hover:scale-105 active:scale-95 hover:shadow-md ${isSaved ? "text-emerald-500 shadow-emerald-500/20" : "text-stone-400 hover:text-emerald-500"}`}
+                  className={`w-14 h-14 rounded-full bg-white dark:bg-stone-900 flex items-center justify-center transition-all shadow-sm border border-stone-100 dark:border-stone-800 hover:scale-105 active:scale-95 hover:shadow-xl cursor-pointer ${isSaved ? "text-brand-500 shadow-brand-500/20" : "text-stone-300 hover:text-brand-500"}`}
                 >
-                  <Bookmark size={18} fill={isSaved ? "currentColor" : "none"} />
+                  <BookmarkSimple size={24} weight={isSaved ? "fill" : "duotone"} />
                 </button>
               </div>
             </div>
 
             <div>
-              <div className="flex items-center gap-3 mb-4">
-                 <span className="text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-lg border shadow-sm" style={{ backgroundColor: `${sc.fg}11`, color: sc.fg, borderColor: `${sc.fg}44` }}>{subject}</span>
-                 <span className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] px-3 border-l-2 border-stone-200 dark:border-stone-800 ml-1">{openNote.uploaded}</span>
+              <div className="flex items-center gap-4 mb-6">
+                 <span className="text-[10px] font-black uppercase tracking-[0.3em] px-4 py-2 rounded-xl border shadow-sm italic" style={{ backgroundColor: `${sc.fg}11`, color: sc.fg, borderColor: `${sc.fg}44` }}>{subject} Archive</span>
+                 <span className="text-[10px] font-black text-stone-400 uppercase tracking-[0.3em] px-4 border-l-2 border-stone-100 dark:border-stone-800 ml-1 italic">Ingested: {openNote.uploaded}</span>
               </div>
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
                  <div>
-                    <h2 className="text-4xl lg:text-5xl font-black text-stone-900 dark:text-stone-50 leading-tight font-sans tracking-tighter mb-3">
+                    <h2 className="text-5xl lg:text-7xl font-black text-stone-900 dark:text-stone-50 leading-[0.85] font-display tracking-tighter mb-4 uppercase italic">
                       {openNote.title}
                     </h2>
-                    <div className="text-[10px] font-black text-stone-400 uppercase tracking-[0.3em]">{openNote.pages} TOTAL PAGES</div>
+                    <div className="text-[11px] font-black text-stone-300 dark:text-stone-600 uppercase tracking-[0.4em] italic font-sans">Sequence of {openNote.pages} digital artifacts</div>
                  </div>
                  {openNote.file_path && (
                    <Btn
-                     label="Download Source"
-                     icon={<Download size={16} />}
-                     className="px-8 py-3.5 rounded-[20px] font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-stone-900/10 active:scale-95 transition-all"
+                     label="Retrieve Source"
+                     icon={<DownloadSimple size={20} weight="bold" />}
+                     variant="primary"
+                     className="px-10 py-5 rounded-[24px] font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl italic shadow-stone-900/10 active:scale-95 transition-all"
                      onClick={() => handleDownload(openNote.file_path, openNote.title)}
                    />
                  )}
@@ -227,19 +241,19 @@ export default function StudentNotes() {
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-stone-900 dark:bg-stone-800 rounded-[32px] p-8 shadow-2xl overflow-hidden relative cursor-pointer group"
+              className="bg-stone-900 dark:bg-stone-800 rounded-[40px] p-10 shadow-2xl overflow-hidden relative cursor-pointer group"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-amber-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="flex items-center gap-6 relative z-10">
-                <div className="w-16 h-16 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Play size={24} className="fill-white text-white ml-1" />
+              <div className="absolute inset-0 bg-gradient-to-r from-brand-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="flex items-center gap-8 relative z-10">
+                <div className="w-20 h-20 rounded-[28px] bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl">
+                  <Play size={32} weight="fill" className="text-white ml-1" />
                 </div>
                 <div>
-                  <div className="text-lg font-black text-white font-sans mb-1">Session Recording is Live</div>
-                  <div className="text-sm font-medium text-stone-400 font-sans italic">"Listen to the synchronized explanation for these concepts"</div>
+                  <div className="text-2xl font-black text-white font-display mb-1 uppercase italic tracking-tight">Audio Protocol Active</div>
+                  <div className="text-sm font-medium text-stone-400 font-sans italic opacity-80">"Expert commentary synchronized for this conceptual sequence"</div>
                 </div>
-                <div className="ml-auto flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-amber-500">
-                  <Pin size={12} className="rotate-45" /> Watch Now
+                <div className="ml-auto flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.3em] text-brand-400 italic">
+                  <PushPin size={16} weight="duotone" className="rotate-45" /> Playback Session
                 </div>
               </div>
             </motion.div>
@@ -323,25 +337,25 @@ export default function StudentNotes() {
             <div className="flex items-center justify-between mb-8">
               <button 
                 onClick={() => selectSubject(null)} 
-                className="flex items-center gap-2 bg-transparent border-none cursor-pointer font-sans text-xs font-black uppercase tracking-widest text-stone-400 dark:text-stone-500 hover:text-stone-900 transition-colors group"
+                className="flex items-center gap-3 bg-transparent border-none cursor-pointer font-sans text-[10px] font-black uppercase tracking-[0.3em] text-stone-400 dark:text-stone-500 hover:text-stone-900 transition-all group italic"
               >
-                <div className="w-8 h-8 rounded-full border border-stone-200 dark:border-stone-800 flex items-center justify-center bg-white dark:bg-stone-900 shadow-sm group-hover:scale-105 transition-all">
-                  <ChevronLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
+                <div className="w-10 h-10 rounded-full border border-stone-100 dark:border-stone-800 flex items-center justify-center bg-white dark:bg-stone-900 shadow-sm group-hover:scale-105 transition-all">
+                  <CaretLeft size={18} weight="bold" className="group-hover:-translate-x-0.5 transition-transform" />
                 </div>
-                Back to Library
+                Registry Overview
               </button>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                  <button 
                   onClick={() => handleUploadTrigger(subject)}
                   disabled={isUploading}
-                  className={`px-6 py-3 rounded-[20px] font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2 shadow-sm border ${
+                  className={`px-8 py-4 rounded-[24px] font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center gap-3 shadow-sm border italic cursor-pointer ${
                     isUploading 
-                      ? "bg-emerald-50 border-emerald-100 text-emerald-400 cursor-not-allowed" 
-                      : "bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-800 text-stone-600 dark:text-stone-300 hover:border-amber-400 hover:text-amber-600 hover:shadow-md"
+                      ? "bg-brand-50 border-brand-100 text-brand-400 cursor-not-allowed" 
+                      : "bg-white dark:bg-stone-900 border-stone-100 dark:border-stone-800 text-stone-600 dark:text-stone-300 hover:border-brand-500/30 hover:text-brand-600 hover:shadow-xl"
                   }`}
                 >
-                  {isUploading ? <div className="w-3 h-3 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" /> : <Plus size={14} />}
-                  Upload Personal
+                  {isUploading ? <div className="w-4 h-4 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" /> : <Plus size={16} weight="bold" />}
+                  Inject Personal
                 </button>
               </div>
             </div>
@@ -353,29 +367,29 @@ export default function StudentNotes() {
                onChange={handleFileChange} 
             />
             
-            <div className="flex items-center gap-6 mb-8 mt-2">
-              <div className={`w-24 h-24 rounded-[32px] flex items-center justify-center text-[40px] shadow-inner ${sc.bg} border border-white/20 dark:border-stone-800/50`}>
+            <div className="flex items-center gap-8 mb-12 mt-4 relative z-10">
+              <div className={`w-28 h-32 rounded-[36px] flex items-center justify-center text-[56px] shadow-inner ${sc.bg} border border-white/20 dark:border-black/10`}>
                 {sc.icon}
               </div>
               <div className="flex-1">
-                <h2 className="text-4xl lg:text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-sans mb-3">
+                <h2 className="text-5xl lg:text-7xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display mb-4 uppercase italic leading-none">
                   {subject}
                 </h2>
-                <div className="flex items-center gap-3">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-500 px-3 py-1.5 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-900/40">{currentSubjectNotes.length} RESOURCES</span>
-                  <span className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] border-l-2 pl-3 py-0.5 border-stone-200 dark:border-stone-800">Academic Archive</span>
+                <div className="flex items-center gap-4">
+                  <span className="text-[11px] font-black uppercase tracking-[0.3em] text-brand-600 dark:text-brand-400 px-4 py-2 bg-brand-50 dark:bg-brand-950/30 rounded-xl border border-brand-100 dark:border-brand-900/50 italic">{currentSubjectNotes.length} Artifacts Indexed</span>
+                  <span className="text-[11px] font-black text-stone-300 dark:text-stone-600 uppercase tracking-[0.3em] border-l-2 pl-4 py-0.5 border-stone-100 dark:border-stone-800 italic">Department Records</span>
                 </div>
               </div>
             </div>
             
-            <div className="relative group max-w-xl">
-              <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-amber-500 transition-colors" />
+            <div className="relative group max-w-2xl relative z-10">
+              <MagnifyingGlass size={22} weight="bold" className="absolute left-6 top-1/2 -translate-y-1/2 text-stone-300 group-focus-within:text-brand-500 transition-colors" />
               <input 
                 type="text" 
-                placeholder={`Search through ${subject} knowledge...`} 
+                placeholder={`Query through ${subject} knowledge index...`} 
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="w-full pl-14 pr-6 py-4 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-[24px] text-sm font-sans font-bold text-stone-900 dark:text-stone-50 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 transition-all shadow-sm placeholder:font-medium placeholder:text-stone-400"
+                className="w-full pl-16 pr-8 h-18 bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 rounded-[30px] text-base font-sans font-black text-stone-900 dark:text-stone-50 focus:outline-none focus:ring-8 focus:ring-brand-500/5 focus:border-brand-400/40 transition-all shadow-sm placeholder:font-bold placeholder:text-stone-300 placeholder:italic placeholder:uppercase placeholder:tracking-widest placeholder:text-xs"
               />
             </div>
           </div>
@@ -397,47 +411,47 @@ export default function StudentNotes() {
                       transition={{ delay: i * 0.05 }}
                       key={note.id} 
                       onClick={() => openNoteDetail(note)}
-                      className="bg-white dark:bg-stone-900 rounded-[32px] p-8 border border-stone-200/60 dark:border-stone-800/60 shadow-sm flex flex-col cursor-pointer hover:shadow-2xl hover:-translate-y-1 transition-all group relative overflow-hidden h-full"
+                      className="bg-white dark:bg-stone-900 rounded-[40px] p-10 border border-stone-100 dark:border-stone-800 shadow-sm flex flex-col cursor-pointer hover:shadow-2xl hover:-translate-y-1 transition-all group relative overflow-hidden h-full"
                     >
-                      <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-[0.03] transition-opacity pointer-events-none duration-700">
-                        <FileText size={160} />
+                      <div className="absolute top-0 right-0 p-10 opacity-0 group-hover:opacity-[0.03] transition-opacity pointer-events-none duration-700">
+                        <FileText size={200} weight="duotone" />
                       </div>
-                      <div className="flex justify-between items-start mb-6 relative z-10">
-                        <div className={`w-16 h-16 rounded-[20px] shrink-0 flex items-center justify-center text-3xl ${sc.bg} group-hover:scale-110 shadow-inner border border-white/20 dark:border-stone-800/50 transition-transform duration-500`}>
-                          <FileText size={28} className={sc.fg} />
+                      <div className="flex justify-between items-start mb-8 relative z-10">
+                        <div className={`w-18 h-20 rounded-[24px] shrink-0 flex items-center justify-center text-4xl ${sc.bg} group-hover:scale-110 shadow-inner border border-white/20 dark:border-stone-800 transition-transform duration-500`}>
+                          <FileText size={32} weight="duotone" className={sc.fg} />
                         </div>
                         <div className="flex gap-2">
                            <button 
                             onClick={(e) => deleteNote(note.id, e)}
-                            className="bg-white dark:bg-stone-900 w-10 h-10 rounded-full flex items-center justify-center text-stone-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all shadow-sm border border-stone-200 dark:border-stone-800 hover:scale-110"
+                            className="bg-white dark:bg-stone-900 w-12 h-12 rounded-full flex items-center justify-center text-stone-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all shadow-sm border border-stone-100 dark:border-stone-800 hover:scale-110 cursor-pointer"
                           >
-                            <Trash2 size={18} />
+                            <Trash size={20} weight="duotone" />
                           </button>
                           <button 
                             onClick={(e) => toggleSave(note.id, isSaved, e)}
-                            className={`bg-white dark:bg-stone-900 w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-sm border border-stone-200 dark:border-stone-800 hover:scale-110 ${isSaved ? "text-emerald-500 shadow-emerald-500/20" : "text-stone-300 hover:text-emerald-500"}`}
+                            className={`bg-white dark:bg-stone-900 w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-sm border border-stone-100 dark:border-stone-800 hover:scale-110 cursor-pointer ${isSaved ? "text-brand-500 shadow-brand-500/20" : "text-stone-300 hover:text-brand-500"}`}
                           >
-                            <Bookmark size={18} fill={isSaved ? "currentColor" : "none"} />
+                            <BookmarkSimple size={20} weight={isSaved ? "fill" : "duotone"} />
                           </button>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 mb-3 relative z-10">
-                        {note.is_new && <Chip label="New Arrival" color="#3b82f6" border="#dbeafe" bg="#eff6ff" />}
-                        <span className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em]">{note.uploaded}</span>
+                      <div className="flex items-center gap-3 mb-4 relative z-10">
+                        {note.is_new && <Chip label="Latest Arrival" color="#3b82f6" border="#dbeafe" bg="#eff6ff" />}
+                        <span className="text-[10px] font-black text-stone-300 dark:text-stone-600 uppercase tracking-[0.3em] italic">{note.uploaded}</span>
                       </div>
 
-                      <h3 className="text-2xl font-black text-stone-900 dark:text-stone-50 font-sans leading-tight mb-4 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-3 relative z-10">
+                      <h3 className="text-3xl font-black text-stone-900 dark:text-stone-50 font-display leading-[0.95] mb-6 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors line-clamp-3 relative z-10 uppercase italic tracking-tighter">
                         {note.title}
                       </h3>
 
-                      <div className="mt-auto pt-6 border-t border-stone-100 dark:border-stone-800 flex justify-between items-center relative z-10">
-                        <div className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] flex items-center gap-1.5">
-                           <div className="w-1.5 h-1.5 rounded-full bg-stone-300 dark:bg-stone-700" />
-                           {note.pages} Page{note.pages !== 1 && 's'}
-                           {note.recording && <span className="ml-2 text-rose-500 flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" /> Audio</span>}
+                      <div className="mt-auto pt-8 border-t border-stone-50 dark:border-stone-800 flex justify-between items-center relative z-10 italic">
+                        <div className="text-[10px] font-black text-stone-400 uppercase tracking-[0.3em] flex items-center gap-2">
+                           <div className="w-2 h-2 rounded-full bg-stone-100 dark:bg-stone-800" />
+                           {note.pages} Page Protocol
+                           {note.recording && <span className="ml-3 text-brand-600 flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse" /> Audio</span>}
                         </div>
-                        <ChevronRight size={16} className="text-stone-300 dark:text-stone-600 group-hover:text-amber-500 group-hover:translate-x-1 transition-all" />
+                        <CaretRight size={20} weight="bold" className="text-stone-200 dark:text-stone-700 group-hover:text-brand-500 group-hover:translate-x-1 transition-all" />
                       </div>
                     </motion.div>
                   );
@@ -453,17 +467,17 @@ export default function StudentNotes() {
   return (
     <div className="h-full flex flex-col bg-stone-50 dark:bg-stone-950 scrollbar-hide overflow-y-auto">
       {/* Premium Header */}
-      <div className="px-6 py-8 pb-4 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md z-20 border-b border-stone-200 dark:border-stone-800">
+      <div className="px-6 py-12 pb-4 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md z-20 border-b border-stone-200 dark:border-stone-800">
         <div className="max-w-7xl mx-auto w-full">
-          <div className="flex justify-between items-end mb-8">
+          <div className="flex justify-between items-end mb-10">
             <div>
-              <h1 className="text-4xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-sans mb-1">Knowledge Hub</h1>
-              <p className="text-[10px] font-black text-stone-500 dark:text-stone-400 uppercase tracking-widest">
-                <span className="text-amber-600 dark:text-amber-500 mr-1">{notes.length}</span> Objects curated in <span className="text-amber-600 dark:text-amber-500 mx-1">{subjectsToDisplay.length}</span> Departments
+              <h1 className="text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display mb-2 uppercase italic leading-none">Knowledge Hub</h1>
+              <p className="text-[11px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-[0.4em] italic">
+                <span className="text-brand-600 dark:text-brand-400 font-black mr-2 italic">{notes.length}</span> Conceptual objects curated in <span className="text-brand-600 dark:text-brand-400 font-black mx-2 italic">{subjectsToDisplay.length}</span> Departments
               </p>
             </div>
             <div className="hidden md:block">
-              <Btn label="Global Search" variant="outline" className="rounded-[20px] border-2 font-black text-[10px] uppercase tracking-widest px-6 shadow-sm hover:shadow-md" icon={<Search size={14} />} />
+              <Btn label="Trans-Library Search" variant="outline" className="rounded-[24px] h-16 border italic font-black text-[11px] uppercase tracking-[0.3em] px-10 shadow-sm hover:shadow-xl transition-all" icon={<MagnifyingGlass size={20} weight="bold" />} />
             </div>
           </div>
         </div>
@@ -490,29 +504,29 @@ export default function StudentNotes() {
                   transition={{ delay: i * 0.05 }}
                   key={subj} 
                   onClick={() => selectSubject(subj as string)} 
-                  className="bg-white dark:bg-stone-900 rounded-[32px] p-8 border border-stone-100 dark:border-stone-800 shadow-sm cursor-pointer hover:shadow-2xl hover:border-amber-200 dark:hover:border-amber-900/40 transition-all flex flex-col group relative overflow-hidden"
+                  className="bg-white dark:bg-stone-900 rounded-[44px] p-10 border border-stone-100 dark:border-stone-800 shadow-sm cursor-pointer hover:shadow-2xl hover:border-brand-500/20 transition-all flex flex-col group relative overflow-hidden"
                   style={{ viewTransitionName: subject === subj ? 'library-detail' : 'none' }}
                 >
-                  <div className="absolute top-0 right-0 p-8 opacity-5 grayscale group-hover:scale-110 group-hover:opacity-10 transition-all pointer-events-none duration-700">
+                  <div className="absolute top-0 right-0 p-10 opacity-5 grayscale group-hover:scale-125 group-hover:opacity-10 transition-all pointer-events-none duration-1000 blur-[1px]">
                     <span className="text-9xl">{sc.icon}</span>
                   </div>
                   
-                  <div className={`w-16 h-16 rounded-3xl shrink-0 flex items-center justify-center text-4xl ${sc.bg} mb-8 shadow-inner group-hover:rotate-6 transition-transform duration-500`}>
+                  <div className={`w-20 h-24 rounded-[28px] shrink-0 flex items-center justify-center text-5xl ${sc.bg} mb-12 shadow-inner group-hover:rotate-6 transition-transform duration-700 border border-white/20 dark:border-black/10`}>
                     {sc.icon}
                   </div>
                   
-                  <div className="mt-auto">
-                    <div className="flex items-center gap-2 mb-2">
-                       {newCount > 0 && <span className="text-[10px] font-black uppercase tracking-widest text-amber-600 bg-amber-50 dark:bg-amber-950/30 px-2 py-1 rounded-lg">Update</span>}
-                       <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">{subjectNotes.length} Items</span>
+                  <div className="mt-auto relative z-10 italic">
+                    <div className="flex items-center gap-3 mb-3">
+                       {newCount > 0 && <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-600 bg-brand-50 dark:bg-brand-950/30 px-3 py-1.5 rounded-xl border border-brand-100 dark:border-brand-900">Protocol Release</span>}
+                       <span className="text-[10px] font-black uppercase tracking-[0.3em] text-stone-400">{subjectNotes.length} In-Index</span>
                     </div>
-                    <div className="text-2xl font-black text-stone-900 dark:text-stone-50 tracking-tight font-sans mb-1 group-hover:text-amber-600 transition-colors">
+                    <div className="text-3xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display mb-1 group-hover:text-brand-600 transition-colors uppercase leading-none italic">
                       {subj}
                     </div>
                   </div>
                   
-                  <div className="absolute bottom-8 right-8 w-10 h-10 rounded-full bg-stone-50 dark:bg-stone-800 flex items-center justify-center text-stone-300 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
-                     <ChevronRight size={20} />
+                  <div className="absolute bottom-10 right-10 w-12 h-12 rounded-full bg-stone-50 dark:bg-stone-800 flex items-center justify-center text-stone-200 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all shadow-inner">
+                     <CaretRight size={24} weight="bold" />
                   </div>
                 </motion.div>
               );

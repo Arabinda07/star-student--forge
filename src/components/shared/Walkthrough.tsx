@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
-import { CheckCircle2, ChevronRight, GraduationCap, Users, CalendarCheck, BookOpen, ShieldCheck } from "lucide-react";
+import { 
+  CheckCircle, 
+  ArrowRight, 
+  GraduationCap, 
+  Users, 
+  CalendarCheck, 
+  Books, 
+  ShieldCheck 
+} from "@phosphor-icons/react";
 import { Role } from "../../types";
 
 interface WalkthroughProps {
@@ -19,17 +26,17 @@ export default function Walkthrough({ role, name, onComplete }: WalkthroughProps
         {
           title: `Welcome, ${name.split(' ')[0]}`,
           desc: "Your core teaching dashboard is ready. Let's look at how Drona simplifies your workflow.",
-          icon: <GraduationCap size={48} className="text-amber-500" />
+          icon: <GraduationCap size={48} weight="duotone" className="text-amber-500" />
         },
         {
           title: "Manage Batches",
           desc: "Create dedicated classes, add your students, and organize your schedules in one place.",
-          icon: <Users size={48} className="text-amber-500" />
+          icon: <Users size={48} weight="duotone" className="text-amber-500" />
         },
         {
           title: "The Library",
           desc: "Upload PDFs and class notes. Once uploaded, they are instantly available to all linked students.",
-          icon: <BookOpen size={48} className="text-amber-500" />
+          icon: <Books size={48} weight="duotone" className="text-amber-500" />
         }
       ];
     }
@@ -38,12 +45,12 @@ export default function Walkthrough({ role, name, onComplete }: WalkthroughProps
         {
           title: `Welcome, ${name.split(' ')[0]}`,
           desc: "Your parent dashboard gives you absolute clarity on your child's academic journey.",
-          icon: <ShieldCheck size={48} className="text-sky-500" />
+          icon: <ShieldCheck size={48} weight="duotone" className="text-sky-500" />
         },
         {
           title: "Track Schedule",
           desc: "See exactly when classes are happening, what subject is being taught, and who the teacher is.",
-          icon: <CalendarCheck size={48} className="text-sky-500" />
+          icon: <CalendarCheck size={48} weight="duotone" className="text-sky-500" />
         }
       ];
     }
@@ -53,17 +60,17 @@ export default function Walkthrough({ role, name, onComplete }: WalkthroughProps
       {
         title: `Welcome, ${name.split(' ')[0]}`,
         desc: "Your student dashboard is built to keep you completely locked in and focused.",
-        icon: <GraduationCap size={48} className="text-emerald-500" />
+        icon: <GraduationCap size={48} weight="duotone" className="text-emerald-500" />
       },
       {
         title: "My Work",
         desc: "Track pending homework, tests, and active assignments here. Never miss a deadline.",
-        icon: <CheckCircle2 size={48} className="text-emerald-500" />
+        icon: <CheckCircle size={48} weight="duotone" className="text-emerald-500" />
       },
       {
         title: "Class Notes",
         desc: "Access your teacher's uploaded PDFs and recordings instantly whenever you need to study.",
-        icon: <BookOpen size={48} className="text-emerald-500" />
+        icon: <Books size={48} weight="duotone" className="text-emerald-500" />
       }
     ];
   };
@@ -79,45 +86,47 @@ export default function Walkthrough({ role, name, onComplete }: WalkthroughProps
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 backdrop-blur-sm p-4 font-sans">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 backdrop-blur-sm p-4 font-sans premium-texture">
       <AnimatePresence mode="wait">
         <motion.div
            key={step}
-           initial={{ opacity: 0, scale: 0.95, y: 10 }}
+           initial={{ opacity: 0, scale: 0.95, y: 20 }}
            animate={{ opacity: 1, scale: 1, y: 0 }}
-           exit={{ opacity: 0, scale: 0.95, y: -10 }}
-           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-           className="w-full max-w-sm bg-white dark:bg-stone-900 rounded-3xl shadow-xl overflow-hidden"
+           exit={{ opacity: 0, scale: 0.95, y: -20 }}
+           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+           className="w-full max-w-sm bg-white dark:bg-stone-900 rounded-[40px] shadow-2xl overflow-hidden border border-stone-200 dark:border-stone-800"
         >
-          <div className="p-8 pb-6 flex flex-col items-center text-center">
-            <div className="w-20 h-20 rounded-2xl bg-stone-50 dark:bg-stone-800 flex items-center justify-center mb-6 shadow-sm border border-stone-100 dark:border-stone-700">
+          <div className="p-10 pb-8 flex flex-col items-center text-center">
+            <div className="w-24 h-24 rounded-[32px] bg-stone-50 dark:bg-stone-800 flex items-center justify-center mb-8 shadow-inner border border-stone-100 dark:border-stone-700">
                {slides[step].icon}
             </div>
-            <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-50 mb-3 tracking-tight">
+            <h2 className="text-3xl font-black text-stone-900 dark:text-stone-50 mb-4 tracking-tighter uppercase italic font-display">
                {slides[step].title}
             </h2>
-            <p className="text-[15px] font-medium text-stone-500 dark:text-stone-400 leading-relaxed">
+            <p className="text-[15px] font-bold text-stone-500 dark:text-stone-400 leading-relaxed font-sans opacity-80">
                {slides[step].desc}
             </p>
           </div>
           
-          <div className="px-6 pb-6 pt-2">
+          <div className="px-8 pb-8 pt-2">
             <div className="flex items-center justify-between">
-              <div className="flex gap-1.5 pl-2">
+              <div className="flex gap-2">
                 {slides.map((_, i) => (
                   <div 
                     key={i} 
-                    className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'w-4 bg-stone-900 dark:bg-stone-100' : 'w-1.5 bg-stone-200 dark:bg-stone-800'}`} 
+                    className={`h-1.5 rounded-full transition-all duration-500 ${i === step ? 'w-8 bg-stone-900 dark:bg-stone-100' : 'w-2 bg-stone-200 dark:bg-stone-800'}`} 
                   />
                 ))}
               </div>
-              <button 
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={handleNext}
-                className="h-10 px-5 bg-stone-900 dark:bg-stone-50 text-white dark:text-stone-900 hover:bg-stone-800 dark:hover:bg-white text-sm font-bold rounded-xl flex items-center gap-1 transition-colors group"
+                className="h-12 px-6 bg-stone-900 dark:bg-stone-50 text-white dark:text-stone-900 hover:bg-black dark:hover:bg-white text-[10px] font-black uppercase tracking-widest rounded-2xl flex items-center gap-2 transition-all group shadow-lg shadow-stone-900/10 cursor-pointer border-none"
               >
                 {step === slides.length - 1 ? "Let's Go" : "Next"}
-                <ChevronRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
-              </button>
+                <ArrowRight size={16} weight="bold" className="group-hover:translate-x-1 transition-transform" />
+              </motion.button>
             </div>
           </div>
         </motion.div>
@@ -125,3 +134,4 @@ export default function Walkthrough({ role, name, onComplete }: WalkthroughProps
     </div>
   );
 }
+
