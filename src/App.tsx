@@ -107,23 +107,23 @@ function BottomNav({ role, active, onNav }: { role: Role; active: number; onNav:
       aria-label="Main navigation"
       className="md:hidden bg-white/90 dark:bg-stone-900/90 backdrop-blur-2xl border-t border-stone-100 dark:border-stone-800 pb-[env(safe-area-inset-bottom)] pt-4 px-6 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] shrink-0 z-20 relative rounded-t-[32px]"
     >
-      <div role="tablist" aria-label="Navigation tabs" className="flex">
+      <ul role="tablist" aria-label="Navigation tabs" className="flex list-none p-0 m-0">
         {tabs.map((tab, i) => {
           const isActive = active === i;
           const tabId = `nav-tab-${i}`;
           return (
-            <motion.button
-              key={i}
-              id={tabId}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              role="tab"
-              aria-selected={isActive}
-              aria-controls="main-content"
-              aria-label={tab.label}
-              onClick={() => onNav(i)}
-              className="flex-1 border-none bg-transparent cursor-pointer flex flex-col items-center justify-center gap-2 p-2 relative group rounded-2xl transition-all"
-            >
+            <li key={i} role="presentation" className="flex-1">
+              <motion.button
+                id={tabId}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                role="tab"
+                aria-selected={isActive}
+                aria-controls="main-content"
+                aria-label={tab.label}
+                onClick={() => onNav(i)}
+                className="w-full border-none bg-transparent cursor-pointer flex flex-col items-center justify-center gap-2 p-2 relative group rounded-2xl transition-all"
+              >
               <div className={`transition-all duration-500 ${isActive ? getRoleColorClass(role) : "text-stone-300 dark:text-stone-700"} ${isActive ? "-translate-y-1 scale-110" : ""}`}>
                 {tab.icon}
               </div>
@@ -138,9 +138,10 @@ function BottomNav({ role, active, onNav }: { role: Role; active: number; onNav:
                 {tab.label}
               </div>
             </motion.button>
+            </li>
           );
         })}
-      </div>
+      </ul>
     </nav>
   );
 }
@@ -150,27 +151,27 @@ function DesktopNav({ role, active, onNav }: { role: Role; active: number; onNav
   
   return (
     <nav aria-label="Main navigation" className="p-8 flex flex-col gap-4">
-      <div role="tablist" aria-label="Navigation tabs" className="flex flex-col gap-4">
+      <ul role="tablist" aria-label="Navigation tabs" className="flex flex-col gap-4 list-none p-0 m-0">
         {tabs.map((tab, i) => {
           const isActive = active === i;
           const tabId = `desktop-tab-${i}`;
           return (
-            <motion.button
-              key={i}
-              id={tabId}
-              whileHover={{ x: 8 }}
-              whileTap={{ scale: 0.98 }}
-              role="tab"
-              aria-selected={isActive}
-              aria-controls="main-content"
-              aria-label={tab.label}
-              onClick={() => onNav(i)}
-              className={`w-full flex items-center justify-between px-6 py-5 rounded-[24px] transition-all cursor-pointer relative group ${
-                isActive 
-                  ? getRoleBgClass(role) + " shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-black/5 dark:border-white/5 backdrop-blur-md" 
-                  : "text-stone-400 dark:text-stone-600 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-50 dark:hover:bg-stone-800/30"
-              }`}
-            >
+            <li key={i} role="presentation">
+              <motion.button
+                id={tabId}
+                whileHover={{ x: 8 }}
+                whileTap={{ scale: 0.98 }}
+                role="tab"
+                aria-selected={isActive}
+                aria-controls="main-content"
+                aria-label={tab.label}
+                onClick={() => onNav(i)}
+                className={`w-full flex items-center justify-between px-6 py-5 rounded-[24px] transition-all cursor-pointer relative group ${
+                  isActive 
+                    ? getRoleBgClass(role) + " shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-black/5 dark:border-white/5 backdrop-blur-md" 
+                    : "text-stone-400 dark:text-stone-600 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-50 dark:hover:bg-stone-800/30"
+                }`}
+              >
               <div className="flex items-center gap-5">
                 <div className={`transition-all duration-700 ${isActive ? getRoleColorClass(role) + " scale-125 rotate-6" : "text-stone-300 dark:text-stone-700 group-hover:scale-110 group-hover:text-stone-900"}`}>
                   {tab.icon}
@@ -183,9 +184,10 @@ function DesktopNav({ role, active, onNav }: { role: Role; active: number; onNav
                 </div>
               )}
             </motion.button>
+            </li>
           );
         })}
-      </div>
+      </ul>
     </nav>
   );
 }

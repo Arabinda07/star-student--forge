@@ -84,7 +84,7 @@ export default function StudentHome() {
       className="h-full flex flex-col overflow-y-auto scrollbar-hide bg-stone-50 dark:bg-stone-950 premium-texture"
     >
       {/* Premium Header */}
-      <div className="px-8 py-14 pb-6 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-xl z-30 border-b border-stone-100/50 dark:border-stone-800/30">
+      <div className="px-6 py-8 md:px-8 md:py-14 pb-6 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-xl z-30 border-b border-stone-100/50 dark:border-stone-800/30">
         <div className="max-w-7xl mx-auto w-full flex justify-between items-center">
           <div className="flex items-center gap-8">
             <div className="w-20 h-20 rounded-[32px] bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 flex items-center justify-center text-5xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] -rotate-3 transition-transform hover:rotate-0 hover:scale-110 duration-500">
@@ -163,8 +163,8 @@ export default function StudentHome() {
                        <div className="w-20 h-20 bg-emerald-50 dark:bg-emerald-500/10 rounded-[32px] flex items-center justify-center mb-8 border border-emerald-100 dark:border-emerald-500/20 shadow-inner">
                          <CheckCircle size={32} weight="duotone" className="text-emerald-500" />
                        </div>
-                        <h3 className="text-3xl font-black text-stone-900 dark:text-stone-50 tracking-tighter mb-2 uppercase font-display italic leading-none">All clear</h3>
-                        <p className="text-xs font-black text-stone-400 max-w-[280px] leading-relaxed italic uppercase tracking-widest opacity-60">Nothing due. Enjoy the break or get ahead on something.</p>
+                        <h3 className="text-3xl font-black text-stone-900 dark:text-stone-50 tracking-tighter mb-2 uppercase font-display italic leading-none">You're all caught up</h3>
+                        <p className="text-xs font-black text-stone-400 max-w-[280px] leading-relaxed italic uppercase tracking-widest opacity-60">No tasks due right now. Enjoy the break.</p>
                     </div>
                  ) : (
                     tasks.map((task, i) => {
@@ -196,7 +196,6 @@ export default function StudentHome() {
                                   <CaretRight size={24} weight="bold" />
                                 </div>
                             </div>
-                            <div className="absolute top-0 bottom-0 left-0 w-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ backgroundColor: sc.fg }} />
                          </motion.div>
                       );
                     })

@@ -24,6 +24,7 @@ export default function StudentMyWork() {
   const [loading, setLoading] = useState(true);
   const [selTask, setSelTask] = useState<any>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const tabConfig: Record<string, { label: string; icon: ReactNode; color: string }> = {
@@ -86,9 +87,9 @@ export default function StudentMyWork() {
 
       setItems(items.map(t => t.id === selTask.id ? { ...t, status: 'submitted', submission_url: filePath, submitted_at: new Date().toISOString() } : t));
       setSelTask(null);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Submission failed. Please try again.");
+      setError(err.message || "Something went wrong with your submission.");
     } finally {
       setIsUploading(false);
     }
@@ -151,9 +152,8 @@ export default function StudentMyWork() {
 
   return (
     <div className="h-full flex flex-col bg-stone-50 md:bg-white dark:bg-stone-950 md:dark:bg-stone-900 scrollbar-hide overflow-y-auto premium-texture relative">
-      <div className="absolute left-10 top-0 bottom-0 w-px bg-stone-100 dark:bg-stone-800" />
       {/* Dynamic Header Section */}
-      <div className="px-6 py-12 pb-6 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md z-20 border-b border-stone-200 dark:border-stone-800">
+      <div className="px-6 py-8 md:py-12 pb-6 shrink-0 animate-slide-up sticky top-0 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md z-20 border-b border-stone-200 dark:border-stone-800">
         <div className="max-w-7xl mx-auto w-full">
           <div className="flex justify-between items-end mb-10 relative z-10">
             <div>
@@ -225,12 +225,12 @@ export default function StudentMyWork() {
                 >
                    <EmptySlate 
                       icon="🌟" 
-                      title={`${tabConfig[tab].label} Queue Empty`} 
+                      title={tabConfig[tab].label === 'Active' ? "You're all caught up" : `${tabConfig[tab].label} is empty`} 
                       sub={
-                        tab === 'upcoming' ? "Total focus achieved. You've completely cleared your active mission log." :
-                        tab === 'overdue' ? "System in harmony. No delinquent submissions detected on any frequency." :
-                        tab === 'submitted' ? "Nothing in the pending buffer. All submitted artifacts have been processed." :
-                        "The archive vault is ready to store your next high-grade result."
+                        tab === 'upcoming' ? "You've finished all your current tasks. Time for a break." :
+                        tab === 'overdue' ? "No late assignments found. Great job staying on track." :
+                        tab === 'submitted' ? "All your submitted work is currently being reviewed." :
+                        "Your completed work history will appear here once graded."
                       }
                    />
                 </motion.div>
@@ -292,7 +292,7 @@ export default function StudentMyWork() {
 
                       {/* Accent highlight */}
                       {!isDone && (
-                        <div className="absolute top-0 bottom-0 left-0 w-1.5 opacity-0 group-hover:opacity-100 transition-opacity" style={{ backgroundColor: sc.fg }} />
+
                       )}
                     </motion.div>
                   );
@@ -303,7 +303,7 @@ export default function StudentMyWork() {
         )}
       </div>
 
-      <Sheet open={!!selTask} onClose={() => setSelTask(null)} title="Task details">
+      <Sheet open={!!selTask} onClose={() => { setSelTask(null); setError(null); }} title="Task details">
          {selTask && (
            <div className="space-y-16 py-8 px-1 max-w-4xl mx-auto">
               <div className="flex flex-col md:flex-row items-start gap-10">
@@ -329,7 +329,15 @@ export default function StudentMyWork() {
               <div className="h-px w-full bg-gradient-to-r from-transparent via-stone-100 dark:via-stone-800 to-transparent my-16" />
 
               <div className="space-y-10">
-                <div className="text-[11px] font-black tracking-[0.4em] uppercase text-stone-400 dark:text-stone-600 font-sans ml-4 italic px-4 border-l-4 border-stone-200 dark:border-stone-800">Submit your work</div>
+                <div className="text-[11px] font-black tracking-[0.4em] uppercase text-stone-400 dark:text-stone-600 font-sans ml-4 border-l-4 border-stone-200 dark:border-stone-800 pl-4">Submit your work</div>
+                
+                {error && (
+                  <div className="mx-4 p-5 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-900/30 rounded-2xl flex items-center gap-4 animate-slide-up">
+                    <WarningCircle size={20} className="text-rose-500 shrink-0" weight="fill" />
+                    <p className="text-xs font-bold text-rose-800 dark:text-rose-200">{error}</p>
+                  </div>
+                )}
+
                 {selTask.status === 'upcoming' || selTask.status === 'overdue' ? (
                   <div className="grid gap-8">
                     <motion.div 
