@@ -1,4 +1,4 @@
-import { useState, ReactNode, useEffect, useLayoutEffect } from "react";
+import { useState, ReactNode, useEffect } from "react";
 import { motion } from "motion/react";
 import { Role } from "./types";
 import { flushSync } from "react-dom";
@@ -103,37 +103,45 @@ function BottomNav({ role, active, onNav }: { role: Role; active: number; onNav:
   const tabs = getTabs(role);
   
   return (
-    <div className="md:hidden bg-white/90 dark:bg-stone-900/90 backdrop-blur-2xl border-t border-stone-100 dark:border-stone-800 flex pb-[env(safe-area-inset-bottom)] pt-4 px-6 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] shrink-0 z-20 relative rounded-t-[32px]">
-      {tabs.map((tab, i) => {
-        const isActive = active === i;
-        return (
-          <motion.button
-            key={i}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            role="tab"
-            aria-selected={isActive}
-            aria-label={tab.label}
-            onClick={() => onNav(i)}
-            className="flex-1 border-none bg-transparent cursor-pointer flex flex-col items-center justify-center gap-2 p-2 relative group rounded-2xl transition-all"
-          >
-            <div className={`transition-all duration-500 ${isActive ? getRoleColorClass(role) : "text-stone-300 dark:text-stone-700"} ${isActive ? "-translate-y-1 scale-110" : ""}`}>
-              {tab.icon}
-            </div>
-            {tab.badge !== undefined && !isActive && (
-              <div className="absolute top-1 left-1/2 ml-3 bg-rose-500 text-white rounded-full min-w-[16px] h-4 px-1 text-[8px] font-black flex items-center justify-center border-2 border-white dark:border-stone-900 shadow-md">
-                {tab.badge}
-              </div>
-            )}
-            <div
-              className={`text-[8px] font-black font-sans uppercase tracking-[0.2em] italic transition-all duration-500 ${isActive ? "opacity-100 scale-100" : "opacity-0 scale-75 translate-y-2"} ${getRoleColorClass(role)}`}
+    <nav
+      aria-label="Main navigation"
+      className="md:hidden bg-white/90 dark:bg-stone-900/90 backdrop-blur-2xl border-t border-stone-100 dark:border-stone-800 pb-[env(safe-area-inset-bottom)] pt-4 px-6 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] shrink-0 z-20 relative rounded-t-[32px]"
+    >
+      <div role="tablist" aria-label="Navigation tabs" className="flex">
+        {tabs.map((tab, i) => {
+          const isActive = active === i;
+          const tabId = `nav-tab-${i}`;
+          return (
+            <motion.button
+              key={i}
+              id={tabId}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              role="tab"
+              aria-selected={isActive}
+              aria-controls="main-content"
+              aria-label={tab.label}
+              onClick={() => onNav(i)}
+              className="flex-1 border-none bg-transparent cursor-pointer flex flex-col items-center justify-center gap-2 p-2 relative group rounded-2xl transition-all"
             >
-              {tab.label}
-            </div>
-          </motion.button>
-        );
-      })}
-    </div>
+              <div className={`transition-all duration-500 ${isActive ? getRoleColorClass(role) : "text-stone-300 dark:text-stone-700"} ${isActive ? "-translate-y-1 scale-110" : ""}`}>
+                {tab.icon}
+              </div>
+              {tab.badge !== undefined && !isActive && (
+                <div className="absolute top-1 left-1/2 ml-3 bg-rose-500 text-white rounded-full min-w-[16px] h-4 px-1 text-[8px] font-black flex items-center justify-center border-2 border-white dark:border-stone-900 shadow-md">
+                  {tab.badge}
+                </div>
+              )}
+              <div
+                className={`text-[8px] font-black font-sans uppercase tracking-[0.2em] italic transition-all duration-500 ${isActive ? "opacity-100 scale-100" : "opacity-0 scale-75 translate-y-2"} ${getRoleColorClass(role)}`}
+              >
+                {tab.label}
+              </div>
+            </motion.button>
+          );
+        })}
+      </div>
+    </nav>
   );
 }
 
@@ -141,44 +149,43 @@ function DesktopNav({ role, active, onNav }: { role: Role; active: number; onNav
   const tabs = getTabs(role);
   
   return (
-    <nav className="p-8 flex flex-col gap-4">
-      {tabs.map((tab, i) => {
-        const isActive = active === i;
-        return (
-          <motion.button
-            key={i}
-            whileHover={{ x: 8 }}
-            whileTap={{ scale: 0.98 }}
-            role="tab"
-            aria-selected={isActive}
-            aria-label={tab.label}
-            onClick={() => onNav(i)}
-            className={`w-full flex items-center justify-between px-6 py-5 rounded-[24px] transition-all cursor-pointer relative group ${
-              isActive 
-                ? getRoleBgClass(role) + " shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-black/5 dark:border-white/5 backdrop-blur-md" 
-                : "text-stone-400 dark:text-stone-600 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-50 dark:hover:bg-stone-800/30"
-            }`}
-          >
-            <div className="flex items-center gap-5">
-              <div className={`transition-all duration-700 ${isActive ? getRoleColorClass(role) + " scale-125 rotate-6" : "text-stone-300 dark:text-stone-700 group-hover:scale-110 group-hover:text-stone-900"}`}>
-                {tab.icon}
+    <nav aria-label="Main navigation" className="p-8 flex flex-col gap-4">
+      <div role="tablist" aria-label="Navigation tabs" className="flex flex-col gap-4">
+        {tabs.map((tab, i) => {
+          const isActive = active === i;
+          const tabId = `desktop-tab-${i}`;
+          return (
+            <motion.button
+              key={i}
+              id={tabId}
+              whileHover={{ x: 8 }}
+              whileTap={{ scale: 0.98 }}
+              role="tab"
+              aria-selected={isActive}
+              aria-controls="main-content"
+              aria-label={tab.label}
+              onClick={() => onNav(i)}
+              className={`w-full flex items-center justify-between px-6 py-5 rounded-[24px] transition-all cursor-pointer relative group ${
+                isActive 
+                  ? getRoleBgClass(role) + " shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-black/5 dark:border-white/5 backdrop-blur-md" 
+                  : "text-stone-400 dark:text-stone-600 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-50 dark:hover:bg-stone-800/30"
+              }`}
+            >
+              <div className="flex items-center gap-5">
+                <div className={`transition-all duration-700 ${isActive ? getRoleColorClass(role) + " scale-125 rotate-6" : "text-stone-300 dark:text-stone-700 group-hover:scale-110 group-hover:text-stone-900"}`}>
+                  {tab.icon}
+                </div>
+                <span className={`text-[10px] font-black uppercase tracking-[0.3em] transition-all italic font-display ${isActive ? "opacity-100 translate-x-1" : "opacity-60 translate-x-0"}`}>{tab.label}</span>
               </div>
-              <span className={`text-[10px] font-black uppercase tracking-[0.3em] transition-all italic font-display ${isActive ? "opacity-100 translate-x-1" : "opacity-60 translate-x-0"}`}>{tab.label}</span>
-            </div>
-            {tab.badge !== undefined && (
-              <div className={`rounded-full min-w-[24px] h-6 px-2 text-[9px] font-black flex items-center justify-center shadow-lg transform transition-transform group-hover:scale-110 ${isActive ? "bg-rose-500 text-white" : "bg-stone-100 dark:bg-stone-800 text-stone-400"}`}>
-                {tab.badge}
-              </div>
-            )}
-            {isActive && (
-               <motion.div 
-                 layoutId="active-nav-indicator"
-                 className="absolute left-0 w-1.5 h-8 bg-current rounded-full" 
-               />
-            )}
-          </motion.button>
-        );
-      })}
+              {tab.badge !== undefined && (
+                <div className={`rounded-full min-w-[24px] h-6 px-2 text-[9px] font-black flex items-center justify-center shadow-lg transform transition-transform group-hover:scale-110 ${isActive ? "bg-rose-500 text-white" : "bg-stone-100 dark:bg-stone-800 text-stone-400"}`}>
+                  {tab.badge}
+                </div>
+              )}
+            </motion.button>
+          );
+        })}
+      </div>
     </nav>
   );
 }
@@ -209,6 +216,9 @@ export default function App() {
       setSession(session);
       setLoadingSession(false);
       if (session) {
+        // A session means this user has registered before — skip onboarding always
+        localStorage.setItem('drona_onboarding_done', 'true');
+        setShowOnboarding(false);
         fetchUserProfile(session.user.id);
       }
     });
@@ -337,7 +347,7 @@ export default function App() {
 
   if (loadingSession) {
     return (
-      <div className="h-screen bg-stone-50 dark:bg-stone-950 flex items-center justify-center">
+      <div className="h-[100dvh] bg-stone-50 dark:bg-stone-950 flex items-center justify-center">
         <div className="animate-pulse w-8 h-8 rounded-full bg-[var(--color-brand-500)]" />
       </div>
     );
@@ -345,7 +355,16 @@ export default function App() {
 
   if (!session) {
     if (showOnboarding) {
-      return <Onboarding onComplete={handleCompleteOnboarding} />;
+      return (
+        <Onboarding
+          onComplete={handleCompleteOnboarding}
+          onSkip={() => {
+            localStorage.setItem('drona_onboarding_done', 'true');
+            setShowOnboarding(false);
+            setAuthMode('signIn');
+          }}
+        />
+      );
     }
     if (authMode === "signIn") {
       return (
@@ -373,7 +392,7 @@ export default function App() {
 
   if (session) {
     return (
-      <div className="h-screen bg-stone-100 dark:bg-stone-800 font-sans flex flex-col overflow-hidden text-stone-900 dark:text-stone-50 relative premium-texture">
+      <div className="h-[100dvh] bg-stone-100 dark:bg-stone-800 font-sans flex flex-col overflow-hidden text-stone-900 dark:text-stone-50 relative premium-texture">
         
         {showWalkthrough && (
           <Walkthrough 
@@ -422,7 +441,12 @@ export default function App() {
         
         {/* Dynamic Content Area */}
         <div className="flex-1 flex flex-col relative overflow-hidden bg-stone-50 dark:bg-stone-950">
-          <div className="flex-1 relative overflow-y-auto w-full mx-auto flex flex-col bg-stone-50 dark:bg-stone-950">
+          <main
+            id="main-content"
+            role="tabpanel"
+            tabIndex={-1}
+            className="flex-1 relative overflow-y-auto w-full mx-auto flex flex-col bg-stone-50 dark:bg-stone-950"
+          >
             {role === 'student' && tab === 0 && <StudentHome />}
             {role === 'student' && tab === 1 && <StudentMyWork />}
             {role === 'student' && tab === 2 && <StudentNotes />}
@@ -441,7 +465,7 @@ export default function App() {
             {role === 'parent' && tab === 2 && <ParentFees />}
             {role === 'parent' && tab === 3 && <ParentFeedback />}
             {role === 'parent' && tab === 4 && <ProfileSettings role={role} />}
-          </div>
+          </main>
 
           <BottomNav role={role} active={tab} onNav={handleTabChange} />
         </div>

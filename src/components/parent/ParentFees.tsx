@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { COLORS } from "../../constants";
 import { SectionLabel, Btn, Chip, Sheet } from "../shared/UI";
 import { Copy, MessageSquare, ReceiptText, CreditCard, Clock, History, Check, ChevronRight, CheckCircle2, AlertCircle, Download, Sparkles, Pin } from "lucide-react";
 

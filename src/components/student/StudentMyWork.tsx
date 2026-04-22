@@ -157,9 +157,9 @@ export default function StudentMyWork() {
         <div className="max-w-7xl mx-auto w-full">
           <div className="flex justify-between items-end mb-10 relative z-10">
             <div>
-              <h1 className="text-4xl md:text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display mb-2 uppercase italic leading-none">Canvas Index</h1>
+              <h1 className="text-4xl md:text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display mb-2 uppercase italic leading-none">My Work</h1>
               <p className="text-[10px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-[0.3em] leading-none italic">
-                 Curating <span className="text-brand-600 dark:text-brand-400 drop-shadow-sm font-black">{items.length}</span> Active Protocols
+                 <span className="text-brand-600 dark:text-brand-400 drop-shadow-sm font-black">{items.length}</span> tasks total
               </p>
             </div>
             <motion.button 
@@ -212,7 +212,7 @@ export default function StudentMyWork() {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24">
             <div className="w-12 h-12 animate-spin rounded-full border-4 border-stone-100 border-t-brand-500" />
-            <p className="mt-6 text-[10px] font-black uppercase tracking-widest text-stone-400 font-sans">Syncing database state...</p>
+            <p className="mt-6 text-[10px] font-black uppercase tracking-widest text-stone-400 font-sans">Loading your tasks...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -268,9 +268,9 @@ export default function StudentMyWork() {
                         <div className="flex flex-wrap items-center gap-3 mb-4">
                           <span className="text-[10px] font-black uppercase tracking-widest text-stone-400 dark:text-stone-500 bg-stone-50 dark:bg-stone-800 px-3 py-1.5 rounded-xl border border-stone-100 dark:border-stone-700">{item.type}</span>
                           {tab === 'overdue' && (
-                             <span className="text-[10px] font-black uppercase tracking-widest text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 px-3 py-1.5 rounded-xl border border-rose-200 dark:border-rose-900/50 italic">CRITICAL TIME</span>
+                           <span className="text-[10px] font-black uppercase tracking-widest text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 px-3 py-1.5 rounded-xl border border-rose-200 dark:border-rose-900/50 italic">Overdue</span>
                           )}
-                           <span className="text-[10px] font-black text-stone-300 dark:text-stone-600 uppercase tracking-widest pl-3 border-l border-stone-100 dark:border-stone-800 italic underline decoration-brand-500/30 underline-offset-4">{item.due || "Infinite Context"}</span>
+                           <span className="text-[10px] font-black text-stone-300 dark:text-stone-600 uppercase tracking-widest pl-3 border-l border-stone-100 dark:border-stone-800 italic underline decoration-brand-500/30 underline-offset-4">{item.due || "No deadline"}</span>
                         </div>
                         <h3 className={`text-3xl font-black font-display leading-[0.9] tracking-tighter mb-6 group-hover:text-brand-600 transition-colors uppercase italic ${isDone ? "text-stone-200 dark:text-stone-700 line-through decoration-stone-200 dark:decoration-stone-700" : "text-stone-900 dark:text-stone-50"}`}>
                           {item.title}
@@ -303,7 +303,7 @@ export default function StudentMyWork() {
         )}
       </div>
 
-      <Sheet open={!!selTask} onClose={() => setSelTask(null)} title="Protocol Analysis">
+      <Sheet open={!!selTask} onClose={() => setSelTask(null)} title="Task details">
          {selTask && (
            <div className="space-y-16 py-8 px-1 max-w-4xl mx-auto">
               <div className="flex flex-col md:flex-row items-start gap-10">
@@ -321,7 +321,7 @@ export default function StudentMyWork() {
                   </div>
                   <h2 className="text-5xl md:text-6xl font-black text-stone-900 dark:text-stone-50 tracking-tighter leading-[0.85] mb-8 uppercase italic font-display">{selTask.title}</h2>
                   <div className="flex items-center gap-3 text-[11px] font-black text-stone-400 uppercase tracking-[0.2em] bg-stone-50 dark:bg-stone-950 border border-stone-100 dark:border-stone-800 p-5 rounded-[24px] w-max shadow-inner italic">
-                     <Clock size={16} weight="duotone" className="text-brand-600" /> Deadline Protocol: <span className="text-stone-900 dark:text-stone-100 ml-1">{selTask.due || "Infinite Context"}</span>
+                     <Clock size={16} weight="duotone" className="text-brand-600" /> Due: <span className="text-stone-900 dark:text-stone-100 ml-1">{selTask.due || "No deadline"}</span>
                   </div>
                 </div>
               </div>
@@ -329,7 +329,7 @@ export default function StudentMyWork() {
               <div className="h-px w-full bg-gradient-to-r from-transparent via-stone-100 dark:via-stone-800 to-transparent my-16" />
 
               <div className="space-y-10">
-                <div className="text-[11px] font-black tracking-[0.4em] uppercase text-stone-400 dark:text-stone-600 font-sans ml-4 italic px-4 border-l-4 border-stone-200 dark:border-stone-800">Submission Interface</div>
+                <div className="text-[11px] font-black tracking-[0.4em] uppercase text-stone-400 dark:text-stone-600 font-sans ml-4 italic px-4 border-l-4 border-stone-200 dark:border-stone-800">Submit your work</div>
                 {selTask.status === 'upcoming' || selTask.status === 'overdue' ? (
                   <div className="grid gap-8">
                     <motion.div 
@@ -346,14 +346,14 @@ export default function StudentMyWork() {
                           <UploadSimple size={48} weight="bold" className="text-stone-300 dark:text-stone-500 group-hover:text-brand-600 transition-colors" />
                         )}
                       </div>
-                      <div className="text-3xl font-black text-stone-900 dark:text-stone-50 mb-4 tracking-tighter uppercase italic leading-none relative z-10 font-display">Index Submission Artifact</div>
-                      <p className="text-xs font-black text-stone-400 dark:text-stone-500 max-w-[300px] leading-relaxed relative z-10 uppercase tracking-widest italic opacity-60">Drag-drop or activate prompt to select academic evidence for cloud transmission.</p>
+                       <div className="text-3xl font-black text-stone-900 dark:text-stone-50 mb-4 tracking-tighter uppercase italic leading-none relative z-10 font-display">Upload your file</div>
+                       <p className="text-xs font-black text-stone-400 dark:text-stone-500 max-w-[300px] leading-relaxed relative z-10 uppercase tracking-widest italic opacity-60">Drag and drop, or click to choose a file from your device.</p>
                       <input type="file" className="hidden" ref={fileRef} onChange={handleUpload} />
                     </motion.div>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
-                      <Btn label="Request Coordination" variant="outline" full className="h-16 rounded-[24px] uppercase tracking-[0.2em] italic font-black" />
-                      <Btn label="Finalize Submission" variant="primary" full className="h-16 rounded-[24px] uppercase tracking-[0.2em] italic font-black shadow-2xl" icon={<CheckCircle size={20} weight="bold" />} onClick={() => updateTaskStatus(selTask.id, 'submitted')} />
+                      <Btn label="Ask for help" variant="outline" full className="h-16 rounded-[24px] uppercase tracking-[0.2em] italic font-black" />
+                       <Btn label="Mark as done" variant="primary" full className="h-16 rounded-[24px] uppercase tracking-[0.2em] italic font-black shadow-2xl" icon={<CheckCircle size={20} weight="bold" />} onClick={() => updateTaskStatus(selTask.id, 'submitted')} />
                     </div>
                   </div>
                 ) : (
@@ -365,15 +365,15 @@ export default function StudentMyWork() {
                       <CheckCircle size={72} weight="bold" />
                     </div>
                     <div className="relative z-10 mt-2">
-                      <h4 className="text-4xl font-black text-emerald-900 dark:text-emerald-100 tracking-tighter mb-4 uppercase italic font-display leading-none">Artifact Securely Logged</h4>
-                      <p className="inline-block bg-white dark:bg-black/20 text-emerald-700 dark:text-emerald-400 px-6 py-3 rounded-[20px] text-[10px] font-black uppercase tracking-[0.3em] shadow-sm border border-emerald-100 dark:border-emerald-900/50 italic">
-                        {selTask.submitted_at ? `Timestamped: ${new Date(selTask.submitted_at).toLocaleDateString()}` : 'Real-time protocol active'}
-                      </p>
+                      <h4 className="text-4xl font-black text-emerald-900 dark:text-emerald-100 tracking-tighter mb-4 uppercase italic font-display leading-none">Submitted</h4>
+                       <p className="inline-block bg-white dark:bg-black/20 text-emerald-700 dark:text-emerald-400 px-6 py-3 rounded-[20px] text-[10px] font-black uppercase tracking-[0.3em] shadow-sm border border-emerald-100 dark:border-emerald-900/50 italic">
+                         {selTask.submitted_at ? `Submitted on ${new Date(selTask.submitted_at).toLocaleDateString()}` : 'Submitted'}
+                       </p>
                     </div>
                     <div className="mt-10 flex gap-6 w-full max-w-sm relative z-10">
-                       <button className="flex-1 py-6 px-8 bg-white dark:bg-stone-900 border border-emerald-100 dark:border-emerald-900/40 rounded-[28px] text-[10px] font-black uppercase tracking-[0.2em] text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950 hover:-translate-y-1 transition-all shadow-sm cursor-pointer italic font-sans">
-                          Inspect Indexed Artifact
-                       </button>
+                        <button className="flex-1 py-6 px-8 bg-white dark:bg-stone-900 border border-emerald-100 dark:border-emerald-900/40 rounded-[28px] text-[10px] font-black uppercase tracking-[0.2em] text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950 hover:-translate-y-1 transition-all shadow-sm cursor-pointer italic font-sans">
+                           View submission
+                        </button>
                     </div>
                   </div>
                 )}
@@ -381,7 +381,7 @@ export default function StudentMyWork() {
 
               {selTask.fb && (
                 <div className="space-y-10 mt-16 pt-16 border-t border-stone-100 dark:border-stone-800/50">
-                  <div className="text-[11px] font-black tracking-[0.4em] uppercase text-stone-400 dark:text-stone-600 font-sans ml-4 italic px-4 border-l-4 border-brand-500">Academic Review</div>
+                  <div className="text-[11px] font-black tracking-[0.4em] uppercase text-stone-400 dark:text-stone-600 font-sans ml-4 italic px-4 border-l-4 border-brand-500">Teacher feedback</div>
                   <motion.div 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -391,9 +391,9 @@ export default function StudentMyWork() {
                        <Sparkle size={200} weight="fill" className="text-brand-500" />
                     </div>
                     <div className="absolute left-0 top-0 bottom-0 w-2.5 bg-gradient-to-b from-brand-300 to-brand-600" />
-                    <div className="text-[11px] font-black text-brand-600 dark:text-brand-400 uppercase tracking-[0.3em] mb-10 flex items-center gap-3 bg-white dark:bg-stone-950 w-max px-5 py-2.5 rounded-2xl border border-brand-100 dark:border-brand-900 shadow-sm italic">
-                       <PushPin size={16} weight="duotone" className="text-brand-500 rotate-45" /> Curated Observations
-                    </div>
+                     <div className="text-[11px] font-black text-brand-600 dark:text-brand-400 uppercase tracking-[0.3em] mb-10 flex items-center gap-3 bg-white dark:bg-stone-950 w-max px-5 py-2.5 rounded-2xl border border-brand-100 dark:border-brand-900 shadow-sm italic">
+                        <PushPin size={16} weight="duotone" className="text-brand-500 rotate-45" /> Feedback
+                     </div>
                     <p className="text-3xl md:text-4xl text-stone-900 dark:text-stone-50 font-black leading-[1.1] tracking-tighter relative z-10 pl-2 uppercase italic font-display">"{selTask.fb}"</p>
                   </motion.div>
                 </div>

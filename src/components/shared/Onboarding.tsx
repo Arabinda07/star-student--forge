@@ -23,9 +23,10 @@ export interface IntakeData {
 
 interface OnboardingProps {
   onComplete: (data: IntakeData) => void;
+  onSkip?: () => void;
 }
 
-export default function Onboarding({ onComplete }: OnboardingProps) {
+export default function Onboarding({ onComplete, onSkip }: OnboardingProps) {
   const [step, setStep] = useState(0);
   const [selectedRole, setSelectedRole] = useState<Role>("student");
   const [formData, setFormData] = useState({ name: "", meta: "" });
@@ -34,19 +35,19 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
   const introSlides = [
     {
       title: "A workspace that works with you",
-      desc: "Drona brings students, teachers, and parents together in one seamless, high-performance environment.",
+      desc: "Drona brings students, teachers, and parents together in one place.",
       icon: <GraduationCap size={44} weight="duotone" className="text-brand-600 dark:text-brand-400" />,
       tag: "Community"
     },
     {
-      title: "Focus on your goals",
-      desc: "We clear the clutter, helping you stay organized with notes and assignments tailored to your journey.",
+      title: "Focus on what matters",
+      desc: "Stay on top of notes and assignments without the clutter.",
       icon: <Sparkle size={44} weight="duotone" className="text-brand-600 dark:text-brand-400" />,
       tag: "Focus"
     },
     {
-      title: "Built for excellence",
-      desc: "Experience a platform designed with precision to support deep learning and long-term success.",
+      title: "Built to last",
+      desc: "A platform designed for real learning, not just for show.",
       icon: <GlobeHemisphereEast size={44} weight="duotone" className="text-brand-600 dark:text-brand-400" />,
       tag: "Precision"
     }
@@ -204,9 +205,9 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
           </div>
           
           <p className="text-sm text-stone-500 dark:text-stone-400 font-bold mb-8 leading-relaxed font-sans max-w-sm italic opacity-80 uppercase tracking-tight">
-            {selectedRole === 'student' && "Enter your name so educators can verify your work."}
-            {selectedRole === 'teacher' && "Specify your subject to set up your teaching workspace."}
-            {selectedRole === 'parent'  && "Link to your child for real-time monitoring."}
+            {selectedRole === 'student' && "Your name helps teachers identify your work."}
+            {selectedRole === 'teacher' && "Your subject helps us set up your class view."}
+            {selectedRole === 'parent'  && "Your child's name links their progress to your account."}
           </p>
 
           <div className="space-y-6 max-w-sm">
@@ -229,17 +230,17 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
              <div className="space-y-3">
                 <label className="block text-[10px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-[0.2em] ml-1">
                   {selectedRole === 'student' && "Current Grade"}
-                  {selectedRole === 'teacher' && "Instruction Subject"}
-                  {selectedRole === 'parent'  && "Child's Full Name"}
+                  {selectedRole === 'teacher' && "Subject taught"}
+                  {selectedRole === 'parent'  && "Child's name"}
                 </label>
                 <div className="relative group">
                   <ShieldCheck size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-stone-300 group-focus-within:text-brand-500 transition-colors" />
                   <input
                     type="text"
                     placeholder={
-                      selectedRole === 'student' ? "E.G. GRADE 10" :
-                      selectedRole === 'teacher' ? "E.G. MATHEMATICS" :
-                      "E.G. ROHAN SHARMA"
+                      selectedRole === 'student' ? "E.g. Grade 10" :
+                      selectedRole === 'teacher' ? "E.g. Mathematics" :
+                      "E.g. Rohan Sharma"
                     }
                     value={formData.meta}
                     onChange={(e) => setFormData({...formData, meta: e.target.value})}
@@ -332,7 +333,16 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
           </span>
         </motion.button>
 
-        <div className="mt-8 flex items-center gap-4 opacity-20 hover:opacity-40 transition-opacity duration-500">
+        <div className="mt-6 flex items-center justify-center">
+          <button
+            onClick={onSkip}
+            className="text-[10px] font-black text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 uppercase tracking-[0.3em] italic transition-colors border-none bg-transparent cursor-pointer py-2 px-4"
+          >
+            Already have an account? Sign in
+          </button>
+        </div>
+
+        <div className="mt-4 flex items-center gap-4 opacity-20 hover:opacity-40 transition-opacity duration-500">
            <p className="text-[9px] font-black text-stone-500 dark:text-stone-400 uppercase tracking-[0.4em] italic">
             Drona Platform · Build 2.1.1
           </p>

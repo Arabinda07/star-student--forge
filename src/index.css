@@ -4,120 +4,217 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-brand-50: oklch(0.98 0.01 260);
-  --color-brand-100: oklch(0.95 0.02 260);
-  --color-brand-200: oklch(0.91 0.04 260);
-  --color-brand-300: oklch(0.83 0.08 260);
-  --color-brand-400: oklch(0.74 0.12 260);
-  --color-brand-500: oklch(0.55 0.14 260); /* Deep Indigo */
-  --color-brand-600: oklch(0.48 0.13 260);
-  --color-brand-700: oklch(0.38 0.11 260);
-  --color-brand-800: oklch(0.28 0.08 260);
-  --color-brand-900: oklch(0.18 0.04 260);
-  --color-brand-950: oklch(0.12 0.02 260);
+  /* ─── Brand palette — Violet-indigo, hue 265 ─── */
+  --color-brand-50:  oklch(0.98 0.01  265);
+  --color-brand-100: oklch(0.95 0.025 265);
+  --color-brand-200: oklch(0.90 0.05  265);
+  --color-brand-300: oklch(0.82 0.09  265);
+  --color-brand-400: oklch(0.72 0.14  265);
+  --color-brand-500: oklch(0.54 0.17  265); /* Primary — deep violet */
+  --color-brand-600: oklch(0.46 0.15  265);
+  --color-brand-700: oklch(0.36 0.12  265);
+  --color-brand-800: oklch(0.26 0.08  265);
+  --color-brand-900: oklch(0.17 0.04  265);
+  --color-brand-950: oklch(0.11 0.02  265);
 
-  /* Tinted Neutrals - Slightly more sophisticated stone */
-  --color-stone-50: oklch(0.99 0.002 260);
-  --color-stone-100: oklch(0.97 0.004 260);
-  --color-stone-200: oklch(0.94 0.006 260);
-  --color-stone-300: oklch(0.88 0.008 260);
-  --color-stone-400: oklch(0.75 0.01 260);
-  --color-stone-500: oklch(0.58 0.01 260);
-  --color-stone-600: oklch(0.45 0.01 260);
-  --color-stone-700: oklch(0.35 0.01 260);
-  --color-stone-800: oklch(0.25 0.01 260);
-  --color-stone-900: oklch(0.16 0.01 260);
-  --color-stone-950: oklch(0.10 0.008 260);
+  /* ─── Warm stone neutrals — hue 60 (warm, not cold-blue) ─── */
+  --color-stone-50:  oklch(0.99 0.003 60);
+  --color-stone-100: oklch(0.97 0.005 60);
+  --color-stone-200: oklch(0.93 0.008 60);
+  --color-stone-300: oklch(0.87 0.010 60);
+  --color-stone-400: oklch(0.73 0.012 60);
+  --color-stone-500: oklch(0.57 0.012 60);
+  --color-stone-600: oklch(0.44 0.010 60);
+  --color-stone-700: oklch(0.34 0.008 60);
+  --color-stone-800: oklch(0.24 0.006 60);
+  --color-stone-900: oklch(0.15 0.005 60);
+  --color-stone-950: oklch(0.09 0.003 60);
 
-  --font-sans: 'Satoshi', ui-sans-serif, system-ui, sans-serif;
+  /* ─── Typefaces ─── */
+  --font-sans:    'Satoshi', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Cabinet Grotesk', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
+  --font-mono:    'Geist Mono', ui-monospace, SFMono-Regular, monospace;
 }
 
+/* ─── Semantic tokens (outside @theme so dark variant works) ─── */
+:root {
+  /* Text role tokens */
+  --text-heading:   oklch(0.15 0.005 60);   /* ~stone-900 */
+  --text-body:      oklch(0.24 0.006 60);   /* ~stone-800 */
+  --text-secondary: oklch(0.44 0.010 60);   /* ~stone-600 */
+  --text-muted:     oklch(0.57 0.012 60);   /* ~stone-500 */
+  --text-disabled:  oklch(0.73 0.012 60);   /* ~stone-400 */
+
+  /* Type scale — rem (16px browser default) */
+  --text-2xs:  0.625rem;   /* 10px — metadata / decoration only */
+  --text-xs:   0.6875rem;  /* 11px — labels, chips              */
+  --text-sm:   0.8125rem;  /* 13px — secondary body             */
+  --text-base: 1rem;       /* 16px — body                       */
+  --text-lg:   1.125rem;   /* 18px — large body                 */
+  --text-xl:   1.25rem;    /* 20px — small headings             */
+  --text-2xl:  1.5rem;     /* 24px                              */
+  --text-3xl:  1.875rem;   /* 30px                              */
+  --text-4xl:  2.25rem;    /* 36px                              */
+  --text-5xl:  3rem;       /* 48px                              */
+  --text-6xl:  3.75rem;    /* 60px                              */
+
+  /* Letter-spacing roles */
+  --tracking-display: -0.04em; /* tight — hero/display text     */
+  --tracking-label:    0.08em; /* wide  — UI labels, nav items  */
+  --tracking-meta:     0.25em; /* extra — all-caps small caps   */
+
+  /* Surface elevation */
+  --surface-base:    oklch(0.97 0.005 60); /* page background  */
+  --surface-raised:  oklch(1.00 0.000 60); /* cards, panels    */
+  --surface-overlay: oklch(0.99 0.003 60); /* modals, sheets   */
+
+  /* Semantic color aliases */
+  --color-success:    oklch(0.55 0.15 160); /* emerald */
+  --color-success-bg: oklch(0.97 0.03 160);
+  --color-warning:    oklch(0.72 0.14  72); /* amber   */
+  --color-warning-bg: oklch(0.98 0.03  72);
+  --color-danger:     oklch(0.58 0.19  15); /* rose    */
+  --color-danger-bg:  oklch(0.98 0.02  15);
+  --color-info:       oklch(0.62 0.14 225); /* sky     */
+  --color-info-bg:    oklch(0.97 0.03 225);
+
+  /* Role accent tokens — replaces hardcoded hex COLORS object */
+  --color-student: oklch(0.55 0.15 160); /* emerald */
+  --color-teacher: oklch(0.72 0.14  72); /* amber   */
+  --color-parent:  oklch(0.62 0.14 225); /* sky     */
+}
+
+.dark {
+  --text-heading:   oklch(0.97 0.003 60);
+  --text-body:      oklch(0.90 0.005 60);
+  --text-secondary: oklch(0.65 0.010 60);
+  --text-muted:     oklch(0.52 0.010 60);
+  --text-disabled:  oklch(0.38 0.008 60);
+
+  --surface-base:    oklch(0.09 0.003 60);
+  --surface-raised:  oklch(0.13 0.004 60);
+  --surface-overlay: oklch(0.16 0.005 60);
+}
+
+/* ─── Utilities ─────────────────────────────────────────── */
 @layer utilities {
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  /* Semantic text color helpers */
+  .text-heading   { color: var(--text-heading); }
+  .text-body      { color: var(--text-body); }
+  .text-secondary { color: var(--text-secondary); }
+  .text-muted     { color: var(--text-muted); }
+  .text-disabled  { color: var(--text-disabled); }
 }
 
+/* ─── Base layer ─────────────────────────────────────────── */
 @layer base {
-  body {
-    @apply bg-stone-50 text-stone-900 dark:bg-stone-950 dark:text-stone-50 selection:bg-brand-500/10 selection:text-brand-600;
-    font-feature-settings: "ss01", "ss03", "cv02", "cv11";
-  }
-  h1, h2, h3, h4, .font-display {
-    @apply font-display tracking-tight leading-[0.95];
-  }
-  h1 { @apply tracking-tighter decoration-brand-500/20 underline-offset-8; }
-  
-  .tabular { font-variant-numeric: tabular-nums; }
-  button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
-    outline: 2px solid var(--color-brand-500);
-    outline-offset: 2px;
+  html {
+    font-size: 100%; /* never override user zoom preferences */
+    -webkit-text-size-adjust: 100%;
   }
 
-  /* View Transition Base */
+  body {
+    @apply bg-stone-50 text-stone-900 dark:bg-stone-950 dark:text-stone-50
+           selection:bg-brand-500/10 selection:text-brand-600;
+    font-feature-settings: "ss01", "ss03", "cv02", "cv11";
+    font-size: var(--text-base);
+    line-height: 1.6;
+  }
+
+  /* Heading baseline */
+  h1, h2, h3, h4, .font-display {
+    @apply font-display tracking-tight;
+    line-height: 1.05;
+    font-feature-settings: "ss01", "kern";
+  }
+
+  /* Hero/display text — tightest acceptable leading */
+  h1 {
+    @apply tracking-tighter;
+    line-height: 0.95;
+  }
+
+  h2 { line-height: 1.1; }
+  h3, h4 { line-height: 1.2; }
+
+  /* Minimum metadata text — below 11px is decoration only */
+  small, .text-2xs {
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-meta);
+  }
+
+  .tabular { font-variant-numeric: tabular-nums; }
+
+  /* Focus ring */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* View transitions */
   ::view-transition-group(root) {
     animation-duration: 0.5s;
     animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }
-
   ::view-transition-old(root) {
     animation: fade-out 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
-
   ::view-transition-new(root) {
     animation: slide-from-right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   @keyframes fade-out {
     from { opacity: 1; }
-    to { opacity: 0; }
+    to   { opacity: 0; }
   }
-
   @keyframes slide-from-right {
     from { transform: translateX(30px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
+    to   { transform: translateX(0);    opacity: 1; }
   }
 
-  /* Overdrive Texture */
+  /* Noise texture overlay */
   .premium-texture::after {
     content: "";
     position: fixed;
     inset: 0;
     z-index: 9999;
     pointer-events: none;
-    opacity: 0.04;
+    opacity: 0.035;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     mix-blend-mode: overlay;
   }
 }
 
+/* ─── Animation keyframes ────────────────────────────────── */
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes slideInRight {
   from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  to   { transform: translateX(0); }
 }
-
 @keyframes slideSheet {
   from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+  to   { transform: translateY(0); }
 }
-
 @keyframes fadeIn {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 }
 
-.animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.animate-slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.animate-slide-sheet { animation: slideSheet 0.4s cubic-bezier(0.32, 0.72, 0, 1) both; }
-.animate-fade-in { animation: fadeIn 0.25s ease-out both; }
+.animate-slide-up       { animation: slideUp       0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-slide-in-right { animation: slideInRight  0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-slide-sheet    { animation: slideSheet    0.4s cubic-bezier(0.32, 0.72, 0, 1) both; }
+.animate-fade-in        { animation: fadeIn        0.25s ease-out both; }

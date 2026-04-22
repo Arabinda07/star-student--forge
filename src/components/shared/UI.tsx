@@ -81,7 +81,7 @@ export function Chip({
   };
   
   const vClass = active ? variants["active"] : (variants[variant] || variants.default);
-  const sizeClass = small ? "text-[8px] px-2 py-0.5" : "text-[9px] px-3 py-1.5";
+  const sizeClass = small ? "text-[9px] px-2 py-0.5" : "text-[10px] px-3 py-1.5";
   
   const customStyles = {
     backgroundColor: bg,
@@ -102,7 +102,7 @@ export function Chip({
 
 export function SectionLabel({ children }: { children: ReactNode }) {
   return (
-    <div className="text-[10px] font-black tracking-[0.4em] uppercase text-stone-300 dark:text-stone-600 font-sans mb-6 italic leading-none">
+    <div className="text-xs font-bold tracking-[0.25em] uppercase text-stone-400 dark:text-stone-500 font-sans mb-5 leading-none">
       {children}
     </div>
   );
@@ -115,7 +115,7 @@ export function EmptySlate({ icon, title, sub }: { icon: string; title: string; 
       <div className="relative z-10">
         <div className="text-6xl mb-8 grayscale group-hover:grayscale-0 transition-all duration-1000 bg-stone-50 dark:bg-stone-800 w-24 h-24 flex items-center justify-center rounded-[32px] mx-auto shadow-inner border border-stone-50 dark:border-stone-700">{icon}</div>
         <div className="text-3xl font-black mb-4 font-display text-stone-900 dark:text-stone-50 tracking-tighter uppercase italic leading-none">{title}</div>
-        <div className="text-xs font-black font-sans text-stone-300 dark:text-stone-600 max-w-[200px] mx-auto leading-relaxed uppercase tracking-widest italic">{sub}</div>
+        <div className="text-sm font-semibold font-sans text-stone-400 dark:text-stone-500 max-w-[220px] mx-auto leading-relaxed text-center">{sub}</div>
       </div>
     </div>
   );

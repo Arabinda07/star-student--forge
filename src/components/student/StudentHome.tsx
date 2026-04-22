@@ -91,8 +91,8 @@ export default function StudentHome() {
               🎓
             </div>
             <div>
-              <h1 className="text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display leading-[0.85] mb-2 uppercase italic">Academy Hall</h1>
-              <p className="text-[10px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-[0.3em] leading-none italic">Curating your intellectual journey</p>
+              <h1 className="text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tighter font-display leading-[0.85] mb-2 uppercase italic">Dashboard</h1>
+              <p className="text-[10px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-[0.3em] leading-none italic">Your school workspace</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -125,13 +125,13 @@ export default function StudentHome() {
                     <Sparkle size={48} weight="duotone" className="text-amber-400" />
                  </div>
                  <div className="text-center md:text-left">
-                   <div className="text-[10px] font-black text-amber-500 uppercase tracking-[0.5em] mb-6 italic">Real-time sync active</div>
-                   <h3 className="text-4xl font-black text-white font-display tracking-tight leading-[0.9] mb-6 uppercase italic">Your schedule is currently in "Zen Mode"</h3>
+                   <div className="text-[10px] font-black text-amber-500 uppercase tracking-[0.5em] mb-6 italic">Nothing on right now</div>
+                   <h3 className="text-4xl font-black text-white font-display tracking-tight leading-[0.9] mb-6 uppercase italic">You're free for the next hour</h3>
                    <p className="text-lg font-bold text-white/60 font-sans max-w-sm leading-relaxed italic opacity-80 uppercase tracking-tight">
-                     Perfect alignment detected. All academic sessions for the immediate hour are cleared.
+                     No classes or deadlines right now. Good time to get ahead.
                    </p>
                    <div className="mt-10">
-                     <Btn label="Browse Archives" variant="outline" className="text-white border-white/10 hover:bg-white hover:text-stone-900 italic font-black" />
+                     <Btn label="See all work" variant="outline" className="text-white border-white/10 hover:bg-white hover:text-stone-900 italic font-black" />
                    </div>
                  </div>
                </div>
@@ -146,25 +146,25 @@ export default function StudentHome() {
             <div className="space-y-12">
                <div className="flex items-end justify-between px-2">
                   <div>
-                    <SectionLabel>Active Mission Log</SectionLabel>
-                    <p className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] mt-1 italic">Pending artifacts for submission</p>
+                    <SectionLabel>Upcoming work</SectionLabel>
+                    <p className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] mt-1 italic">Tasks due soon</p>
                   </div>
-                  <Btn label="Index All" variant="outline" className="rounded-xl border px-4 py-2 italic font-black" />
+                  <Btn label="See all" variant="outline" className="rounded-xl border px-4 py-2 italic font-black" />
                </div>
 
                <div className="grid gap-6">
                  {loading ? (
                     <div className="p-20 flex flex-col items-center gap-4">
                        <div className="w-10 h-10 border-4 border-stone-100 border-t-amber-500 animate-spin rounded-full" />
-                       <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">Loading Intelligence...</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">Loading...</span>
                     </div>
                  ) : tasks.length === 0 ? (
                     <div className="bg-white dark:bg-stone-900/30 border border-stone-100 dark:border-stone-800 rounded-[48px] p-20 text-center flex flex-col items-center">
                        <div className="w-20 h-20 bg-emerald-50 dark:bg-emerald-500/10 rounded-[32px] flex items-center justify-center mb-8 border border-emerald-100 dark:border-emerald-500/20 shadow-inner">
                          <CheckCircle size={32} weight="duotone" className="text-emerald-500" />
                        </div>
-                       <h3 className="text-3xl font-black text-stone-900 dark:text-stone-50 tracking-tighter mb-2 uppercase font-display italic leading-none">Total Clearance</h3>
-                       <p className="text-xs font-black text-stone-400 max-w-[280px] leading-relaxed italic uppercase tracking-widest opacity-60">"The mind is free when the task log is empty."</p>
+                        <h3 className="text-3xl font-black text-stone-900 dark:text-stone-50 tracking-tighter mb-2 uppercase font-display italic leading-none">All clear</h3>
+                        <p className="text-xs font-black text-stone-400 max-w-[280px] leading-relaxed italic uppercase tracking-widest opacity-60">Nothing due. Enjoy the break or get ahead on something.</p>
                     </div>
                  ) : (
                     tasks.map((task, i) => {
@@ -260,7 +260,7 @@ export default function StudentHome() {
                     >
                       <div className="text-4xl mb-6 opacity-40 grayscale group-hover:grayscale-0 group-hover:rotate-12 transition-all transition-duration-700">📜</div>
                       <p className="text-[10px] font-black text-stone-400 dark:text-stone-500 font-sans px-12 leading-relaxed uppercase tracking-widest italic opacity-60">
-                        The agenda is perfectly clear for this cycle.
+                        Nothing planned for this day.
                       </p>
                     </motion.div>
                   ) : (
@@ -300,9 +300,9 @@ export default function StudentHome() {
                   <div className="w-16 h-16 rounded-[22px] bg-brand-500/5 dark:bg-brand-500/10 flex items-center justify-center text-4xl shadow-inner group-hover:rotate-12 transition-transform duration-500">🔥</div>
                   <div>
                     <h3 className="text-2xl font-black text-stone-900 dark:text-stone-50 tracking-tighter uppercase leading-none mb-2 font-display italic">
-                      4 Day Cycle
+                      4-day streak
                     </h3>
-                    <p className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] leading-none italic">Consistency Premium</p>
+                    <p className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] leading-none italic">Keep it going</p>
                   </div>
                 </div>
 

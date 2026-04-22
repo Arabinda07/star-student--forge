@@ -75,10 +75,10 @@ export default function SignIn({ onSuccess, onNavigateToSignUp, onBackToOnboardi
           </div>
         </div>
         <h2 className="text-center text-4xl font-black text-stone-900 dark:text-stone-50 font-display tracking-tighter uppercase italic leading-none">
-          Identity Access
+          Sign in
         </h2>
         <p className="mt-4 text-center text-[10px] font-black text-stone-300 dark:text-stone-600 uppercase tracking-[0.4em] italic mb-2">
-          Sync your established credentials
+          Welcome back
         </p>
       </div>
 
@@ -110,14 +110,14 @@ export default function SignIn({ onSuccess, onNavigateToSignUp, onBackToOnboardi
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
               </svg>
-              Cloud Native Login
+              Continue with Google
             </button>
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-stone-100 dark:border-stone-800" />
               </div>
               <div className="relative flex justify-center text-[9px] font-black uppercase tracking-widest">
-                <span className="px-4 bg-white dark:bg-stone-900 text-stone-400">Legacy Encrypted Access</span>
+                <span className="px-4 bg-white dark:bg-stone-900 text-stone-400">Or sign in with email</span>
               </div>
             </div>
           </div>
@@ -125,7 +125,7 @@ export default function SignIn({ onSuccess, onNavigateToSignUp, onBackToOnboardi
           <form className="space-y-8" onSubmit={handleSignIn}>
             <div className="space-y-3">
               <label htmlFor="email" className="block text-[10px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-widest ml-1">
-                Member Registry ID
+                Email address
               </label>
               <input
                 id="email"
@@ -142,7 +142,7 @@ export default function SignIn({ onSuccess, onNavigateToSignUp, onBackToOnboardi
 
             <div className="space-y-3">
               <label htmlFor="password" className="block text-[10px] font-black text-stone-400 dark:text-stone-500 uppercase tracking-widest ml-1">
-                Access Token
+                Password
               </label>
               <input
                 id="password"
@@ -165,7 +165,7 @@ export default function SignIn({ onSuccess, onNavigateToSignUp, onBackToOnboardi
                 whileTap={{ scale: 0.99 }}
                 className="w-full h-14 flex justify-center items-center gap-3 border border-transparent rounded-[20px] shadow-xl text-[10px] font-black uppercase tracking-[0.2em] text-white bg-stone-900 hover:bg-black dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white focus:outline-none disabled:opacity-50 transition-all cursor-pointer"
               >
-                {loading ? "Authenticating..." : "Establish Connection"}
+                {loading ? "Signing you in..." : "Sign in"}
                 {!loading && <ArrowRight size={18} weight="bold" />}
               </motion.button>
             </div>
@@ -173,10 +173,10 @@ export default function SignIn({ onSuccess, onNavigateToSignUp, onBackToOnboardi
 
           <div className="mt-10 flex flex-col items-center gap-4 border-t border-stone-50 dark:border-stone-800 pt-8">
              <button onClick={onNavigateToSignUp} className="text-[10px] font-black text-brand-600 dark:text-brand-400 uppercase tracking-widest hover:brightness-110 transition-all bg-transparent border-none cursor-pointer p-2">
-              Request New Credentials
+              Create an account
             </button>
             <button onClick={onBackToOnboarding} className="text-[9px] font-black text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors uppercase tracking-widest bg-transparent border-none cursor-pointer">
-              ← Return to Selection
+              ← Back
             </button>
           </div>
         </div>
